@@ -1,43 +1,29 @@
 SELECT
-  preceeding_type, type,
-  COUNT(*) as total,
-  RATIO_TO_REPORT(total) OVER(PARTITION BY preceeding_type) as ratio,
+  previous, present,
+  COUNT(*) occurances,
+  RATIO_TO_REPORT( occurances ) OVER( PARTITION BY previous ),
 FROM(
-SELECT
-  repository_url,
-  CASE
-    WHEN type = "CreateEvent" THEN payload_ref_type
-    ELSE type
-    END as type,
-  LAG(type, 1, '~') OVER (PARTITION BY repository_url ORDER BY time ASC) as preceeding_type,
-  PARSE_UTC_USEC(created_at) as time,
-FROM
-  //[githubarchive:github.timeline] as t1
-  [publicdata:samples.github_timeline] as t1
-INNER JOIN(
   SELECT
-    r_url,
-  FROM(
-    SELECT
-      repository_url as r_url,
-      COUNT(repository_url) as r_count,
-      FROM
-        //[githubarchive:github.timeline]
-        [publicdata:samples.github_timeline]
-      WHERE
-        repository_url IS NOT NULL
-      GROUP EACH BY
-        r_url
-  )
+    HASH(repository_url) as url_hash,
+    CASE
+      WHEN type = "CreateEvent" THEN payload_ref_type
+      ELSE type
+    END as present,
+  PARSE_UTC_USEC(created_at) as time,
+  LAG(
+    CASE
+      WHEN type = "CreateEvent" THEN payload_ref_type
+      ELSE type
+    END,1,'~'
+  ) OVER (PARTITION BY url_hash ORDER BY time ASC) previous,
+  FROM
+    [publicdata:samples.github_timeline]
+    //[githubarchive:github.timeline],
+    //[githubarchive:github.2011]
   WHERE
-    r_count = 5
-) as t2
-ON
-  t1.repository_url = t2.r_url
-ORDER BY
-  repository_url, time
+    repository_url IS NOT NULL
+    //AND
+    //ABS( HASH(repository_url) % 6 ) = 0
 )
 GROUP EACH BY
-  type, preceeding_type
-ORDER BY
-  preceeding_type
+  present, previous

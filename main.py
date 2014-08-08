@@ -46,6 +46,7 @@ def main():
       fields = row['f'];
       first = fields[0]['v'];
       second = fields[1]['v'];
+      count = fields[2]['v'];
       ratio = fields[3]['v'];
       if not markov_map.has_key(first):
         markov_map[first] = {}
@@ -60,6 +61,5 @@ def main():
   except AccessTokenRefreshError:
     print ("Credentials have been revoked or expired, please re-run"
            "the application to re-authorize")
-
 if __name__ == '__main__':
     main()
