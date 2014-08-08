@@ -21,6 +21,20 @@ function displayData( graph ) {
     .attr("width", width)
     .attr("height", height);
 
+    // build the arrow.
+    svg.append("svg:defs").selectAll("marker")
+    .data(["end"])      // Different link/path types can be defined here
+    .enter().append("svg:marker")    // This section adds in the arrows
+    .attr("id", String)
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
     var force = d3.layout.force()
     .size([width, height])
     .charge(-400)
@@ -33,10 +47,12 @@ function displayData( graph ) {
       .links(graph.links)
       .on("tick", tick)
       .start();
+
   var link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("path")
-      .attr("class","link");
+      .attr("class","link")
+      .attr("marker-end", "url(#end)");
 
   var node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -47,6 +63,11 @@ function displayData( graph ) {
   node.append("circle")
       .attr("r", function(d) { return radius(d.size); })
       .style("fill", function(d) { return color(d.atom); });
+
+  node.append("text")
+    .attr("x", 12)
+    .attr("dy", ".35em")
+    .text( function(d) { return d.name; } )
 
   function tick() {
     link.attr("d", function(d) {
@@ -117,7 +138,7 @@ function processData( theData ) {
             var connectedDict = dict[key];
             var sourceIndex = nodeList.indexOf( key );
             for( var connectedKey in connectedDict ) {
-                if( connectedDict[connectedKey] > 0.10 ) {
+                if( connectedDict[connectedKey] >= 0.005) {
                     var targetIndex = nodeList.indexOf( connectedKey );
                     var value = 1;
                     var link = {
