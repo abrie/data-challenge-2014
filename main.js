@@ -10,7 +10,7 @@ function main() {
 
 function displayData( graph ) {
     var width = 960;
-    var height = 500;
+    var height = 800;
 
     var color = d3.scale.category20();
     var radius = d3.scale.sqrt() .range([0, 6]);
@@ -37,7 +37,12 @@ function displayData( graph ) {
     .size([width, height])
     .charge(-400)
     .linkDistance(function(d) { 
-        return radius(d.source.size)*5 + radius(d.target.size)*5; 
+        if( d.probability != 0 ) {
+            return 1/d.probability * 3; 
+        }
+        else {
+            return 400;
+        }
     });
 
     force.nodes(graph.nodes);
@@ -146,16 +151,15 @@ function processData( theData ) {
             var connectedDict = dict[key];
             var sourceIndex = nodeList.indexOf( key );
             for( var connectedKey in connectedDict ) {
-                if( connectedDict[connectedKey] > 0.05) {
-                    var targetIndex = nodeList.indexOf( connectedKey );
-                    var value = 1;
-                    var link = {
-                        source: sourceIndex,
-                        target: targetIndex,
-                        value: value
-                    }
-                    linkList.push( link );
+                var probability = connectedDict[connectedKey].toFixed(2);
+                var targetIndex = nodeList.indexOf( connectedKey );
+                var value = 1;
+                var link = {
+                    source: sourceIndex,
+                    target: targetIndex,
+                    probability: probability, 
                 }
+                linkList.push( link );
             }
         }
     }
