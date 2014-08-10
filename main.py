@@ -55,7 +55,7 @@ def main():
     print "jobId: " + query_response['jobReference']['jobId'] 
     print "cacheHit:" + str(query_response['cacheHit'])
 
-    with open('mcl_input', 'w') as mcl_file:
+    with open('data/mcl_input', 'w') as mcl_file:
         for row in query_response['rows']:
           fields = row['f'];
           first = fields[0]['v'];
@@ -67,20 +67,20 @@ def main():
     print str( query_response['totalRows'] ) + " rows retrieved."
     print "----invoking mcl----"
     try:
-        subprocess.check_call(["mcl/bin/mcl","mcl_input","-I","5.0","--abc", "-o","mcl_output"])
+        subprocess.check_call(["mcl/bin/mcl","data/mcl_input","-I","5.0","--abc", "-o","data/mcl_output"])
     except CalledProcessError as err:
         print 'CalledProcessError:', pprint.pprint(err)
     print "----mcl completed----"
-
+    
     markov_clusters = {}
-    with open('mcl_output', 'r') as mcl_output:
+    with open('data/mcl_output', 'r') as mcl_output:
         for index, line in enumerate( mcl_output.readlines() ):
             fields = line.rstrip('\n').split('\t')
             for field in fields:
                 markov_clusters[field] = index 
 
     markov_chains = {}
-    with open('mcl_input', 'r') as mcl_file:
+    with open('data/mcl_input', 'r') as mcl_file:
         for line in mcl_file.readlines():
             fields = line.rstrip('\n').split('\t')
             first = fields[0]
@@ -90,11 +90,13 @@ def main():
                 markov_chains[first] = {}
             markov_chains[first][second] = float(ratio)
 
-    with open('results.json', 'w') as outfile:
+    with open('data/results.json', 'w') as outfile:
         result = {}
         result['clusters'] = markov_clusters
         result['chains'] = markov_chains 
         json.dump(result, outfile)
+
+    print "done."
 
 if __name__ == '__main__':
     main()

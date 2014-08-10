@@ -3,7 +3,7 @@
 $( document ).ready( main );
 
 function main() {
-    $.getJSON("results.json", function(d) {
+    $.getJSON("data/results.json", function(d) {
         displayData( processData(d) );
     }); 
 }
