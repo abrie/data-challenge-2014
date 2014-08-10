@@ -65,17 +65,19 @@ function processData( theData ) {
     function findLinks( chains, clusters ) {
         for( var key in chains ) {
             var connectedDict = chains[key];
-            var sourceIndex = nodeList.indexOf( key );
             for( var connectedKey in connectedDict ) {
-                var probability = connectedDict[connectedKey].toFixed(2);
-                var targetIndex = nodeList.indexOf( connectedKey );
-                var value = 1;
-                var link = {
-                    source: sourceIndex,
-                    target: targetIndex,
-                    probability: probability, 
+                if( clusters[key] === clusters[connectedKey] ) { // in same group
+                    var sourceIndex = nodeList.indexOf( key );
+                    var targetIndex = nodeList.indexOf( connectedKey );
+                    var probability = connectedDict[connectedKey].toFixed(2);
+                    var value = 1;
+                    var link = {
+                        source: sourceIndex,
+                        target: targetIndex,
+                        probability: probability, 
+                    }
+                    linkList.push( link );
                 }
-                linkList.push( link );
             }
         }
     }

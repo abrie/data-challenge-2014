@@ -17,3 +17,16 @@ svg {
     stroke-width: 1.5px;
     fill: none;
 }
+
+.link {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.node {
+    cursor: move;
+    fill: #ccc;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+

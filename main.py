@@ -90,13 +90,14 @@ def main():
                 markov_chains[first] = {}
             markov_chains[first][second] = float(ratio)
 
+    result = {}
     with open('data/results.json', 'w') as outfile:
-        result = {}
         result['clusters'] = markov_clusters
         result['chains'] = markov_chains 
         json.dump(result, outfile)
 
-    print "done."
+    print "processing complete."
+    pprint.pprint(result)
 
 if __name__ == '__main__':
     main()
