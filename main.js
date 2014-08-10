@@ -48,8 +48,8 @@ function processData( theData ) {
     var nodeList = [];
     var linkList = [];
 
-    function findNodes( dict ) {
-        for( var key in dict ) {
+    function findNodes( chains, clusters ) {
+        for( var key in chains ) {
             var index = nodeList.indexOf( key );
             if( index < 0 ) {
                 nodeList.push( key );
@@ -58,11 +58,13 @@ function processData( theData ) {
     }
 
     // Build an array of nodes
-    findNodes( theData );
+    var chains = theData.chains
+    var clusters = theData.clusters
+    findNodes( chains, clusters );
 
-    function findLinks( dict ) {
-        for( var key in dict ) {
-            var connectedDict = dict[key];
+    function findLinks( chains, clusters ) {
+        for( var key in chains ) {
+            var connectedDict = chains[key];
             var sourceIndex = nodeList.indexOf( key );
             for( var connectedKey in connectedDict ) {
                 var probability = connectedDict[connectedKey].toFixed(2);
@@ -78,12 +80,12 @@ function processData( theData ) {
         }
     }
 
-    findLinks( theData );
+    findLinks( chains, clusters );
 
     nodeList = nodeList.map( function(item, index) {
         return {
             name: item,
-            group: index,
+            group: clusters[item],
             size: 6,
         }
     });

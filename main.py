@@ -2,6 +2,7 @@ import httplib2
 import pprint
 import sys
 import json
+import subprocess
 
 from apiclient.discovery import build
 from apiclient.errors import HttpError
@@ -18,26 +19,32 @@ PROJECT_NUMBER = 'linear-quasar-662'
 FLOW = flow_from_clientsecrets('client_secrets.json', scope='https://www.googleapis.com/auth/bigquery')
 
 def main():
-  storage = Storage('bigquery_credentials.dat')
-  credentials = storage.get()
+    storage = Storage('bigquery_credentials.dat')
+    credentials = storage.get()
 
-  if credentials is None or credentials.invalid:
-    from oauth2client import tools
-    # Run oauth2 flow with default arguments.
-    credentials = tools.run_flow(FLOW, storage, tools.argparser.parse_args([]))
+    if credentials is None or credentials.invalid:
+        from oauth2client import tools
+        # Run oauth2 flow with default arguments.
+        credentials = tools.run_flow(FLOW, storage, tools.argparser.parse_args([]))
 
-  http = httplib2.Http()
-  http = credentials.authorize(http)
+    http = httplib2.Http()
+    http = credentials.authorize(http)
 
-  bigquery_service = build('bigquery', 'v2', http=http)
+    bigquery_service = build('bigquery', 'v2', http=http)
 
-  with open ("query.sql", "r") as query_file:
-          bql=query_file.read()
-  try:
-    query_job = bigquery_service.jobs()
-    query_body = {'query':bql}
-    query_request = query_job.query(projectId=PROJECT_NUMBER, body=query_body)
-    query_response = query_request.execute()
+    with open ("query.sql", "r") as query_file:
+        bql=query_file.read()
+    try:
+        query_job = bigquery_service.jobs()
+        query_body = {'query':bql}
+        query_request = query_job.query(projectId=PROJECT_NUMBER, body=query_body)
+        query_response = query_request.execute()
+
+    except HttpError as err:
+        print 'HttpError:', pprint.pprint(err.content)
+
+    except AccessTokenRefreshError:
+        print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
 
     while not query_response['jobComplete']:
         query_response = query_job.getQueryResults(
@@ -58,26 +65,36 @@ def main():
           mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
 
     print str( query_response['totalRows'] ) + " rows retrieved."
+    print "----invoking mcl----"
+    try:
+        subprocess.check_call(["mcl/bin/mcl","mcl_input","-I","5.0","--abc", "-o","mcl_output"])
+    except CalledProcessError as err:
+        print 'CalledProcessError:', pprint.pprint(err)
+    print "----mcl completed----"
 
-    markov_map = {}
+    markov_clusters = {}
+    with open('mcl_output', 'r') as mcl_output:
+        for index, line in enumerate( mcl_output.readlines() ):
+            fields = line.rstrip('\n').split('\t')
+            for field in fields:
+                markov_clusters[field] = index 
+
+    markov_chains = {}
     with open('mcl_input', 'r') as mcl_file:
         for line in mcl_file.readlines():
             fields = line.rstrip('\n').split('\t')
             first = fields[0]
             second = fields[1]
             ratio = fields[2]
-            if not markov_map.has_key(first):
-                markov_map[first] = {}
-            markov_map[first][second] = float(ratio)
+            if not markov_chains.has_key(first):
+                markov_chains[first] = {}
+            markov_chains[first][second] = float(ratio)
 
     with open('results.json', 'w') as outfile:
-      json.dump(markov_map, outfile)
+        result = {}
+        result['clusters'] = markov_clusters
+        result['chains'] = markov_chains 
+        json.dump(result, outfile)
 
-  except HttpError as err:
-    print 'HttpError:', pprint.pprint(err.content)
-
-  except AccessTokenRefreshError:
-    print ("Credentials have been revoked or expired, please re-run"
-           "the application to re-authorize")
 if __name__ == '__main__':
     main()
