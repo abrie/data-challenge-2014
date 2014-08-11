@@ -1,9 +1,13 @@
+#graph {
+    width: 50%;
+    margin: 0 auto;
+}
+
 svg {
-    overflow: hidden;
 }
 
 .node rect {
-    stroke: #333;
+    stroke: #fff;
     stroke-width: 1.5px;
     fill: #fff;
 }
