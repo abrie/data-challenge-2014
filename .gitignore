@@ -1,1 +1,4 @@
+bigquery_credentials.dat
+client_secrets.json
 data/*
+mcl/**
