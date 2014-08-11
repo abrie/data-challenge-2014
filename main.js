@@ -19,9 +19,9 @@ function generateSvgElement(id, width, height) {
 
 function main() {
     $.getJSON("data/results.json", function(d) {
-        $("#graph").append( generateSvgElement("main-svg", 1000, 500) );
-        //createClusterGraph( processData(d), "#main-svg" );
-        displayData( processData(d), "#main-svg" );
+        $("#graph").append( generateSvgElement("svg-group-0", 400, 400) );
+        createClusterGraph( processData(d, 0), "#svg-group-0" );
+        //displayData( processData(d), "#main-svg" );
     }); 
 }
 
@@ -151,7 +151,7 @@ function createClusterGraph( graph, element_id ) {
     .start();
 }
 
-function processData( theData ) {
+function processData( theData, cluster_id ) {
     var nodeList = [];
     var linkList = [];
 
@@ -159,7 +159,9 @@ function processData( theData ) {
         for( var key in chains ) {
             var index = nodeList.indexOf( key );
             if( index < 0 ) {
-                nodeList.push( key );
+                if( clusters[key] === cluster_id ) {
+                    nodeList.push( key );
+                }
             }
         }
     }
@@ -172,19 +174,21 @@ function processData( theData ) {
     function findLinks( chains, clusters ) {
         for( var key in chains ) {
             var connectedDict = chains[key];
-            for( var connectedKey in connectedDict ) {
-                //if( clusters[key] === clusters[connectedKey] ) { // in same group
-                    var sourceIndex = nodeList.indexOf( key );
-                    var targetIndex = nodeList.indexOf( connectedKey );
-                    var probability = connectedDict[connectedKey].toFixed(2);
-                    var value = 1;
-                    var link = {
-                        source: sourceIndex,
-                        target: targetIndex,
-                        probability: probability, 
+            if( clusters[key] === cluster_id ) {
+                for( var connectedKey in connectedDict ) {
+                    if( clusters[connectedKey] === cluster_id ) { 
+                        var sourceIndex = nodeList.indexOf( key );
+                        var targetIndex = nodeList.indexOf( connectedKey );
+                        var probability = connectedDict[connectedKey].toFixed(2);
+                        var value = 1;
+                        var link = {
+                            source: sourceIndex,
+                            target: targetIndex,
+                            probability: probability, 
+                        }
+                        linkList.push( link );
                     }
-                    linkList.push( link );
-                //}
+                }
             }
         }
     }
