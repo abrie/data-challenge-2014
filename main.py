@@ -46,11 +46,15 @@ def main():
     except AccessTokenRefreshError:
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
 
-    while not query_response['jobComplete']:
-        query_response = query_job.getQueryResults(
-                projectId=query_response['jobReference']['projectId'],
-                jobId=query_response['jobReference']['jobId'])
-
+    try:
+        while not query_response['jobComplete']:
+            query_response = query_job.getQueryResults(
+                    projectId=query_response['jobReference']['projectId'],
+                    jobId=query_response['jobReference']['jobId'])
+    except:
+        print "Unexpected error:", sys.exc_info()[0], query_response
+        raise
+        
     print "projectId: " + query_response['jobReference']['projectId']
     print "jobId: " + query_response['jobReference']['jobId'] 
     print "cacheHit:" + str(query_response['cacheHit'])
@@ -94,7 +98,8 @@ def main():
     with open('data/results.json', 'w') as outfile:
         result['clusters'] = markov_clusters
         result['chains'] = markov_chains 
-        json.dump(result, outfile)
+        prettyJson = json.dumps(result, indent=4, sort_keys=True )
+        outfile.write( prettyJson )
 
     print "processing complete."
     pprint.pprint(result)
