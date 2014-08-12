@@ -38,11 +38,11 @@ function displayData( raw_data, element_id ) {
     });
 
     graphData.links.forEach( function(edge) {
-        var a = graphData.nodes[edge.source].name;
-        var b = graphData.nodes[edge.target].name;
-        var p = edge.probability;
+        var source = graphData.nodes[edge.source].name;
+        var target = graphData.nodes[edge.target].name;
+        var probability = edge.probability;
         var appearance = { style: 'stroke-width: 2px;' };
-        g.addEdge( null, a,b, appearance )
+        g.addEdge( null, source, target, appearance )
     });
 
     var renderer = new dagreD3.Renderer();
