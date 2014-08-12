@@ -64,6 +64,9 @@ function displayData( raw_data, element_id ) {
 
     element.attr("width", rendered_layout.graph().width + 40);
     element.attr("height", rendered_layout.graph().height + 40);
+
+    var zoom = d3.select("g.zoom", element);
+    zoom.attr("transform","scale(0.25)");
 }
 
 function createClusterGraph( graph, element_id, colorSelector ) {
