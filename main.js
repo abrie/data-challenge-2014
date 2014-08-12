@@ -59,7 +59,7 @@ function displayData( raw_data, element_id ) {
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         var graph_id = "#svg-sub-" + node.name;
-        createClusterGraph( processData(raw_data, node.name), graph_id, colorSelector );
+        createClusterGraph( linkData(raw_data, node.name), graph_id, colorSelector );
     });
 
     element.attr("width", rendered_layout.graph().width + 40);
@@ -154,9 +154,6 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     node = svg.selectAll('.node')
     .data( graph.nodes )
     .enter().append('g')
-    .attr('title', name)
-    .attr('class', 'node')
-    .call( force.drag );
 
     node.append('circle')
     .attr('r', 20)
@@ -164,7 +161,7 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     .attr('fill-opacity', 0.5);
 
     node.append('circle')
-    .attr('r', 18)
+    .attr('r', 19)
     .attr('fill', colorByGroup)
     .attr('fill-opacity', 0.5)
     .attr('stroke', 'black');
@@ -198,85 +195,43 @@ function condenseData( theData ) {
     }
 }
 
-function linkData( theData ) {
+function linkData( theData, cluster_id ) {
     var nodeList = [];
     var linkList = [];
+
+    // Build an array of nodes
+    var chains = theData.chains
+    var clusters = theData.clusters
+    findNodes( chains, clusters );
+    findLinks( chains, clusters );
+
+    function inClusterFilter( key ) {
+        if( cluster_id ) 
+            return clusters[key] == cluster_id;
+        else
+            return true;
+    }
 
     function findNodes( chains, clusters ) {
         for( var key in chains ) {
             var index = nodeList.indexOf( key );
             if( index < 0 ) {
-                nodeList.push( key );
-            }
-        }
-    }
-
-    findNodes( theData.chains );
-
-    function findLinks( chains ) {
-        for( var key in chains ) {
-            var connectedDict = chains[key];
-            for( var connectedKey in connectedDict ) {
-                var sourceIndex = nodeList.indexOf( key );
-                var targetIndex = nodeList.indexOf( connectedKey );
-                var probability = connectedDict[connectedKey];
-                var value = 1;
-                var link = {
-                    source: sourceIndex,
-                    target: targetIndex,
-                    probability: probability, 
-                }
-                linkList.push( link );
-            }
-        }
-    }
-
-    findLinks( theData.chains );
-
-    nodeList = nodeList.map( function(item, index) {
-        return {
-            name: item,
-        }
-    });
-
-    var result = {
-        nodes: nodeList,
-        links: linkList,
-    }
-
-    return result;
-}
-
-function processData( theData, cluster_id ) {
-    var nodeList = [];
-    var linkList = [];
-
-    function findNodes( chains, clusters ) {
-        for( var key in chains ) {
-            var index = nodeList.indexOf( key );
-            if( index < 0 ) {
-                if( clusters[key] == cluster_id ) {
+                if(inClusterFilter(key)) {
                     nodeList.push( key );
                 }
             }
         }
     }
 
-    // Build an array of nodes
-    var chains = theData.chains
-    var clusters = theData.clusters
-    findNodes( chains, clusters );
-
     function findLinks( chains, clusters ) {
         for( var key in chains ) {
             var connectedDict = chains[key];
-            if( clusters[key] == cluster_id ) {
+            if(inClusterFilter(key)) {
                 for( var connectedKey in connectedDict ) {
-                    if( clusters[connectedKey] == cluster_id ) { 
+                    if(inClusterFilter(connectedKey)) { 
                         var sourceIndex = nodeList.indexOf( key );
                         var targetIndex = nodeList.indexOf( connectedKey );
                         var probability = connectedDict[connectedKey];
-                        var value = 1;
                         var link = {
                             source: sourceIndex,
                             target: targetIndex,
@@ -289,12 +244,10 @@ function processData( theData, cluster_id ) {
         }
     }
 
-    findLinks( chains, clusters );
-
     nodeList = nodeList.map( function(item, index) {
         return {
             name: item,
-            group: cluster_id,
+            group: cluster_id ? cluster_id : undefined,
         }
     });
 
