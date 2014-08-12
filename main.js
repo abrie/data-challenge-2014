@@ -19,10 +19,10 @@ function generateSvgElement(id, width, height) {
 }
 
 function main() {
-    $.getJSON("data/results.json", function(d) {
+    $.getJSON("data/results.json", function( raw_data ) {
         var svgElement = generateSvgElement("main-svg", 300, 300);
         $("#graph").append( svgElement );
-        displayData( d , "#main-svg" );
+        displayData( raw_data , "#main-svg" );
     }); 
 }
 
