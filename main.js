@@ -85,19 +85,20 @@ function createClusterGraph( graph, element_id, colorSelector ) {
 
     function recenterVoronoi(nodes) {
         var shapes = [];
-        
-        voronoi(nodes).forEach(function(d) {
-            if (!d.length) {
-                return;
-            }
 
-            var n = [];
-            d.forEach(function(c) {
-                n.push([ c[0] - d.point.x, c[1] - d.point.y ]);
-            });
-            n.point = d.point;
-            shapes.push(n);
+        voronoi(nodes).forEach(function(d) {
+            if(d.length) {
+                var n = [];
+                d.forEach(function(c) {
+                    var x = c[0] - d.point.x;
+                    var y = c[1] - d.point.y;
+                    n.push([x, y]);
+                });
+                n.point = d.point;
+                shapes.push(n);
+            }
         });
+
         return shapes;
     }
 
@@ -163,7 +164,9 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     .attr('fill-opacity', 0.5);
 
     node.append('circle')
-    .attr('r', 1)
+    .attr('r', 18)
+    .attr('fill', colorByGroup)
+    .attr('fill-opacity', 0.5)
     .attr('stroke', 'black');
 
     force
