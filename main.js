@@ -59,7 +59,7 @@ function displayData( raw_data, element_id ) {
 
     graphData.nodes.forEach( function(node) {
         var str = "#svg-sub-" + node.name;
-        createClusterGraph( processData(raw_data, parseInt(node.name)), str, node.name );
+        createClusterGraph( processData(raw_data, node.name), str, node.name );
     });
 
     element.attr("width", rendered_layout.graph().width + 40);
@@ -257,7 +257,7 @@ function processData( theData, cluster_id ) {
         for( var key in chains ) {
             var index = nodeList.indexOf( key );
             if( index < 0 ) {
-                if( clusters[key] === cluster_id ) {
+                if( clusters[key] == cluster_id ) {
                     nodeList.push( key );
                 }
             }
@@ -272,9 +272,9 @@ function processData( theData, cluster_id ) {
     function findLinks( chains, clusters ) {
         for( var key in chains ) {
             var connectedDict = chains[key];
-            if( clusters[key] === cluster_id ) {
+            if( clusters[key] == cluster_id ) {
                 for( var connectedKey in connectedDict ) {
-                    if( clusters[connectedKey] === cluster_id ) { 
+                    if( clusters[connectedKey] == cluster_id ) { 
                         var sourceIndex = nodeList.indexOf( key );
                         var targetIndex = nodeList.indexOf( connectedKey );
                         var probability = connectedDict[connectedKey];
