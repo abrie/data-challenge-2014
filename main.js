@@ -196,34 +196,31 @@ function condenseData( theData ) {
 }
 
 function linkData( theData, cluster_id ) {
-    var nodeList = [];
-    var linkList = [];
-
-    // Build an array of nodes
-    var chains = theData.chains
-    var clusters = theData.clusters
-    findNodes( chains, clusters );
-    findLinks( chains, clusters );
+    var nodeList = findNodes( theData.chains );
+    var linkList = findLinks( theData.chains, nodeList );
 
     function inClusterFilter( key ) {
         if( cluster_id ) 
-            return clusters[key] == cluster_id;
+            return theData.clusters[key] == cluster_id;
         else
             return true;
     }
 
     function findNodes( chains, clusters ) {
+        var result = [];
         for( var key in chains ) {
-            var index = nodeList.indexOf( key );
+            var index = result.indexOf( key );
             if( index < 0 ) {
                 if(inClusterFilter(key)) {
-                    nodeList.push( key );
+                    result.push( key );
                 }
             }
         }
+        return result;
     }
 
-    function findLinks( chains, clusters ) {
+    function findLinks( chains, nodeList ) {
+        var result = [];
         for( var key in chains ) {
             var connectedDict = chains[key];
             if(inClusterFilter(key)) {
@@ -237,11 +234,12 @@ function linkData( theData, cluster_id ) {
                             target: targetIndex,
                             probability: probability, 
                         }
-                        linkList.push( link );
+                        result.push( link );
                     }
                 }
             }
         }
+        return result;
     }
 
     nodeList = nodeList.map( function(item, index) {
@@ -254,7 +252,7 @@ function linkData( theData, cluster_id ) {
     var result = {
         nodes: nodeList,
         links: linkList,
-        clusters: clusters,
+        clusters: theData.clusters ? theData.clusters : undefined,
     }
 
     return result;
