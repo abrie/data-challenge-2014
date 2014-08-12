@@ -28,7 +28,6 @@ function main() {
 
 function displayData( raw_data, element_id ) {
     var graphData = linkData( condenseData(raw_data) );
-    // Create a new directed graph
     var g = new dagreD3.Digraph();
 
     graphData.nodes.forEach( function(node) {
@@ -106,7 +105,8 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     .charge(-1000)
     .friction(0.3)
     .linkDistance( function(d) { 
-        return 50;
+        // TODO: this should be normalized to the cluster's largest edge probability
+        return 300*Math.sqrt(d.probability);
     })
     .size([width, height]);
 
