@@ -32,9 +32,9 @@ function displayData( raw_data, element_id ) {
     var g = new dagreD3.Digraph();
 
     graphData.nodes.forEach( function(node) {
-        var str = "svg-sub-" + node.name;
+        var id = "svg-sub-" + node.name;
         g.addNode(node.name, { 
-            label: $("<div>").append( generateSvgElement(str,200,200) ).html(),
+            label: $("<div>").append( generateSvgElement(id,200,200) ).html(),
         });
     });
 
@@ -66,7 +66,7 @@ function displayData( raw_data, element_id ) {
     element.attr("height", rendered_layout.graph().height + 40);
 }
 
-function createClusterGraph( graph, element_id, cid ) {
+function createClusterGraph( graph, element_id ) {
     function name(d) { return d.name; }
 
     var colorSelector = d3.scale.category10();
