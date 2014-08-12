@@ -148,7 +148,7 @@ function createClusterGraph( graph, element_id ) {
     .data( graph.links )
     .enter().append('line')
     .attr('class', 'link')
-    .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+    .style("stroke-width", function(d) { return Math.sqrt(d.probability); });
 
     node = svg.selectAll('.node')
     .data( graph.nodes )
