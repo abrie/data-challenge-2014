@@ -5,10 +5,11 @@ $( document ).ready( main );
 function generateSvgElement(id, width, height) {
     // as per http://stackoverflow.com/a/8215105
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    //svg.setAttribute('style', 'border: 1px solid black');
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
     svg.setAttribute('id', id);
+    svg.setAttribute('preserveAspectRatio',"xMidYMid slice");
+    svg.setAttribute('viewbox','0 0 200 200');
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
@@ -18,9 +19,9 @@ function generateSvgElement(id, width, height) {
 }
 
 function main() {
-    console.log(  );
     $.getJSON("data/results.json", function(d) {
-        $("#graph").append( generateSvgElement("main-svg", 500, 800) );
+        var svgElement = generateSvgElement("main-svg", 300, 300);
+        $("#graph").append( svgElement );
         displayData( d , "#main-svg" );
     }); 
 }
@@ -33,7 +34,7 @@ function displayData( raw_data, element_id ) {
     graphData.nodes.forEach( function(node) {
         var str = "svg-sub-" + node.name;
         g.addNode(node.name, { 
-            label: $("<div>").append( generateSvgElement(str,150,150) ).html(),
+            label: $("<div>").append( generateSvgElement(str,200,200) ).html(),
         });
     });
 
@@ -52,12 +53,17 @@ function displayData( raw_data, element_id ) {
         .edgeSep(25)
         .rankSep(30)
         .rankDir("TB");
-    renderer.layout(layout).run(g, d3.select(element_id));
+    
+    var element = d3.select( element_id );
+    var rendered_layout = renderer.layout(layout).run(g, element);
 
     graphData.nodes.forEach( function(node) {
         var str = "#svg-sub-" + node.name;
         createClusterGraph( processData(raw_data, parseInt(node.name)), str, node.name );
     });
+
+    element.attr("width", rendered_layout.graph().width + 40);
+    element.attr("height", rendered_layout.graph().height + 40);
 }
 
 function createClusterGraph( graph, element_id, cid ) {
@@ -82,7 +88,10 @@ function createClusterGraph( graph, element_id, cid ) {
     function recenterVoronoi(nodes) {
         var shapes = [];
         
-        try {
+        if( nodes.length === 2 ) {
+            // voronoi prefers 3 points... so this is a hack.
+            return shapes;
+        }
         voronoi(nodes).forEach(function(d) {
             if (!d.length) {
                 return;
@@ -95,10 +104,6 @@ function createClusterGraph( graph, element_id, cid ) {
             n.point = d.point;
             shapes.push(n);
         });
-        }
-        catch(err) {
-            console.log(err);
-        }
         return shapes;
     }
 
@@ -106,7 +111,7 @@ function createClusterGraph( graph, element_id, cid ) {
     .charge(-1000)
     .friction(0.3)
     .linkDistance( function(d) { 
-        return 60;
+        return 50;
     })
     .size([width, height]);
 
