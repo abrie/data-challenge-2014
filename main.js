@@ -2,14 +2,14 @@
 
 $( document ).ready( main );
 
-function generateSvgElement(id, width, height) {
+var VIEWBOX = { x:0, y:0, width:200, height:200 };
+
+function generateSvgElement(id) {
     // as per http://stackoverflow.com/a/8215105
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute('width', width);
-    svg.setAttribute('height', height);
     svg.setAttribute('id', id);
     svg.setAttribute('preserveAspectRatio',"xMidYMid slice");
-    svg.setAttribute('viewbox','0 0 200 200');
+    svg.setAttribute('viewbox',VIEWBOX.x + ' ' + VIEWBOX.y + ' ' + VIEWBOX.width + ' ' + VIEWBOX.height);
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
@@ -20,7 +20,7 @@ function generateSvgElement(id, width, height) {
 
 function main() {
     $.getJSON("data/results.json", function( raw_data ) {
-        var svgElement = generateSvgElement("main-svg", 300, 300);
+        var svgElement = generateSvgElement("main-svg");
         $("#graph").append( svgElement );
         displayData( raw_data , "#main-svg" );
     }); 
@@ -33,7 +33,7 @@ function displayData( raw_data, element_id ) {
     graphData.nodes.forEach( function(node) {
         var id = "svg-sub-" + node.name;
         g.addNode(node.name, { 
-            label: $("<div>").append( generateSvgElement(id, 200, 200) ).html(),
+            label: $("<div>").append( generateSvgElement(id) ).html(),
         });
     });
 
@@ -62,11 +62,13 @@ function displayData( raw_data, element_id ) {
         createClusterGraph( linkData(raw_data, node.name), graph_id, colorSelector );
     });
 
-    element.attr("width", rendered_layout.graph().width + 40);
-    element.attr("height", rendered_layout.graph().height + 40);
+    var width = rendered_layout.graph().width;
+    var height = rendered_layout.graph().height;
+    var desiredHeight = 400;
+    var zoomFactor = desiredHeight / height;
 
     var zoom = d3.select("g.zoom", element);
-    zoom.attr("transform","scale(0.25)");
+    zoom.attr("transform","scale("+zoomFactor+")");
 }
 
 function createClusterGraph( graph, element_id, colorSelector ) {
@@ -77,9 +79,6 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     }
 
     var svg = d3.select(element_id);
-    var width = svg.attr("width");
-    var height = svg.attr("height");
-
     var node, link;
 
     var voronoi = d3.geom.voronoi()
@@ -112,15 +111,15 @@ function createClusterGraph( graph, element_id, colorSelector ) {
         // TODO: this should be normalized to the cluster's largest edge probability
         return 300*Math.sqrt(d.probability);
     })
-    .size([width, height]);
+    .size([VIEWBOX.width, VIEWBOX.height]);
 
     var damper = 0.1;
     force.on('tick', function(e) {
         node.attr('transform', function(d) { 
             if(d.index==0){
                 // according to: http://stackoverflow.com/a/9684465
-                d.x = d.x + (width/2 - d.x) * (damper + 0.71) * e.alpha;
-                d.y = d.y + (height/2 - d.y) * (damper + 0.71) * e.alpha;
+                d.x = d.x + (VIEWBOX.width/2 - d.x) * (damper + 0.71) * e.alpha;
+                d.y = d.y + (VIEWBOX.height/2 - d.y) * (damper + 0.71) * e.alpha;
             }
             return 'translate('+d.x+','+d.y+')'; 
         })
