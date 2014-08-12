@@ -34,7 +34,7 @@ function displayData( raw_data, element_id ) {
     graphData.nodes.forEach( function(node) {
         var id = "svg-sub-" + node.name;
         g.addNode(node.name, { 
-            label: $("<div>").append( generateSvgElement(id,200,200) ).html(),
+            label: $("<div>").append( generateSvgElement(id, 200, 200) ).html(),
         });
     });
 
@@ -81,17 +81,12 @@ function createClusterGraph( graph, element_id ) {
     var node, link;
 
     var voronoi = d3.geom.voronoi()
-    .x(function(d) { return d.x; })
-    .y(function(d) { return d.y; })
-    .clipExtent([[-10, -10], [width+10, height+10]]);
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; });
 
     function recenterVoronoi(nodes) {
         var shapes = [];
         
-        if( nodes.length === 2 ) {
-            // voronoi prefers 3 points... so this is a hack.
-            return shapes;
-        }
         voronoi(nodes).forEach(function(d) {
             if (!d.length) {
                 return;
