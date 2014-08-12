@@ -57,21 +57,21 @@ function displayData( raw_data, element_id ) {
     var element = d3.select( element_id );
     var rendered_layout = renderer.layout(layout).run(g, element);
 
+    var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
-        var str = "#svg-sub-" + node.name;
-        createClusterGraph( processData(raw_data, node.name), str, node.name );
+        var graph_id = "#svg-sub-" + node.name;
+        createClusterGraph( processData(raw_data, node.name), graph_id, colorSelector );
     });
 
     element.attr("width", rendered_layout.graph().width + 40);
     element.attr("height", rendered_layout.graph().height + 40);
 }
 
-function createClusterGraph( graph, element_id ) {
+function createClusterGraph( graph, element_id, colorSelector ) {
     function name(d) { return d.name; }
 
-    var colorSelector = d3.scale.category10();
     function colorByGroup(d) { 
-        return colorSelector( Math.ceil( Math.random() * 10 ) ); 
+        return colorSelector( d.name ) ; 
     }
 
     var svg = d3.select(element_id);
