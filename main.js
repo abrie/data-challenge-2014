@@ -2,7 +2,7 @@
 
 $( document ).ready( main );
 
-var VIEWBOX = { x:0, y:0, width:200, height:200 };
+var VIEWBOX = { x:0, y:0, width:300, height:300 };
 
 function generateSvgElement(id) {
     // as per http://stackoverflow.com/a/8215105
@@ -62,13 +62,25 @@ function displayData( raw_data, element_id ) {
         createClusterGraph( linkData(raw_data, node.name), graph_id, colorSelector );
     });
 
-    var width = rendered_layout.graph().width;
-    var height = rendered_layout.graph().height;
-    var desiredHeight = 400;
-    var zoomFactor = desiredHeight / height;
+    function zoomToFit() {
+        var width = rendered_layout.graph().width;
+        var height = rendered_layout.graph().height;
+        
+        var container = $(element_id);
+        var zoomFactor = 1.0;
+        if( width > height ) {
+            zoomFactor = container.width() / width;
+        }
+        else {
+            zoomFactor = container.height() / height;
+        }
 
-    var zoom = d3.select("g.zoom", element);
-    zoom.attr("transform","scale("+zoomFactor+")");
+        var zoom = d3.select("g.zoom", element);
+        zoom.attr("transform","scale("+zoomFactor+")");
+    }
+
+    zoomToFit();
+    d3.select(window).on('resize', zoomToFit);
 }
 
 function createClusterGraph( graph, element_id, colorSelector ) {
