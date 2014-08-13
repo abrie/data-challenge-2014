@@ -27,7 +27,7 @@ function main() {
 }
 
 function displayData( raw_data, element_id ) {
-    var graphData = linkData( condenseData(raw_data) );
+    var graphData = buildGraphData( condenseData(raw_data) );
     var g = new dagreD3.Digraph();
 
     graphData.nodes.forEach( function(node) {
@@ -47,6 +47,8 @@ function displayData( raw_data, element_id ) {
 
     var renderer = new dagreD3.Renderer();
     renderer.edgeInterpolate('cardinal');
+    renderer.zoom(false);
+
     var layout = dagreD3.layout()
         .nodeSep(10)
         .edgeSep(25)
@@ -59,7 +61,7 @@ function displayData( raw_data, element_id ) {
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         var graph_id = "#svg-sub-" + node.name;
-        createClusterGraph( linkData(raw_data, node.name), graph_id, colorSelector );
+        createClusterGraph( buildGraphData(raw_data, node.name), graph_id, colorSelector );
     });
 
     function zoomToFit() {
@@ -186,41 +188,39 @@ function createClusterGraph( graph, element_id, colorSelector ) {
     .start();
 }
 
-function condenseData( theData ) {
-    var cluster_markov = {}
-    for( var p1 in theData.chains ) {
-        for( var p2 in theData.chains[p1] ) {
-            var p1_cluster_id = theData.clusters[p1];
-            var p2_cluster_id = theData.clusters[p2];
+function condenseData( rawData ) {
+    var chains = {}
+    for( var p1 in rawData.chains ) {
+        for( var p2 in rawData.chains[p1] ) {
+            var p1_cluster_id = rawData.clusters[p1];
+            var p2_cluster_id = rawData.clusters[p2];
             if( p1_cluster_id != p2_cluster_id ) { // if inter-cluster connection 
-                if( cluster_markov[p1_cluster_id] === undefined ) {
-                    cluster_markov[p1_cluster_id] = {};
+                if( chains[p1_cluster_id] === undefined ) {
+                    chains[p1_cluster_id] = {};
                 }
-                if( cluster_markov[p1_cluster_id][p2_cluster_id] === undefined ) {
-                    cluster_markov[p1_cluster_id][p2_cluster_id] = 0.50; 
+                if( chains[p1_cluster_id][p2_cluster_id] === undefined ) {
+                    chains[p1_cluster_id][p2_cluster_id] = 0.50; 
                 }
-                //cluster_markov[p1_cluster_id][p2_cluster_id] += theData.chains[p1][p2];
+                //chains[p1_cluster_id][p2_cluster_id] += rawData.chains[p1][p2];
             }
         } 
     }
 
     return {
-        chains: cluster_markov
+        chains: chains
     }
 }
 
-function linkData( theData, cluster_id ) {
-    var nodeList = findNodes( theData.chains );
-    var linkList = findLinks( theData.chains, nodeList );
+function buildGraphData( rawData, cluster_id ) {
 
     function inClusterFilter( key ) {
         if( cluster_id ) 
-            return theData.clusters[key] == cluster_id;
+            return rawData.clusters[key] == cluster_id;
         else
             return true;
     }
 
-    function findNodes( chains, clusters ) {
+    function buildNodeList( chains, clusters ) {
         var result = [];
         for( var key in chains ) {
             var index = result.indexOf( key );
@@ -233,7 +233,7 @@ function linkData( theData, cluster_id ) {
         return result;
     }
 
-    function findLinks( chains, nodeList ) {
+    function buildLinkList( chains, nodeList ) {
         var result = [];
         for( var key in chains ) {
             var connectedDict = chains[key];
@@ -256,19 +256,20 @@ function linkData( theData, cluster_id ) {
         return result;
     }
 
-    nodeList = nodeList.map( function(item, index) {
-        return {
-            name: item,
-            group: cluster_id ? cluster_id : undefined,
-        }
-    });
-
-    var result = {
-        nodes: nodeList,
-        links: linkList,
-        clusters: theData.clusters ? theData.clusters : undefined,
+    function mapNodeList( list ) {
+        return list.map( function(item, index) {
+            return {
+                name: item,
+                group: cluster_id ? cluster_id : undefined,
+            }
+        });
     }
 
-    return result;
+    var nodeList = buildNodeList( rawData.chains );
+
+    return {
+        nodes: mapNodeList( nodeList ),
+        links: buildLinkList( rawData.chains, nodeList ),
+    }
 }
 
