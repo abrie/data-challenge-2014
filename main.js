@@ -31,14 +31,14 @@ function main() {
 }
 
 function displayData( raw_data, element_id ) {
-    var graphData = buildGraphData( raw_data.cluster_chains );
+    var graphData = buildGraphData( raw_data.cluster_chains, raw_data.weights );
     var g = new dagreD3.Digraph();
 
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         g.addNode(node.name, { 
             useFunction: function( parent_node) {
-                var clusterGraphData = buildGraphData( raw_data.chains, raw_data.clusters, node.name );
+                var clusterGraphData = buildGraphData( raw_data.chains, raw_data.weights, raw_data.clusters, node.name );
                 createClusterGraph( clusterGraphData, parent_node, colorSelector );
             }
         });
@@ -97,7 +97,14 @@ function createClusterGraph( graph, root, colorSelector ) {
 
     var data = {name:'root', children:graph.nodes};
     var pack = d3.layout.pack()
-        .value( function(d) { return d.size } )
+        .value( function(d) { 
+            if( d.params ) {
+                return d.params.weight*d.params.hits;
+            }
+            else {
+                return 10;
+            }
+        })
         .size([50,50])
         .nodes(data);
 
@@ -119,7 +126,7 @@ function createClusterGraph( graph, root, colorSelector ) {
     svg.attr("transform","translate("+-cx+","+-cy+")");
 }
 
-function buildGraphData( chain_dict, cluster_map, cluster_id ) {
+function buildGraphData( chain_dict, weight_map, cluster_map, cluster_id ) {
 
     function inClusterFilter( key ) {
         if( cluster_map !== undefined && cluster_id !== undefined ) 
@@ -169,7 +176,7 @@ function buildGraphData( chain_dict, cluster_map, cluster_id ) {
         return list.map( function(item, index) {
             return {
                 name: item,
-                size: 10,
+                params: weight_map[item], 
                 group: cluster_id ? cluster_id : undefined,
             }
         });
