@@ -30,10 +30,14 @@ function displayData( raw_data, element_id ) {
     var graphData = buildGraphData( condenseData(raw_data) );
     var g = new dagreD3.Digraph();
 
+    var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
-        var id = "svg-sub-" + node.name;
         g.addNode(node.name, { 
-            label: $("<div>").append( generateSvgElement(id) ).html(),
+            //useFunction: function(d) { console.log("i've been called:", d, d3.select(g)); }
+            label: 'testing',
+            useFunction: function(d) {
+                createClusterGraph( buildGraphData(raw_data, node.name), d, colorSelector );
+            }
         });
     });
 
@@ -58,12 +62,6 @@ function displayData( raw_data, element_id ) {
     var element = d3.select( element_id );
     var rendered_layout = renderer.layout(layout).run(g, element);
 
-    var colorSelector = d3.scale.category20();
-    graphData.nodes.forEach( function(node) {
-        var graph_id = "#svg-sub-" + node.name;
-        createClusterGraph( buildGraphData(raw_data, node.name), graph_id, colorSelector );
-    });
-
     function zoomToFit() {
         var width = rendered_layout.graph().width;
         var height = rendered_layout.graph().height;
@@ -85,107 +83,32 @@ function displayData( raw_data, element_id ) {
     d3.select(window).on('resize', zoomToFit);
 }
 
-function createClusterGraph( graph, element_id, colorSelector ) {
+function createClusterGraph( graph, root, colorSelector ) {
     function name(d) { return d.name; }
 
     function colorByGroup(d) { 
         return colorSelector( d.name ) ; 
     }
 
-    var svg = d3.select(element_id);
-    var node, link;
+    var svg = root.append("g");
 
-    var voronoi = d3.geom.voronoi()
-        .x(function(d) { return d.x; })
-        .y(function(d) { return d.y; });
-
-    function recenterVoronoi(nodes) {
-        var shapes = [];
-
-        voronoi(nodes).forEach(function(d) {
-            if(d.length) {
-                var n = [];
-                d.forEach(function(c) {
-                    var x = c[0] - d.point.x;
-                    var y = c[1] - d.point.y;
-                    n.push([x, y]);
-                });
-                n.point = d.point;
-                shapes.push(n);
-            }
-        });
-
-        return shapes;
-    }
-
-    var force = d3.layout.force()
-    .charge(-1000)
-    .friction(0.3)
-    .linkDistance( function(d) { 
-        // TODO: this should be normalized to the cluster's largest edge probability
-        return 300*Math.sqrt(d.probability);
-    })
-    .size([VIEWBOX.width, VIEWBOX.height]);
-
-    var damper = 0.1;
-    force.on('tick', function(e) {
-        node.attr('transform', function(d) { 
-            if(d.index==0){
-                // according to: http://stackoverflow.com/a/9684465
-                d.x = d.x + (VIEWBOX.width/2 - d.x) * (damper + 0.71) * e.alpha;
-                d.y = d.y + (VIEWBOX.height/2 - d.y) * (damper + 0.71) * e.alpha;
-            }
-            return 'translate('+d.x+','+d.y+')'; 
-        })
-        .attr('clip-path', function(d) { return 'url(#clip-'+d.index+')'; });
-
-        link.attr('x1', function(d) { return d.source.x; })
-        .attr('y1', function(d) { return d.source.y; })
-        .attr('x2', function(d) { return d.target.x; })
-        .attr('y2', function(d) { return d.target.y; });
-
-        var clip = svg.selectAll('.clip')
-        .data( recenterVoronoi(node.data()), function(d) { return d.point.index; } );
-
-        clip.enter().append('clipPath')
-        .attr('id', function(d) { return 'clip-'+d.point.index; })
-        .attr('class', 'clip');
-        clip.exit().remove();
-
-        clip.selectAll('path').remove();
-        clip.append('path')
-        .attr('d', function(d) { return 'M'+d.join(',')+'Z'; });
-    });
-
-    graph.nodes.forEach(function(d, i) {
-        d.id = i;
-    });
-
-    link = svg.selectAll('.link')
-    .data( graph.links )
-    .enter().append('line')
-    .attr('class', 'link')
-    .style("stroke-width", function(d) { return Math.sqrt(d.probability); });
-
-    node = svg.selectAll('.node')
-    .data( graph.nodes )
-    .enter().append('g')
-
-    node.append('circle')
+    svg.append('circle')
     .attr('r', 20)
     .attr('fill', colorByGroup)
     .attr('fill-opacity', 0.5);
 
-    node.append('circle')
+    svg.append('circle')
+    .attr('cx', 20)
+    .attr('cy', 20)
+    .attr('r', 20)
+    .attr('fill', colorByGroup)
+    .attr('fill-opacity', 0.5);
+
+    svg.append('circle')
     .attr('r', 19)
     .attr('fill', colorByGroup)
     .attr('fill-opacity', 0.5)
     .attr('stroke', 'black');
-
-    force
-    .nodes( graph.nodes )
-    .links( graph.links )
-    .start();
 }
 
 function condenseData( rawData ) {
