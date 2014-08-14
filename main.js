@@ -30,7 +30,7 @@ function displayData( raw_data, element_id ) {
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         g.addNode(node.name, { 
-            label: 'cluster ' + node.name,
+            //label: 'cluster ' + node.name,
             useFunction: function( parent_node) {
                 var clusterGraphData = buildGraphData( raw_data, node.name );
                 createClusterGraph( clusterGraphData, parent_node, colorSelector );
@@ -89,23 +89,28 @@ function createClusterGraph( graph, root, colorSelector ) {
 
     var svg = root.append("g");
 
-    svg.append('circle')
-    .attr('r', 20)
-    .attr('fill', colorByGroup)
-    .attr('fill-opacity', 0.5);
+    var data = {name:'root', children:graph.nodes};
+    var pack = d3.layout.pack()
+        .value( function(d) { return d.size } )
+        .size([50,50])
+        .nodes(data);
 
-    svg.append('circle')
-    .attr('cx', 20)
-    .attr('cy', 20)
-    .attr('r', 20)
-    .attr('fill', colorByGroup)
-    .attr('fill-opacity', 0.5);
+    pack.shift();
 
-    svg.append('circle')
-    .attr('r', 19)
-    .attr('fill', colorByGroup)
-    .attr('fill-opacity', 0.5)
-    .attr('stroke', 'black');
+    svg.selectAll('circles')
+    .data(pack)
+    .enter().append('svg:circle')
+    .attr('cx', function(d) { return d.x; })
+    .attr('cy', function(d) { return d.y; })
+    .attr('r', function(d) { return d.r; })
+    .attr('fill', 'white')
+    .attr('stroke', 'grey');
+
+    // center the pack
+    var bbox = svg[0][0].getBBox();
+    var cx = bbox.width / 2 + bbox.x;
+    var cy = bbox.height /2 + bbox.y;
+    svg.attr("transform","translate("+-cx+","+-cy+")");
 }
 
 function condenseData( rawData ) {
@@ -180,6 +185,7 @@ function buildGraphData( rawData, cluster_id ) {
         return list.map( function(item, index) {
             return {
                 name: item,
+                size: 10,
                 group: cluster_id ? cluster_id : undefined,
             }
         });
