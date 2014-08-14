@@ -47,7 +47,7 @@ function displayData( raw_data, element_id ) {
     graphData.links.forEach( function(edge) {
         var source = graphData.nodes[edge.source].name;
         var target = graphData.nodes[edge.target].name;
-        var probability = edge.probability;
+        var weight = edge.weight;
         var appearance = { style: 'stroke-width: 1px;' };
         g.addEdge( null, source, target, appearance )
     });
@@ -155,7 +155,7 @@ function buildGraphData( chain_dict, cluster_map, cluster_id ) {
                             source: sourceIndex,
                             target: targetIndex,
                             hits: params.hits,
-                            probability: params.weight, 
+                            weight: params.weight, 
                         }
                         result.push( link );
                     }
