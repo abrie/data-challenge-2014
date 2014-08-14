@@ -46,6 +46,7 @@ def main():
     except AccessTokenRefreshError:
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
 
+        print query_response
     try:
         while not query_response['jobComplete']:
             query_response = query_job.getQueryResults(
@@ -80,24 +81,47 @@ def main():
     with open('data/mcl_output', 'r') as mcl_output:
         for index, line in enumerate( mcl_output.readlines() ):
             fields = line.rstrip('\n').split('\t')
+            cluster_id = "cluster_%i" % index
             for field in fields:
-                markov_clusters[field] = index 
+                markov_clusters[field] = "cluster_%i" % index 
 
+    markov_weights = {}
     markov_chains = {}
     with open('data/mcl_input', 'r') as mcl_file:
         for line in mcl_file.readlines():
             fields = line.rstrip('\n').split('\t')
             first = fields[0]
             second = fields[1]
-            ratio = fields[2]
+            ratio = float(fields[2])
             if not markov_chains.has_key(first):
                 markov_chains[first] = {}
-            markov_chains[first][second] = float(ratio)
+            markov_chains[first][second] = {"weight":ratio, "hits":1}
+            if not markov_weights.has_key(second):
+                markov_weights[second] = {"weight":0.0, "hits":0}
+            markov_weights[second]["weight"] += ratio
+            markov_weights[second]["hits"] += 1 
+
+    def map_event_to_cluster(event):
+        return markov_clusters[event]
+
+    markov_cluster_chains = {}
+    for event_a, target_events in markov_chains.iteritems():
+        cluster_id_a = map_event_to_cluster(event_a)
+        if not markov_cluster_chains.has_key( cluster_id_a ):
+            markov_cluster_chains[cluster_id_a] = {}
+        for event_b, event_b_params in target_events.iteritems():
+            cluster_id_b = map_event_to_cluster(event_b)
+            if not markov_cluster_chains[cluster_id_a].has_key(cluster_id_b):
+                markov_cluster_chains[cluster_id_a][cluster_id_b] = {"weight":0.0, "hits":0}
+            markov_cluster_chains[cluster_id_a][cluster_id_b]["weight"] += event_b_params["weight"]
+            markov_cluster_chains[cluster_id_a][cluster_id_b]["hits"] += event_b_params["hits"] 
 
     result = {}
     with open('data/results.json', 'w') as outfile:
         result['clusters'] = markov_clusters
+        result['cluster_chains'] = markov_cluster_chains
         result['chains'] = markov_chains 
+        result['weights'] = markov_weights
         prettyJson = json.dumps(result, indent=4, sort_keys=True )
         outfile.write( prettyJson )
 

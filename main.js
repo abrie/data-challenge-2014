@@ -16,23 +16,29 @@ function generateSvgElement(id) {
 }
 
 function main() {
-    $.getJSON("data/results.json", function( raw_data ) {
+    $.ajax({
+        url: "data/results.json",
+        dataType: "json",
+    })
+    .done(function( data ) {
         var svgElement = generateSvgElement("main-svg");
         $("#graph").append( svgElement );
-        displayData( raw_data , "#main-svg" );
-    }); 
+        displayData( data , "#main-svg" );
+    })
+    .error(function(jqXHR, textStatus, errorThrown) { 
+        console.log('error retrieving data:', errorThrown); 
+    })
 }
 
 function displayData( raw_data, element_id ) {
-    var graphData = buildGraphData( condenseData(raw_data) );
+    var graphData = buildGraphData( raw_data.cluster_chains );
     var g = new dagreD3.Digraph();
 
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         g.addNode(node.name, { 
-            //label: 'cluster ' + node.name,
             useFunction: function( parent_node) {
-                var clusterGraphData = buildGraphData( raw_data, node.name );
+                var clusterGraphData = buildGraphData( raw_data.chains, raw_data.clusters, node.name );
                 createClusterGraph( clusterGraphData, parent_node, colorSelector );
             }
         });
@@ -113,34 +119,11 @@ function createClusterGraph( graph, root, colorSelector ) {
     svg.attr("transform","translate("+-cx+","+-cy+")");
 }
 
-function condenseData( rawData ) {
-    var chains = {}
-    for( var p1 in rawData.chains ) {
-        for( var p2 in rawData.chains[p1] ) {
-            var p1_cluster_id = rawData.clusters[p1];
-            var p2_cluster_id = rawData.clusters[p2];
-            if( p1_cluster_id != p2_cluster_id ) { // if inter-cluster connection 
-                if( chains[p1_cluster_id] === undefined ) {
-                    chains[p1_cluster_id] = {};
-                }
-                if( chains[p1_cluster_id][p2_cluster_id] === undefined ) {
-                    chains[p1_cluster_id][p2_cluster_id] = 0.50; 
-                }
-                //chains[p1_cluster_id][p2_cluster_id] += rawData.chains[p1][p2];
-            }
-        } 
-    }
-
-    return {
-        chains: chains
-    }
-}
-
-function buildGraphData( rawData, cluster_id ) {
+function buildGraphData( chain_dict, cluster_map, cluster_id ) {
 
     function inClusterFilter( key ) {
-        if( cluster_id ) 
-            return rawData.clusters[key] == cluster_id;
+        if( cluster_map !== undefined && cluster_id !== undefined ) 
+            return cluster_map[key] == cluster_id;
         else
             return true;
     }
@@ -167,11 +150,12 @@ function buildGraphData( rawData, cluster_id ) {
                     if(inClusterFilter(connectedKey)) { 
                         var sourceIndex = nodeList.indexOf( key );
                         var targetIndex = nodeList.indexOf( connectedKey );
-                        var probability = connectedDict[connectedKey];
+                        var params = connectedDict[connectedKey];
                         var link = {
                             source: sourceIndex,
                             target: targetIndex,
-                            probability: probability, 
+                            hits: params.hits,
+                            probability: params.weight, 
                         }
                         result.push( link );
                     }
@@ -191,11 +175,11 @@ function buildGraphData( rawData, cluster_id ) {
         });
     }
 
-    var nodeList = buildNodeList( rawData.chains );
+    var nodeList = buildNodeList( chain_dict );
 
     return {
         nodes: mapNodeList( nodeList ),
-        links: buildLinkList( rawData.chains, nodeList ),
+        links: buildLinkList( chain_dict, nodeList ),
     }
 }
 
