@@ -2,14 +2,11 @@
 
 $( document ).ready( main );
 
-var VIEWBOX = { x:0, y:0, width:300, height:300 };
-
 function generateSvgElement(id) {
-    // as per http://stackoverflow.com/a/8215105
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute('id', id);
     svg.setAttribute('preserveAspectRatio',"xMidYMid slice");
-    svg.setAttribute('viewbox',VIEWBOX.x + ' ' + VIEWBOX.y + ' ' + VIEWBOX.width + ' ' + VIEWBOX.height);
+    svg.setAttribute('viewbox','0 0 1000 1000');
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
@@ -33,10 +30,10 @@ function displayData( raw_data, element_id ) {
     var colorSelector = d3.scale.category20();
     graphData.nodes.forEach( function(node) {
         g.addNode(node.name, { 
-            //useFunction: function(d) { console.log("i've been called:", d, d3.select(g)); }
-            label: 'testing',
-            useFunction: function(d) {
-                createClusterGraph( buildGraphData(raw_data, node.name), d, colorSelector );
+            label: 'cluster ' + node.name,
+            useFunction: function( parent_node) {
+                var clusterGraphData = buildGraphData( raw_data, node.name );
+                createClusterGraph( clusterGraphData, parent_node, colorSelector );
             }
         });
     });
@@ -45,7 +42,7 @@ function displayData( raw_data, element_id ) {
         var source = graphData.nodes[edge.source].name;
         var target = graphData.nodes[edge.target].name;
         var probability = edge.probability;
-        var appearance = { style: 'stroke-width: 2px;' };
+        var appearance = { style: 'stroke-width: 1px;' };
         g.addEdge( null, source, target, appearance )
     });
 
