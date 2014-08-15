@@ -53,7 +53,7 @@ function displayData( raw_data, element_id ) {
     });
 
     var renderer = new dagreD3.Renderer();
-    renderer.edgeInterpolate('cardinal');
+    renderer.edgeInterpolate('basis');
     renderer.zoom(false);
 
     var layout = dagreD3.layout()
@@ -116,7 +116,7 @@ function createClusterGraph( graph, root, colorSelector ) {
     .attr('cx', function(d) { return d.x; })
     .attr('cy', function(d) { return d.y; })
     .attr('r', function(d) { return d.r; })
-    .attr('fill', 'white')
+    .attr('fill', function(d) { return colorSelector(d.name); })
     .attr('stroke', 'grey');
 
     // center the pack
