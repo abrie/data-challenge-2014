@@ -16,8 +16,9 @@ from oauth2client.tools import run
 PROJECT_NUMBER = 'linear-quasar-662'
 
 def main():
-    query_response = do_query("query.sql")
-    results = munger.go(query_response)
+    #query_response = do_query("query.sql")
+    #results = munger.go(query_response)
+    results = munger.go({})
     munger.write_results(results, 'data/results.json')
 
 def do_query(query_filename):

@@ -16,26 +16,9 @@ svg {
     height: 100%;
 }
 
-* { overflow: visible; }
-
-.node rect {
-    stroke: #fff;
-    stroke-width: 1.5px;
-    fill: #fff;
-}
-
-.edgeLabel rect {
-    fill: #fff;
-}
-
-.edgePath {
-    stroke: #333;
-    stroke-width: 1.5px;
+.link {
+    stroke: steelblue;
+    stroke-opacity: 0.4;
+    stroke-width: 1px;
     fill: none;
 }
-
-.link {
-    stroke: #000;
-    stroke-width: 1.5px;
-}
-

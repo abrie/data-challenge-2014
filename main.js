@@ -30,60 +30,70 @@ function main() {
     })
 }
 
-function displayData( raw_data, element_id ) {
-    var graphData = buildGraphData( raw_data.cluster_chains, raw_data.weights );
-    var g = new dagreD3.Digraph();
+function displayData( raw_data, selector ) {
+    var outter_radius = 300;
+    var inner_radius = 250;
+    var cluster = d3.layout.cluster()
+        .size([360, inner_radius])
+        .value( function(d) { return 10; } ); 
 
-    var colorSelector = d3.scale.category20();
-    graphData.nodes.forEach( function(node) {
-        g.addNode(node.name, { 
-            useFunction: function( parent_node) {
-                var clusterGraphData = buildGraphData( raw_data.chains, raw_data.weights, raw_data.clusters, node.name );
-                createClusterGraph( clusterGraphData, parent_node, colorSelector );
-            }
-        });
-    });
-
-    graphData.links.forEach( function(edge) {
-        var source = graphData.nodes[edge.source].name;
-        var target = graphData.nodes[edge.target].name;
-        var weight = edge.weight;
-        var appearance = { style: 'stroke-width: 1px;' };
-        g.addEdge( null, source, target, appearance )
-    });
-
-    var renderer = new dagreD3.Renderer();
-    renderer.edgeInterpolate('basis');
-    renderer.zoom(false);
-
-    var layout = dagreD3.layout()
-        .nodeSep(10)
-        .edgeSep(25)
-        .rankSep(30)
-        .rankDir("TB");
-    
-    var element = d3.select( element_id );
-    var rendered_layout = renderer.layout(layout).run(g, element);
-
-    function zoomToFit() {
-        var width = rendered_layout.graph().width;
-        var height = rendered_layout.graph().height;
-        
-        var container = $(element_id);
-        var zoomFactor = 1.0;
-        if( width > height ) {
-            zoomFactor = container.width() / width;
-        }
-        else {
-            zoomFactor = container.height() / height;
-        }
-
-        var zoom = d3.select("g.zoom", element);
-        zoom.attr("transform","scale("+zoomFactor+")");
+    var clusters = [];
+    for( var cluster_id in raw_data.cluster_degrees ) {
+        var cluster_data = buildGraphData( raw_data.chains, raw_data.node_degrees, cluster_id )
+        clusters.push({"name":cluster_id, "children":cluster_data.nodes});
     }
 
-    zoomToFit();
-    d3.select(window).on('resize', zoomToFit);
+    var node_data = {
+        "root":"top", 
+        children: clusters
+    };
+
+    var nodes = cluster.nodes( node_data );
+    var node_name_map = {}
+    nodes.forEach( function(node) {
+        node_name_map[node.name] = node;
+    });
+    console.log(node_name_map);
+
+    var links = [];
+    for(var k in raw_data.chains) {
+        for(var k2 in raw_data.chains[k] ) {
+            links.push({source:node_name_map[k], target:node_name_map[k2]});
+        } 
+    }
+
+    var bundle = d3.layout.bundle();
+    var line = d3.svg.line.radial()
+    .interpolate("bundle")
+    .tension(.01)
+    .radius(function(d) { return d.y; })
+    .angle(function(d) { return d.x / 180 * Math.PI; });
+
+    var splines = bundle(links);
+
+    var svg = d3.select(selector)
+        .attr("width", outter_radius*2)
+        .attr("height", outter_radius*2)
+        .append("g")
+        .attr("transform", "translate(" + outter_radius + "," + outter_radius + ")" );
+
+    var link = svg.append("g").selectAll(".link")
+        .data( links )
+        .enter().append("path")
+        .attr("class","link")
+        .attr("d", function(d,i) { return line(splines[i]); } );
+
+    var node = svg.append("g").selectAll(".node")
+        .data(nodes)
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+        .append("text")
+        .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+        .attr("dy", ".31em")
+        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+        .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+        .text(function(d) { return d.name; });
 }
 
 function createClusterGraph( graph, root, colorSelector ) {
@@ -126,16 +136,15 @@ function createClusterGraph( graph, root, colorSelector ) {
     svg.attr("transform","translate("+-cx+","+-cy+")");
 }
 
-function buildGraphData( chain_dict, weight_map, cluster_map, cluster_id ) {
-
+function buildGraphData( chain_dict, node_degrees, cluster_id ) {
     function inClusterFilter( key ) {
-        if( cluster_map !== undefined && cluster_id !== undefined ) 
-            return cluster_map[key] == cluster_id;
+        if( node_degrees !== undefined && cluster_id !== undefined ) 
+            return node_degrees[key].cluster == cluster_id;
         else
             return true;
     }
 
-    function buildNodeList( chains, clusters ) {
+    function buildNodeList( chains ) {
         var result = [];
         for( var key in chains ) {
             var index = result.indexOf( key );
@@ -145,24 +154,24 @@ function buildGraphData( chain_dict, weight_map, cluster_map, cluster_id ) {
                 }
             }
         }
-        return result;
+
+        return result.map( function(key) { 
+            return {parent:"top", name:key} 
+        });
     }
 
-    function buildLinkList( chains, nodeList ) {
+    function buildLinkList( chains ) {
         var result = [];
         for( var key in chains ) {
             var connectedDict = chains[key];
             if(inClusterFilter(key)) {
                 for( var connectedKey in connectedDict ) {
                     if(inClusterFilter(connectedKey)) { 
-                        var sourceIndex = nodeList.indexOf( key );
-                        var targetIndex = nodeList.indexOf( connectedKey );
-                        var params = connectedDict[connectedKey];
+                        var source = key;
+                        var target = connectedKey;
                         var link = {
-                            source: sourceIndex,
-                            target: targetIndex,
-                            hits: params.hits,
-                            weight: params.weight, 
+                            source: key,
+                            target: connectedKey,
                         }
                         result.push( link );
                     }
@@ -172,21 +181,9 @@ function buildGraphData( chain_dict, weight_map, cluster_map, cluster_id ) {
         return result;
     }
 
-    function mapNodeList( list ) {
-        return list.map( function(item, index) {
-            return {
-                name: item,
-                params: weight_map[item], 
-                group: cluster_id ? cluster_id : undefined,
-            }
-        });
-    }
-
-    var nodeList = buildNodeList( chain_dict );
-
     return {
-        nodes: mapNodeList( nodeList ),
-        links: buildLinkList( chain_dict, nodeList ),
+        nodes: buildNodeList( chain_dict ), 
+        links: buildLinkList( chain_dict ),
     }
 }
 

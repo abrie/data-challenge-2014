@@ -3,6 +3,7 @@ import pprint
 import sys
 import json
 import subprocess
+import collections
 
 def write_query_response(query_response, filename):
     with open(filename, 'w') as mcl_file:
@@ -12,7 +13,8 @@ def write_query_response(query_response, filename):
             second = fields[1]['v'];
             count = fields[2]['v'];
             ratio = fields[3]['v'];
-            mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
+            if( ratio >= 0.05 ):
+                mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
 
 def run_mcl(input_filename, output_filename):
     try:
@@ -30,59 +32,150 @@ def map_events_to_clusters(input_filename):
                 result[field] = cluster_id 
     return result
 
-def build_markov_chain(filename):
-    weights = {}
-    chains = {}
+def build_markov_chain(filename, markov_clusters):
+    degrees = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
+    nodes = collections.defaultdict(
+            lambda: collections.defaultdict(
+                lambda: {"hits":0, "weight":0})) 
+
+    def map_event_to_cluster(event):
+        return markov_clusters[event]
+
     with open(filename, 'r') as mcl_file:
         for line in mcl_file.readlines():
             fields = line.rstrip('\n').split('\t')
             first = fields[0]
             second = fields[1]
             ratio = float(fields[2])
-            if not chains.has_key(first):
-                chains[first] = {}
-            chains[first][second] = {"weight":ratio, "hits":1}
-            if not weights.has_key(second):
-                weights[second] = {"weight":0.0, "hits":0}
-            weights[second]["weight"] += ratio
-            weights[second]["hits"] += 1 
-    return (chains, weights)
+            nodes[first][second]["weight"] = ratio
+            nodes[first][second]["hits"] += 1
+            degrees[first]["out"].add(second)
+            degrees[second]["in"].add(first)
 
-def build_markov_cluster_chain(event_chain, markov_clusters):
-    result = {}
+        result = {}
+        for k,v in degrees.iteritems():
+            result[k] = {
+                    "indegree": len(v["in"]), 
+                    "outdegree": len(v["out"]),
+                    "cluster": map_event_to_cluster(k)}
+
+    return (nodes, result)
+
+################DRY######################
+def build_filtered_markov_chain(filename, markov_clusters, cluster_filter):
+    degrees = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
+    nodes = collections.defaultdict(
+            lambda: collections.defaultdict(
+                lambda: {"hits":0, "weight":0})) 
 
     def map_event_to_cluster(event):
         return markov_clusters[event]
 
-    for event_a, target_events in event_chain.iteritems():
-        cluster_id_a = map_event_to_cluster(event_a)
-        if not result.has_key( cluster_id_a ):
-            result[cluster_id_a] = {}
-        for event_b, event_b_params in target_events.iteritems():
-            cluster_id_b = map_event_to_cluster(event_b)
-            if not result[cluster_id_a].has_key(cluster_id_b):
-                result[cluster_id_a][cluster_id_b] = {"weight":0.0, "hits":0}
-            result[cluster_id_a][cluster_id_b]["weight"] += event_b_params["weight"]
-            result[cluster_id_a][cluster_id_b]["hits"] += event_b_params["hits"] 
-    return result
+    with open(filename, 'r') as mcl_file:
+        for line in mcl_file.readlines():
+            fields = line.rstrip('\n').split('\t')
+            first = fields[0]
+            second = fields[1]
+            cluster_a = map_event_to_cluster(first)
+            cluster_b = map_event_to_cluster(second)
+            if cluster_a != cluster_filter or cluster_b != cluster_filter:
+                continue
+            ratio = float(fields[2])
+            if ratio < 0.005:
+                continue
+            nodes[first][second]["weight"] = ratio
+            nodes[first][second]["hits"] += 1
+            degrees[first]["out"].add(second)
+            degrees[second]["in"].add(first)
+
+        result = {}
+        for k,v in degrees.iteritems():
+            result[k] = {"indegree": len(v["in"]), "outdegree": len(v["out"])}
+
+    return (nodes, result)
+#########################################
+
+def build_markov_cluster_chain(markov_chain, markov_clusters):
+    nodes = collections.defaultdict(
+            lambda: collections.defaultdict(
+                lambda: {"hits":0, "weight":0})) 
+    totals = collections.defaultdict(lambda:0)
+
+    def map_event_to_cluster(event):
+        return markov_clusters[event]
+
+    for k,v in markov_chain.iteritems():
+        cluster_a = map_event_to_cluster(k)
+        for k2,v2 in v.iteritems():
+            cluster_b = map_event_to_cluster(k2)
+            nodes[cluster_a][cluster_b]["hits"] += 1
+            totals[cluster_a] += 1
+        for k2,v2 in v.iteritems():
+            total = totals[cluster_a]
+            cluster_b = map_event_to_cluster(k2)
+            weight = nodes[cluster_a][cluster_b]["hits"] / float(total)
+            nodes[cluster_a][cluster_b]["weight"] = weight 
+
+    return nodes
 
 def write_results(results, filename):
     with open(filename, 'w') as outfile:
         prettyJson = json.dumps(results, indent=4, sort_keys=True )
         outfile.write( prettyJson )
 
+#experimental method, probably deprecated.
+def write_cluster_to_mcl_input(markov_chains, markov_clusters, cluster_id, filename):
+    def map_event_to_cluster(event):
+        return markov_clusters[event]
+
+    with open(filename, 'w') as mcl_file:
+        for k,v in markov_chains.iteritems():
+            if( map_event_to_cluster(k) == cluster_id ):
+                for k2,v2 in markov_chains[k].iteritems():
+                    if( map_event_to_cluster(k2) == cluster_id ):
+                        first = k
+                        second = k2
+                        weight = v2["weight"]
+                        mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,weight))
+    
+def compute_cluster_degrees(markov_clusters, markov_chains):
+    nodes = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
+
+    def map_event_to_cluster(event):
+        return markov_clusters[event]
+
+    for k,v in markov_chains.iteritems():
+        cluster_a = map_event_to_cluster(k)
+        for k2,v2 in v.iteritems():
+            cluster_b = map_event_to_cluster(k2)
+            nodes[cluster_a]["out"].add( cluster_b  )
+            nodes[cluster_b]["in"].add( cluster_a )
+
+    result = {}
+    for k,v in nodes.iteritems():
+        result[k] = {"indegree": len(v["in"]), "outdegree": len(v["out"])}
+
+    return result;
+
+
 def go(query_response):
-    write_query_response(query_response, "data/mcl_input")
+    #write_query_response(query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
     markov_clusters = map_events_to_clusters("data/mcl_output")
-    markov_chains, markov_weights = build_markov_chain("data/mcl_input")
+    markov_chains, node_degrees = build_markov_chain("data/mcl_input", markov_clusters)
     markov_cluster_chains = build_markov_cluster_chain(markov_chains, markov_clusters)
 
+    #write_cluster_to_mcl_input(markov_chains, markov_clusters, "cluster_0", "data/mcl_input_cluster_0")
+
+    cluster_degrees = compute_cluster_degrees(markov_clusters, markov_chains)
+    a,b = build_filtered_markov_chain("data/mcl_input", markov_clusters, "cluster_0")
     results = {
-        'clusters' : markov_clusters,
         'cluster_chains' : markov_cluster_chains,
         'chains' : markov_chains, 
-        'weights' : markov_weights,
+        'node_degrees' : node_degrees,
+        'cluster_degrees' : cluster_degrees,
+        'a':a,
+        'b':b
     }
 
     return results
