@@ -17,10 +17,23 @@ def write_query_response(query_response, filename):
                 mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
 
 def run_mcl(input_filename, output_filename):
+    print "**** subprocess will call as follows:"
+    call_parameters = [
+            "mcl/bin/mcl", input_filename,
+            "-I","5.0",
+            "--abc",
+            "-o", output_filename]
+
+    pprint.pprint(call_parameters)
+    print "**** calling..."
     try:
-        subprocess.check_call(["mcl/bin/mcl",input_filename,"-I","5.0","--abc", "-o",output_filename])
+        subprocess.check_call(call_parameters)
     except subprocess.CalledProcessError as err:
-        print 'CalledProcessError:', pprint.pprint(err)
+        print 'Error while invoking MCL subprocess'
+        pprint.pprint(err)
+        sys.exit(1)
+
+    print "**** subprocess completed ****"
 
 def map_events_to_clusters(input_filename):
     result = {}
@@ -124,7 +137,6 @@ def go(query_response):
     }
 
     return results
-
 
     print "processing complete."
     pprint.pprint(results)
