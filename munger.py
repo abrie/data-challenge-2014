@@ -91,22 +91,6 @@ def write_results(results, filename):
         prettyJson = json.dumps(results, indent=4, sort_keys=True )
         outfile.write( prettyJson )
 
-#experimental method, probably deprecated.
-def write_cluster_to_mcl_input(event_model, event_cluster_model, cluster_id, filename):
-
-    def map_event_to_cluster(event):
-        return event_cluster_model[event]
-
-    with open(filename, 'w') as mcl_file:
-        for k,v in event_model.iteritems():
-            if( map_event_to_cluster(k) == cluster_id ):
-                for k2,v2 in event_model[k].iteritems():
-                    if( map_event_to_cluster(k2) == cluster_id ):
-                        first = k
-                        second = k2
-                        weight = v2["weight"]
-                        mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,weight))
-    
 def compute_cluster_degrees(event_model, event_clusters):
     nodes = collections.defaultdict(
             lambda: {"in":set(), "out":set()}) 
