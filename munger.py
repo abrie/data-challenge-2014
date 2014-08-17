@@ -32,20 +32,17 @@ def map_events_to_clusters(input_filename):
                 result[field] = cluster_id 
     return result
 
-def build_event_model(filename, event_cluster_model):
+def build_event_model(filename, event_clusters):
     degrees = GraphDegree() 
     model = MarkovModel()
-
-    def map_event_to_cluster(event):
-        return event_cluster_model[event]
 
     with open(filename, 'r') as mcl_file:
         for line in mcl_file.readlines():
             fields = line.rstrip('\n').split('\t')
             first = fields[0]
             second = fields[1]
-            ratio = float(fields[2])
-            model[first][second]["weight"] = ratio
+            weight = float(fields[2])
+            model[first][second]["weight"] = weight
             model[first][second]["hits"] += 1
             degrees[first]["out"].add(second)
             degrees[second]["in"].add(first)
@@ -55,7 +52,7 @@ def build_event_model(filename, event_cluster_model):
             result[k] = {
                     "indegree": len(v["in"]), 
                     "outdegree": len(v["out"]),
-                    "cluster": map_event_to_cluster(k)}
+                    "cluster": get_cluster(k, event_clusters)}
 
     return (model, result)
 
@@ -68,22 +65,22 @@ def GraphDegree():
     return collections.defaultdict(
             lambda: {"in":set(), "out":set()}) 
 
+def get_cluster(event, event_cluster_map):
+    return event_cluster_map[event]
+
 def build_event_cluster_model(event_model, event_clusters):
     model = MarkovModel()
     totals = collections.defaultdict(lambda:0)
 
-    def map_event_to_cluster(event):
-        return event_clusters[event]
-
     for k,v in event_model.iteritems():
-        cluster_a = map_event_to_cluster(k)
+        cluster_a = get_cluster(k, event_clusters)
         for k2,v2 in v.iteritems():
-            cluster_b = map_event_to_cluster(k2)
+            cluster_b = get_cluster(k2, event_clusters)
             model[cluster_a][cluster_b]["hits"] += 1
             totals[cluster_a] += 1
         for k2,v2 in v.iteritems():
             total = totals[cluster_a]
-            cluster_b = map_event_to_cluster(k2)
+            cluster_b = get_cluster(k2, event_clusters)
             weight = model[cluster_a][cluster_b]["hits"] / float(total)
             model[cluster_a][cluster_b]["weight"] = weight 
 
@@ -97,13 +94,10 @@ def write_results(results, filename):
 def compute_cluster_degrees(event_model, event_clusters):
     nodes = GraphDegree() 
 
-    def map_event_to_cluster(event):
-        return event_clusters[event]
-
     for k,v in event_model.iteritems():
-        cluster_a = map_event_to_cluster(k)
+        cluster_a = get_cluster(k, event_clusters)
         for k2,v2 in v.iteritems():
-            cluster_b = map_event_to_cluster(k2)
+            cluster_b = get_cluster(k2, event_clusters)
             nodes[cluster_a]["out"].add( cluster_b  )
             nodes[cluster_b]["in"].add( cluster_a )
 
