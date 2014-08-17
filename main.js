@@ -5,17 +5,20 @@ $( document ).ready( main );
 var VIEWBOX = {
     "min_x":0,
     "min_y":0,
-    "width":1500,
-    "height":1500,
+    "width":2000,
+    "height":2000,
     "str": function() {
         return [
             this.min_x,
             this.min_y,
             this.width,
             this.height
-        ].join(" "); 
+        ].join(" ")},
+    "midpoint": function() {
+        return "translate(" + this.width/2 + "," + this.height/2 + ")";
     }
 }
+
 function generateSvgElement(id) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute('id', id);
@@ -45,10 +48,9 @@ function main() {
 }
 
 function displayData( raw_data, selector ) {
-    var outter_radius = 300;
-    var inner_radius = 250;
+    var radius = 325;
     var cluster = d3.layout.cluster()
-        .size([360, inner_radius])
+        .size([360, radius])
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
@@ -89,7 +91,7 @@ function displayData( raw_data, selector ) {
 
     var svg = d3.select(selector)
         .append("g")
-        .attr("transform", "translate(750,750)");
+        .attr("transform", VIEWBOX.midpoint());
 
     var bundle = d3.layout.bundle();
     var link = svg.append("g")
@@ -98,6 +100,11 @@ function displayData( raw_data, selector ) {
         .enter().append("path")
         .attr("class","link")
         .attr("d", line);
+
+    d3.select("input[type=range]").on("change", function() {
+        line.tension(this.value / 100);
+        link.attr("d", line );
+    });
 
     var node = svg.append("g").selectAll(".node")
         .data(nodes)
