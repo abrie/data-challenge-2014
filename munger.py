@@ -36,9 +36,7 @@ def build_event_model(filename, event_cluster_model):
     degrees = collections.defaultdict(
             lambda: {"in":set(), "out":set()}) 
     
-    model = collections.defaultdict(
-            lambda: collections.defaultdict(
-                lambda: {"hits":0, "weight":0})) 
+    model = MarkovModel()
 
     def map_event_to_cluster(event):
         return event_cluster_model[event]
@@ -63,10 +61,13 @@ def build_event_model(filename, event_cluster_model):
 
     return (model, result)
 
-def build_event_cluster_model(event_model, event_clusters):
-    model = collections.defaultdict(
+def MarkovModel():
+    return collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: {"hits":0, "weight":0})) 
+    
+def build_event_cluster_model(event_model, event_clusters):
+    model = MarkovModel()
     totals = collections.defaultdict(lambda:0)
 
     def map_event_to_cluster(event):
