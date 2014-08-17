@@ -47,14 +47,58 @@ function main() {
     })
 }
 
+function build_runner( model ) {
+    var table = {};
+    for(var k in model) {
+        var list = [];
+        for( var k2 in model[k] ) {
+            list.push({
+                event: k2,
+                weight: model[k][k2].weight
+            });
+        }
+        list.sort( function(a,b) {
+            if( a.weight > b.weight )
+                return 1;
+            if( a.weight < b.weight )
+                return -1;
+            return 0;
+        });
+        table[k] = list;
+    }
+
+    return table;
+}
+
+function next(current, p, table) {
+    console.log(p);
+    var list = table[current];
+    var index = 0;
+    while( index < list.length-1 ) {
+        if( p >= list[index].weight && p < list[index+1].weight ) {
+            return list[index].event
+        }
+        index++;
+    }
+    return list[list.length-1].event;
+}
+
 function displayData( raw_data, selector ) {
+
+    var l = build_runner( raw_data.event_model );
+    var event = '~';
+    for( var i = 0; i < 10; i++ ) {
+        console.log(event);
+        event = next(event, Math.random(), l);
+    }
+
     var radius = 325;
     var cluster = d3.layout.cluster()
         .size([360, radius])
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
-        var cluster_data = buildGraphData( raw_data.chains, raw_data.node_degrees, cluster_id )
+        var cluster_data = buildGraphData( raw_data.event_model, raw_data.node_degrees, cluster_id )
         clusters.push({"name":cluster_id, "children":cluster_data.nodes});
     }
 
@@ -70,8 +114,8 @@ function displayData( raw_data, selector ) {
     });
 
     var links = [];
-    for(var k in raw_data.chains) {
-        for(var k2 in raw_data.chains[k] ) {
+    for(var k in raw_data.event_model) {
+        for(var k2 in raw_data.event_model[k] ) {
             links.push({
                 source:node_name_map[k],
                 target:node_name_map[k2]
@@ -129,7 +173,7 @@ function displayData( raw_data, selector ) {
         });
 }
 
-function buildGraphData( chain_dict, node_degrees, cluster_id ) {
+function buildGraphData(model, node_degrees, cluster_id) {
     function inClusterFilter( key ) {
         if( node_degrees !== undefined && cluster_id !== undefined ) 
             return node_degrees[key].cluster == cluster_id;
@@ -137,9 +181,9 @@ function buildGraphData( chain_dict, node_degrees, cluster_id ) {
             return true;
     }
 
-    function buildNodeList( chains ) {
+    function buildNodeList(model) {
         var result = [];
-        for( var key in chains ) {
+        for( var key in model ) {
             var index = result.indexOf( key );
             if( index < 0 ) {
                 if(inClusterFilter(key)) {
@@ -149,17 +193,14 @@ function buildGraphData( chain_dict, node_degrees, cluster_id ) {
         }
 
         return result.map( function(key) { 
-            return {
-                parent:"top",
-                name:key
-            } 
+            return { "name":key } 
         });
     }
 
-    function buildLinkList( chains ) {
+    function buildLinkList(model) {
         var result = [];
-        for( var key in chains ) {
-            var connectedDict = chains[key];
+        for( var key in model ) {
+            var connectedDict = model[key];
             if(inClusterFilter(key)) {
                 for( var connectedKey in connectedDict ) {
                     if(inClusterFilter(connectedKey)) { 
@@ -178,8 +219,7 @@ function buildGraphData( chain_dict, node_degrees, cluster_id ) {
     }
 
     return {
-        nodes: buildNodeList( chain_dict ), 
-        links: buildLinkList( chain_dict ),
+        nodes: buildNodeList( model ), 
+        links: buildLinkList( model ),
     }
 }
-

@@ -32,16 +32,16 @@ def map_events_to_clusters(input_filename):
                 result[field] = cluster_id 
     return result
 
-def build_markov_chain(filename, markov_clusters):
+def build_event_model(filename, event_cluster_model):
     degrees = collections.defaultdict(
             lambda: {"in":set(), "out":set()}) 
     
-    nodes = collections.defaultdict(
+    model = collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: {"hits":0, "weight":0})) 
 
     def map_event_to_cluster(event):
-        return markov_clusters[event]
+        return event_cluster_model[event]
 
     with open(filename, 'r') as mcl_file:
         for line in mcl_file.readlines():
@@ -49,8 +49,8 @@ def build_markov_chain(filename, markov_clusters):
             first = fields[0]
             second = fields[1]
             ratio = float(fields[2])
-            nodes[first][second]["weight"] = ratio
-            nodes[first][second]["hits"] += 1
+            model[first][second]["weight"] = ratio
+            model[first][second]["hits"] += 1
             degrees[first]["out"].add(second)
             degrees[second]["in"].add(first)
 
@@ -61,30 +61,30 @@ def build_markov_chain(filename, markov_clusters):
                     "outdegree": len(v["out"]),
                     "cluster": map_event_to_cluster(k)}
 
-    return (nodes, result)
+    return (model, result)
 
-def build_markov_cluster_chain(markov_chain, markov_clusters):
-    nodes = collections.defaultdict(
+def build_event_cluster_model(event_model, event_clusters):
+    model = collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: {"hits":0, "weight":0})) 
     totals = collections.defaultdict(lambda:0)
 
     def map_event_to_cluster(event):
-        return markov_clusters[event]
+        return event_clusters[event]
 
-    for k,v in markov_chain.iteritems():
+    for k,v in event_model.iteritems():
         cluster_a = map_event_to_cluster(k)
         for k2,v2 in v.iteritems():
             cluster_b = map_event_to_cluster(k2)
-            nodes[cluster_a][cluster_b]["hits"] += 1
+            model[cluster_a][cluster_b]["hits"] += 1
             totals[cluster_a] += 1
         for k2,v2 in v.iteritems():
             total = totals[cluster_a]
             cluster_b = map_event_to_cluster(k2)
-            weight = nodes[cluster_a][cluster_b]["hits"] / float(total)
-            nodes[cluster_a][cluster_b]["weight"] = weight 
+            weight = model[cluster_a][cluster_b]["hits"] / float(total)
+            model[cluster_a][cluster_b]["weight"] = weight 
 
-    return nodes
+    return model
 
 def write_results(results, filename):
     with open(filename, 'w') as outfile:
@@ -92,28 +92,29 @@ def write_results(results, filename):
         outfile.write( prettyJson )
 
 #experimental method, probably deprecated.
-def write_cluster_to_mcl_input(markov_chains, markov_clusters, cluster_id, filename):
+def write_cluster_to_mcl_input(event_model, event_cluster_model, cluster_id, filename):
+
     def map_event_to_cluster(event):
-        return markov_clusters[event]
+        return event_cluster_model[event]
 
     with open(filename, 'w') as mcl_file:
-        for k,v in markov_chains.iteritems():
+        for k,v in event_model.iteritems():
             if( map_event_to_cluster(k) == cluster_id ):
-                for k2,v2 in markov_chains[k].iteritems():
+                for k2,v2 in event_model[k].iteritems():
                     if( map_event_to_cluster(k2) == cluster_id ):
                         first = k
                         second = k2
                         weight = v2["weight"]
                         mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,weight))
     
-def compute_cluster_degrees(markov_chains, markov_clusters):
+def compute_cluster_degrees(event_model, event_clusters):
     nodes = collections.defaultdict(
             lambda: {"in":set(), "out":set()}) 
 
     def map_event_to_cluster(event):
-        return markov_clusters[event]
+        return event_clusters[event]
 
-    for k,v in markov_chains.iteritems():
+    for k,v in event_model.iteritems():
         cluster_a = map_event_to_cluster(k)
         for k2,v2 in v.iteritems():
             cluster_b = map_event_to_cluster(k2)
@@ -133,14 +134,14 @@ def compute_cluster_degrees(markov_chains, markov_clusters):
 def go(query_response):
     #write_query_response(query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
-    markov_clusters = map_events_to_clusters("data/mcl_output")
-    markov_chains, node_degrees = build_markov_chain("data/mcl_input", markov_clusters)
-    markov_cluster_chains = build_markov_cluster_chain(markov_chains, markov_clusters)
-    cluster_degrees = compute_cluster_degrees(markov_chains, markov_clusters)
+    event_clusters = map_events_to_clusters("data/mcl_output")
+    event_model, node_degrees = build_event_model("data/mcl_input", event_clusters)
+    event_cluster_model = build_event_cluster_model(event_model, event_clusters)
+    cluster_degrees = compute_cluster_degrees(event_model, event_clusters)
 
     results = {
-        'cluster_chains' : markov_cluster_chains,
-        'chains' : markov_chains, 
+        'event_cluster_model' : event_cluster_model,
+        'event_model' : event_model, 
         'node_degrees' : node_degrees,
         'cluster_degrees' : cluster_degrees,
     }
