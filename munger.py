@@ -33,9 +33,7 @@ def map_events_to_clusters(input_filename):
     return result
 
 def build_event_model(filename, event_cluster_model):
-    degrees = collections.defaultdict(
-            lambda: {"in":set(), "out":set()}) 
-    
+    degrees = GraphDegree() 
     model = MarkovModel()
 
     def map_event_to_cluster(event):
@@ -66,6 +64,10 @@ def MarkovModel():
             lambda: collections.defaultdict(
                 lambda: {"hits":0, "weight":0})) 
     
+def GraphDegree():
+    return collections.defaultdict(
+            lambda: {"in":set(), "out":set()}) 
+
 def build_event_cluster_model(event_model, event_clusters):
     model = MarkovModel()
     totals = collections.defaultdict(lambda:0)
@@ -93,8 +95,7 @@ def write_results(results, filename):
         outfile.write( prettyJson )
 
 def compute_cluster_degrees(event_model, event_clusters):
-    nodes = collections.defaultdict(
-            lambda: {"in":set(), "out":set()}) 
+    nodes = GraphDegree() 
 
     def map_event_to_cluster(event):
         return event_clusters[event]
