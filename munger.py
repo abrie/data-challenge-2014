@@ -121,15 +121,12 @@ def compute_cluster_degrees(event_model, event_clusters):
             nodes[cluster_a]["out"].add( cluster_b  )
             nodes[cluster_b]["in"].add( cluster_a )
 
-    result = {}
-    for k,v in nodes.iteritems():
-        result[k] = {
-                "indegree": len(v["in"]),
-                "outdegree": len(v["out"])
-                }
-
-    return result;
-
+    return { 
+            cluster_id: { 
+                "indegree": len(events["in"]),
+                "outdegree": len(events["out"])
+            } for cluster_id, events in nodes.iteritems()
+        }
 
 def go(query_response):
     #write_query_response(query_response, "data/mcl_input")
