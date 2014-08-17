@@ -63,40 +63,6 @@ def build_markov_chain(filename, markov_clusters):
 
     return (nodes, result)
 
-################DRY######################
-def build_filtered_markov_chain(filename, markov_clusters, cluster_filter):
-    degrees = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
-    nodes = collections.defaultdict(
-            lambda: collections.defaultdict(
-                lambda: {"hits":0, "weight":0})) 
-
-    def map_event_to_cluster(event):
-        return markov_clusters[event]
-
-    with open(filename, 'r') as mcl_file:
-        for line in mcl_file.readlines():
-            fields = line.rstrip('\n').split('\t')
-            first = fields[0]
-            second = fields[1]
-            cluster_a = map_event_to_cluster(first)
-            cluster_b = map_event_to_cluster(second)
-            if cluster_a != cluster_filter or cluster_b != cluster_filter:
-                continue
-            ratio = float(fields[2])
-            if ratio < 0.005:
-                continue
-            nodes[first][second]["weight"] = ratio
-            nodes[first][second]["hits"] += 1
-            degrees[first]["out"].add(second)
-            degrees[second]["in"].add(first)
-
-        result = {}
-        for k,v in degrees.iteritems():
-            result[k] = {"indegree": len(v["in"]), "outdegree": len(v["out"])}
-
-    return (nodes, result)
-#########################################
-
 def build_markov_cluster_chain(markov_chain, markov_clusters):
     nodes = collections.defaultdict(
             lambda: collections.defaultdict(
