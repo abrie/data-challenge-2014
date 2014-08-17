@@ -109,7 +109,7 @@ def compute_cluster_degrees(event_model, event_clusters):
         }
 
 def go(query_response):
-    #write_query_response(query_response, "data/mcl_input")
+    write_query_response(query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
     event_clusters = map_events_to_clusters("data/mcl_output")
     event_model, node_degrees = build_event_model("data/mcl_input", event_clusters)
