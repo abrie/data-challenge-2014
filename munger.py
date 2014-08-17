@@ -33,7 +33,9 @@ def map_events_to_clusters(input_filename):
     return result
 
 def build_markov_chain(filename, markov_clusters):
-    degrees = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
+    degrees = collections.defaultdict(
+            lambda: {"in":set(), "out":set()}) 
+    
     nodes = collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: {"hits":0, "weight":0})) 
@@ -138,8 +140,9 @@ def write_cluster_to_mcl_input(markov_chains, markov_clusters, cluster_id, filen
                         weight = v2["weight"]
                         mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,weight))
     
-def compute_cluster_degrees(markov_clusters, markov_chains):
-    nodes = collections.defaultdict(lambda: {"in":set(), "out":set()}) 
+def compute_cluster_degrees(markov_chains, markov_clusters):
+    nodes = collections.defaultdict(
+            lambda: {"in":set(), "out":set()}) 
 
     def map_event_to_cluster(event):
         return markov_clusters[event]
@@ -153,7 +156,10 @@ def compute_cluster_degrees(markov_clusters, markov_chains):
 
     result = {}
     for k,v in nodes.iteritems():
-        result[k] = {"indegree": len(v["in"]), "outdegree": len(v["out"])}
+        result[k] = {
+                "indegree": len(v["in"]),
+                "outdegree": len(v["out"])
+                }
 
     return result;
 
@@ -164,18 +170,13 @@ def go(query_response):
     markov_clusters = map_events_to_clusters("data/mcl_output")
     markov_chains, node_degrees = build_markov_chain("data/mcl_input", markov_clusters)
     markov_cluster_chains = build_markov_cluster_chain(markov_chains, markov_clusters)
+    cluster_degrees = compute_cluster_degrees(markov_chains, markov_clusters)
 
-    #write_cluster_to_mcl_input(markov_chains, markov_clusters, "cluster_0", "data/mcl_input_cluster_0")
-
-    cluster_degrees = compute_cluster_degrees(markov_clusters, markov_chains)
-    a,b = build_filtered_markov_chain("data/mcl_input", markov_clusters, "cluster_0")
     results = {
         'cluster_chains' : markov_cluster_chains,
         'chains' : markov_chains, 
         'node_degrees' : node_degrees,
         'cluster_degrees' : cluster_degrees,
-        'a':a,
-        'b':b
     }
 
     return results
