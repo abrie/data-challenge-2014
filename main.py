@@ -42,6 +42,7 @@ def get_bigquery_service():
 def do_query(bigquery_service, query_filename, dataset):
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
+
     bql = bql_template.substitute(dataset=dataset)
 
     query_job = bigquery_service.jobs()
@@ -50,6 +51,12 @@ def do_query(bigquery_service, query_filename, dataset):
     query_response = query_request.execute()
 
     return query_response
+
+def process_query_responses(query_responses):
+    for index, query_response in enumerate(query_responses):
+        print "processing: %i of %i" % (index+1, len(query_responses))
+        process_query_response(query_response)
+        save_query_response(query_response, "data/query-response.json")
 
 def process_query_response(query_response):
     while not query_response['jobComplete']:
@@ -68,13 +75,21 @@ def save_query_response(query_response, query_response_filename):
         pretty_json = json.dumps(query_response, indent=4, sort_keys=True )
         query_result_file.write(pretty_json)
 
+def munge_query_responses(query_responses):
+    for index, query_response in enumerate(query_responses):
+        print "munging %i of %i..." % (index+1, len(query_responses))
+        results = munger.go(query_response)
+        munger.write_results(results, 'data/results.json')
+
 def main():
     bigquery_service = get_bigquery_service()
-    query_response = do_query(bigquery_service, "query.sql", TEST_DATASET)
-    process_query_response(query_response)
-    save_query_response(query_response, "data/query-response.json")
-    results = munger.go(query_response)
-    munger.write_results(results, 'data/results.json')
+    query_responses = [];
+    query_responses.append(
+            do_query(bigquery_service, "query.sql", TEST_DATASET))
+    query_responses.append(
+            do_query(bigquery_service, "query.sql", TEST_DATASET))
+    process_query_responses(query_responses)
+    munge_query_responses(query_responses)
 
 if __name__ == '__main__':
     try:
