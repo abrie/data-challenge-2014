@@ -1,8 +1,11 @@
 import httplib2
 import json
+import os, errno
 import pprint
 import string
 import sys
+import time
+
 import munger
 
 from apiclient.discovery import build
@@ -16,10 +19,11 @@ from oauth2client.tools import run
 
 # Enter your Google Developer Project number
 PROJECT_NUMBER = 'linear-quasar-662'
+
+# These refer to datasets available on Google BigQuery
 TEST_DATASET = "[publicdata:samples.github_timeline]"
 REAL_DATASET = "[githubarchive:github.timeline], [githubarchive:github.2011]"
 
-#this code was found after much struggle at:
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
 def get_bigquery_service():
     FLOW = flow_from_clientsecrets('client_secrets.json', 
@@ -56,7 +60,8 @@ def process_query_responses(query_responses):
     for index, query_response in enumerate(query_responses):
         print "processing: %i of %i" % (index+1, len(query_responses))
         process_query_response(query_response)
-        save_query_response(query_response, "data/query-response.json")
+        filename = save_query_response(query_response)
+        print "raw result saved to: %s" % filename
 
 def process_query_response(query_response):
     while not query_response['jobComplete']:
@@ -70,8 +75,14 @@ def process_query_response(query_response):
     print "totalBytesProcessed:" + query_response['totalBytesProcessed']
     print str( query_response['totalRows'] ) + " rows retrieved."
 
-def save_query_response(query_response, query_response_filename):
-    with open(query_response_filename, "w") as query_result_file:
+def save_query_response(query_response):
+    query_jobId = str(query_response['jobReference']['jobId'])
+    full_path = "data/query-responses/%s.json" % query_jobId
+    directory = os.path.dirname(full_path) 
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    with open(full_path, "w") as query_result_file:
         pretty_json = json.dumps(query_response, indent=4, sort_keys=True )
         query_result_file.write(pretty_json)
 
@@ -83,11 +94,9 @@ def munge_query_responses(query_responses):
 
 def main():
     bigquery_service = get_bigquery_service()
-    query_responses = [];
-    query_responses.append(
-            do_query(bigquery_service, "query.sql", TEST_DATASET))
-    query_responses.append(
-            do_query(bigquery_service, "query.sql", TEST_DATASET))
+    query_responses = [
+            do_query(bigquery_service, "query.sql", TEST_DATASET),
+            do_query(bigquery_service, "query.sql", TEST_DATASET)]
     process_query_responses(query_responses)
     munge_query_responses(query_responses)
 
