@@ -121,7 +121,7 @@ def compute_cluster_degrees(event_model, event_clusters):
             } for cluster_id, events in nodes.iteritems()
         }
 
-def go(query_response):
+def munge(query_response):
     write_query_response(query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
     event_clusters = map_events_to_clusters("data/mcl_output")

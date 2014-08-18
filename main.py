@@ -78,7 +78,7 @@ def save_query_response(query_response, query_response_filename):
 def munge_query_responses(query_responses):
     for index, query_response in enumerate(query_responses):
         print "munging %i of %i..." % (index+1, len(query_responses))
-        results = munger.go(query_response)
+        results = munger.munge(query_response)
         munger.write_results(results, 'data/results.json')
 
 def main():
