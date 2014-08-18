@@ -1,6 +1,7 @@
 import httplib2
 import json
 import pprint
+import string
 import sys
 import munger
 
@@ -15,6 +16,8 @@ from oauth2client.tools import run
 
 # Enter your Google Developer Project number
 PROJECT_NUMBER = 'linear-quasar-662'
+TEST_DATASET = "[publicdata:samples.github_timeline]"
+REAL_DATASET = "[githubarchive:github.timeline], [githubarchive:github.2011]"
 
 #this code was found after much struggle at:
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
@@ -36,9 +39,10 @@ def get_bigquery_service():
 
     return bigquery_service
 
-def do_query(bigquery_service, query_filename):
+def do_query(bigquery_service, query_filename, dataset):
     with open (query_filename, "r") as query_file:
-        bql=query_file.read()
+        bql_template = string.Template(query_file.read()) 
+    bql = bql_template.substitute(dataset=dataset)
 
     query_job = bigquery_service.jobs()
     query_body = {'query':bql}
@@ -55,7 +59,8 @@ def process_query_response(query_response):
 
     print "projectId: " + query_response['jobReference']['projectId']
     print "jobId: " + query_response['jobReference']['jobId'] 
-    print "cacheHit:" + str(query_response['cacheHit'])
+    print "cacheHit:" + str(query_response['cacheHit']) 
+    print "totalBytesProcessed:" + query_response['totalBytesProcessed']
     print str( query_response['totalRows'] ) + " rows retrieved."
 
 def save_query_response(query_response, query_response_filename):
@@ -65,7 +70,7 @@ def save_query_response(query_response, query_response_filename):
 
 def main():
     bigquery_service = get_bigquery_service()
-    query_response = do_query(bigquery_service, "query.sql")
+    query_response = do_query(bigquery_service, "query.sql", TEST_DATASET)
     process_query_response(query_response)
     save_query_response(query_response, "data/query-response.json")
     results = munger.go(query_response)

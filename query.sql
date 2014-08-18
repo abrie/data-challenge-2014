@@ -23,13 +23,11 @@ FROM(
     END,1,'~'
   ) OVER (PARTITION BY url_hash ORDER BY time ASC) previous,
   FROM
-    //[publicdata:samples.github_timeline]
-    [githubarchive:github.timeline],
-    [githubarchive:github.2011]
+    $dataset
   WHERE
     repository_url IS NOT NULL
     AND
-    ABS( HASH(repository_url) % 6 ) = 0
+    ABS( HASH(repository_url) % 6 ) = 1
 )
 WHERE
   present IS NOT NULL AND previous IS NOT NULL
