@@ -95,15 +95,21 @@ function displayData( raw_data, selector ) {
     var radius = 325;
     var cluster = d3.layout.cluster()
         .size([360, radius])
+        .sort( function(a,b) { return d3.ascending(a.value, b.value) } )
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
         var cluster_data = buildGraphData( raw_data.event_model, raw_data.node_degrees, cluster_id )
-        clusters.push({"name":cluster_id, "children":cluster_data.nodes});
+        clusters.push({
+            "name":cluster_id,
+            "value":raw_data.cluster_degrees[cluster_id].indegree + raw_data.cluster_degrees[cluster_id].outdegree,
+            "children":cluster_data.nodes
+        });
     }
 
     var node_data = {
-        "root":"top", 
+        "name":"root", 
+        "value":0,
         children: clusters
     };
 
@@ -165,11 +171,12 @@ function displayData( raw_data, selector ) {
         .attr("text-anchor", function(d) { 
             return d.x < 180 ? "start" : "end";
         })
+        .attr("font-size", "30")
         .attr("transform", function(d) { 
             return d.x < 180 ? null : "rotate(180)";
         })
         .text(function(d) { 
-            return d.name; 
+            return d.name + "(" + d.value + ")"; 
         });
 }
 
@@ -193,7 +200,10 @@ function buildGraphData(model, node_degrees, cluster_id) {
         }
 
         return result.map( function(key) { 
-            return { "name":key } 
+            return { 
+                "name":key,
+                "value":node_degrees[key].indegree+node_degrees[key].outdegree
+            } 
         });
     }
 
