@@ -16,6 +16,17 @@ def write_query_response(query_response, filename):
             if( ratio >= 0.05 ):
                 mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
 
+def convert_query_response_to_dict( query_response ):
+    result = MarkovModel() 
+    for row in query_response['rows']:
+        fields = row['f'];
+        first = fields[0]['v'];
+        second = fields[1]['v'];
+        count = fields[2]['v'];
+        ratio = fields[3]['v'];
+        result[first][second]["hits"] = int(count)
+    return result;
+        
 def run_mcl(input_filename, output_filename):
     print "**** subprocess will call as follows:"
     call_parameters = [
@@ -23,9 +34,10 @@ def run_mcl(input_filename, output_filename):
             "-I","5.0",
             "--abc",
             "-o", output_filename]
-
     pprint.pprint(call_parameters)
+
     print "**** calling..."
+
     try:
         subprocess.check_call(call_parameters)
     except subprocess.CalledProcessError as err:
@@ -121,8 +133,25 @@ def compute_cluster_degrees(event_model, event_clusters):
             } for cluster_id, events in nodes.iteritems()
         }
 
-def munge(query_response):
-    write_query_response(query_response, "data/mcl_input")
+def aggregate_query_responses( query_responses ):
+    aggregated = MarkovModel()
+    for index, query_response in enumerate(query_responses):
+        print " aggregate %i of %i..." % (index+1, len(query_responses))
+        d = convert_query_response_to_dict( query_response )
+        for k1,v1 in d.iteritems():
+            for k2,v2 in v1.iteritems():
+                aggregated[k1][k2]['hits'] += v2['hits']
+
+    pprint.pprint(aggregated)
+
+    #results = munger.munge(query_response)
+    #munger.write_results(results, 'data/results.json')
+
+def munge(query_responses):
+    aggregated_query_response = aggregate_query_responses( query_responses )
+    return
+
+    write_query_response(aggregated_query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
     event_clusters = map_events_to_clusters("data/mcl_output")
     event_model, node_degrees = build_event_model("data/mcl_input", event_clusters)

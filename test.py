@@ -3,8 +3,10 @@ import munger
 import pprint
 
 def main():
-    query_response = read_test_response("test.json")
-    results = munger.go(query_response)
+    query_responses = [
+            read_test_response("test-a.json"),
+            read_test_response("test-b.json")]
+    results = munger.munge(query_responses)
     munger.write_results(results,"data/results.json")
     pprint.pprint(results)
 
