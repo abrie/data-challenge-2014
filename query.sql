@@ -26,8 +26,7 @@ FROM(
     $dataset
   WHERE
     repository_url IS NOT NULL
-    AND
-    ABS( HASH(repository_url) % 6 ) = 1
+    AND MONTH(TIMESTAMP(created_at)) = $month 
 )
 WHERE
   present IS NOT NULL AND previous IS NOT NULL

@@ -1,4 +1,5 @@
 import httplib2
+import inspect
 import json
 import os, errno
 import pprint
@@ -43,62 +44,68 @@ def get_bigquery_service():
 
     return bigquery_service
 
-def do_query(bigquery_service, query_filename, dataset):
+def queue_async_query(bigquery_service, query_filename, dataset, month):
+    print "* async:", dataset, month 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
 
-    bql = bql_template.substitute(dataset=dataset)
+    bql = bql_template.substitute(dataset=dataset, month=month)
 
-    query_job = bigquery_service.jobs()
-    query_body = {'query':bql}
-    query_request = query_job.query(projectId=PROJECT_NUMBER, body=query_body)
-    query_response = query_request.execute()
+    jobCollection = bigquery_service.jobs()
+    jobData = { 'configuration': { 'query':{ 'query':bql } } }
 
-    return query_response
+    query = jobCollection.insert(
+            projectId=PROJECT_NUMBER,
+            body=jobData).execute()
 
-def process_query_responses(query_responses):
-    for index, query_response in enumerate(query_responses):
-        print "processing: %i of %i" % (index+1, len(query_responses))
-        process_query_response(query_response)
-        filename = save_query_response(query_response)
-        print "raw result saved to: %s" % filename
+    return query  
 
-def process_query_response(query_response):
-    while not query_response['jobComplete']:
-        query_response = query_job.getQueryResults(
-                projectId=query_response['jobReference']['projectId'],
-                jobId=query_response['jobReference']['jobId'])
+def process_query_responses(bigquery_service, queries):
+    jobCollection = bigquery_service.jobs()
+    results = []
+    for index, query in enumerate(queries):
+        jobId = query['jobReference']['jobId']
+        print "Processing response from: ", jobId
+        reply = jobCollection.getQueryResults(
+                jobId=jobId,
+                projectId=PROJECT_NUMBER).execute()
+        rows = [];
+        while( ('rows' in reply) and len(rows) < reply['totalRows']):
+            rows.extend(reply['rows'])
+            print "read %i rows of %s." % (len(rows), reply['totalRows'])
+            reply = jobCollection.getQueryResults(
+                    jobId=jobId,
+                    projectId=PROJECT_NUMBER,
+                    startIndex=len(rows)).execute()
 
-    print "projectId: " + query_response['jobReference']['projectId']
-    print "jobId: " + query_response['jobReference']['jobId'] 
-    print "cacheHit:" + str(query_response['cacheHit']) 
-    print "totalBytesProcessed:" + query_response['totalBytesProcessed']
-    print str( query_response['totalRows'] ) + " rows retrieved."
+        result = {"rows":rows}
+        log_query( query, result )
+        results.append(result)
 
-def save_query_response(query_response):
-    query_jobId = str(query_response['jobReference']['jobId'])
-    full_path = "data/query-responses/%s.json" % query_jobId
+    return results
+
+def write(data, full_path):
     directory = os.path.dirname(full_path) 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    with open(full_path, "w") as query_result_file:
-        pretty_json = json.dumps(query_response, indent=4, sort_keys=True )
-        query_result_file.write(pretty_json)
+    with open(full_path, "w") as output_file:
+        pretty_json = json.dumps(data, indent=4, sort_keys=True )
+        output_file.write(pretty_json)
 
-def munge_query_responses(query_responses):
-    for index, query_response in enumerate(query_responses):
-        print "munging %i of %i..." % (index+1, len(query_responses))
-        results = munger.munge(query_response)
-        munger.write_results(results, 'data/results.json')
+def log_query(query, query_response):
+    query_jobId = query['jobReference']['jobId']
+    write( query, "data/queries/%s.json" % query_jobId )
+    write( query_response, "data/query-responses/%s.json" % query_jobId )
 
 def main():
     bigquery_service = get_bigquery_service()
-    query_responses = [
-            do_query(bigquery_service, "query.sql", TEST_DATASET),
-            do_query(bigquery_service, "query.sql", TEST_DATASET)]
-    process_query_responses(query_responses)
-    munge_query_responses(query_responses)
+    queries = [];
+    for month in range(0, 13):
+        queries.append( queue_async_query(bigquery_service, "query.sql", REAL_DATASET, month) )
+    results = process_query_responses(bigquery_service, queries)
+    results = munger.munge( results )
+    munger.write_results(results, "data/results.json")
 
 if __name__ == '__main__':
     try:

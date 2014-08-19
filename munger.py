@@ -5,25 +5,26 @@ import json
 import subprocess
 import collections
 
-def write_query_response(query_response, filename):
+def write_query_response(event_model, filename):
     with open(filename, 'w') as mcl_file:
-        for row in query_response['rows']:
-            fields = row['f'];
-            first = fields[0]['v'];
-            second = fields[1]['v'];
-            count = fields[2]['v'];
-            ratio = fields[3]['v'];
-            if( ratio >= 0.05 ):
-                mcl_file.write('{0}\t{1}\t{2}\n'.format(first,second,ratio))
+        for k,v in event_model.iteritems():
+            for k2,v2 in event_model[k].iteritems():
+                fields = (k,k2,v2['weight'])
+                line = '%s\t%s\t%f\n' % fields
+                mcl_file.write(line)
 
 def convert_query_response_to_dict( query_response ):
     result = MarkovModel() 
+
+    if not query_response.has_key('rows'):
+        print "no rows for jobId:", query_response['jobReference']['jobId'] 
+        return result
+
     for row in query_response['rows']:
         fields = row['f'];
         first = fields[0]['v'];
         second = fields[1]['v'];
         count = fields[2]['v'];
-        ratio = fields[3]['v'];
         result[first][second]["hits"] = int(count)
     return result;
         
@@ -142,15 +143,17 @@ def aggregate_query_responses( query_responses ):
             for k2,v2 in v1.iteritems():
                 aggregated[k1][k2]['hits'] += v2['hits']
 
-    pprint.pprint(aggregated)
+    for k1,v1 in aggregated.iteritems():
+        total = 0
+        for k2,v2 in v1.iteritems():
+            total += v2['hits']
+        for k2,v2 in v1.iteritems():
+            v2['weight'] = v2['hits'] / float(total)
 
-    #results = munger.munge(query_response)
-    #munger.write_results(results, 'data/results.json')
+    return aggregated
 
 def munge(query_responses):
     aggregated_query_response = aggregate_query_responses( query_responses )
-    return
-
     write_query_response(aggregated_query_response, "data/mcl_input")
     run_mcl("data/mcl_input","data/mcl_output")
     event_clusters = map_events_to_clusters("data/mcl_output")
@@ -165,7 +168,5 @@ def munge(query_responses):
         'cluster_degrees' : cluster_degrees,
     }
 
-    return results
-
     print "processing complete."
-    pprint.pprint(results)
+    return results
