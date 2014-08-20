@@ -1,7 +1,6 @@
 SELECT
   previous, present,
-  COUNT(*) occurances,
-  RATIO_TO_REPORT( occurances ) OVER( PARTITION BY previous ),
+  COUNT(*) hits,
 FROM(
   SELECT
     HASH(repository_url) as url_hash,
