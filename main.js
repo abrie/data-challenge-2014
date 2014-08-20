@@ -47,51 +47,7 @@ function main() {
     })
 }
 
-function build_runner( model ) {
-    var table = {};
-    for(var k in model) {
-        var list = [];
-        for( var k2 in model[k] ) {
-            list.push({
-                event: k2,
-                weight: model[k][k2].weight
-            });
-        }
-        list.sort( function(a,b) {
-            if( a.weight > b.weight )
-                return 1;
-            if( a.weight < b.weight )
-                return -1;
-            return 0;
-        });
-        table[k] = list;
-    }
-
-    return table;
-}
-
-function next(current, p, table) {
-    console.log(p);
-    var list = table[current];
-    var index = 0;
-    while( index < list.length-1 ) {
-        if( p >= list[index].weight && p < list[index+1].weight ) {
-            return list[index].event
-        }
-        index++;
-    }
-    return list[list.length-1].event;
-}
-
 function displayData( raw_data, selector ) {
-
-    var l = build_runner( raw_data.event_model );
-    var event = '~';
-    for( var i = 0; i < 10; i++ ) {
-        console.log(event);
-        event = next(event, Math.random(), l);
-    }
-
     var radius = 325;
     var cluster = d3.layout.cluster()
         .size([360, radius])
