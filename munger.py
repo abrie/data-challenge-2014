@@ -5,6 +5,8 @@ import json
 import subprocess
 import collections
 
+import common
+
 def write_query_response(event_model, filename):
     with open(filename, 'w') as mcl_file:
         for k,v in event_model.iteritems():
@@ -112,11 +114,6 @@ def build_event_cluster_model(event_model, event_clusters):
 
     return model
 
-def write_results(results, filename):
-    with open(filename, 'w') as outfile:
-        prettyJson = json.dumps(results, indent=4, sort_keys=True )
-        outfile.write( prettyJson )
-
 def compute_cluster_degrees(event_model, event_clusters):
     nodes = GraphDegree() 
 
@@ -154,10 +151,10 @@ def aggregate_query_responses( query_responses ):
 
 def munge(query_responses):
     aggregated_query_response = aggregate_query_responses( query_responses )
-    write_query_response(aggregated_query_response, "data/mcl_input")
-    run_mcl("data/mcl_input","data/mcl_output")
-    event_clusters = map_events_to_clusters("data/mcl_output")
-    event_model, node_degrees = build_event_model("data/mcl_input", event_clusters)
+    write_query_response(aggregated_query_response, common.datadir("mcl_input"))
+    run_mcl(common.datadir("mcl_input"),common.datadir("mcl_output"))
+    event_clusters = map_events_to_clusters(common.datadir("mcl_output"))
+    event_model, node_degrees = build_event_model(common.datadir("mcl_input"), event_clusters)
     event_cluster_model = build_event_cluster_model(event_model, event_clusters)
     cluster_degrees = compute_cluster_degrees(event_model, event_clusters)
 

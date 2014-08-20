@@ -1,12 +1,10 @@
 import httplib2
-import inspect
-import json
-import os, errno
 import pprint
 import string
 import sys
 import time
 
+import common
 import munger
 
 from apiclient.discovery import build
@@ -19,7 +17,7 @@ from oauth2client.file import Storage
 from oauth2client.tools import run
 
 # Enter your Google Developer Project number
-PROJECT_NUMBER = 'linear-quasar-662'
+PROJECT_NUMBER = 'directed-potion-651'
 
 # These refer to datasets available on Google BigQuery
 TEST_DATASET = "[publicdata:samples.github_timeline]"
@@ -43,6 +41,7 @@ def get_bigquery_service():
     bigquery_service = build('bigquery', 'v2', http=http)
 
     return bigquery_service
+
 
 def queue_async_query(bigquery_service, query_filename, dataset, month):
     print "* async:", dataset, month 
@@ -84,28 +83,19 @@ def process_query_responses(bigquery_service, queries):
 
     return results
 
-def write(data, full_path):
-    directory = os.path.dirname(full_path) 
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    with open(full_path, "w") as output_file:
-        pretty_json = json.dumps(data, indent=4, sort_keys=True )
-        output_file.write(pretty_json)
-
 def log_query(query, query_response):
     query_jobId = query['jobReference']['jobId']
-    write( query, "data/queries/%s.json" % query_jobId )
-    write( query_response, "data/query-responses/%s.json" % query_jobId )
+    common.write_json(query, common.datadir("queries/%s.json" % query_jobId))
+    common.write_json(query_response, common.datadir("query-responses/%s.json" % query_jobId))
 
 def main():
     bigquery_service = get_bigquery_service()
     queries = [];
     for month in range(0, 13):
-        queries.append( queue_async_query(bigquery_service, "query.sql", REAL_DATASET, month) )
+        queries.append( queue_async_query(bigquery_service, "query.sql", TEST_DATASET, month) )
     results = process_query_responses(bigquery_service, queries)
     results = munger.munge( results )
-    munger.write_results(results, "data/results.json")
+    common.write_json(results, common.datadir("results.json"))
 
 if __name__ == '__main__':
     try:
