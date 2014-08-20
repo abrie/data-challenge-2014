@@ -24,8 +24,8 @@ def convert_query_response_to_dict( query_response ):
         fields = row['f'];
         first = fields[0]['v'];
         second = fields[1]['v'];
-        count = fields[2]['v'];
-        result[first][second]["hits"] = int(count)
+        hits = fields[2]['v'];
+        result[first][second]["hits"] = int(hits)
     return result;
         
 def run_mcl(input_filename, output_filename):
