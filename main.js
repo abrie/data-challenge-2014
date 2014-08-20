@@ -163,29 +163,7 @@ function buildGraphData(model, node_degrees, cluster_id) {
         });
     }
 
-    function buildLinkList(model) {
-        var result = [];
-        for( var key in model ) {
-            var connectedDict = model[key];
-            if(inClusterFilter(key)) {
-                for( var connectedKey in connectedDict ) {
-                    if(inClusterFilter(connectedKey)) { 
-                        var source = key;
-                        var target = connectedKey;
-                        var link = {
-                            source: key,
-                            target: connectedKey,
-                        }
-                        result.push( link );
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     return {
-        nodes: buildNodeList( model ), 
-        links: buildLinkList( model ),
+        nodes: buildNodeList( model ) 
     }
 }
