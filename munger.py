@@ -1,19 +1,7 @@
-import httplib2
-import pprint
-import sys
-import json
-import subprocess
 import collections
 
+import mclinterface
 import common
-
-def write_query_response(event_model, filename):
-    with open(filename, 'w') as mcl_file:
-        for k,v in event_model.iteritems():
-            for k2,v2 in event_model[k].iteritems():
-                fields = (k,k2,v2['weight'])
-                line = '%s\t%s\t%f\n' % fields
-                mcl_file.write(line)
 
 def convert_query_response_to_dict( query_response ):
     result = MarkovModel() 
@@ -29,36 +17,6 @@ def convert_query_response_to_dict( query_response ):
         hits = fields[2]['v'];
         result[first][second]["hits"] = int(hits)
     return result;
-        
-def run_mcl(input_filename, output_filename):
-    print "**** subprocess will call as follows:"
-    call_parameters = [
-            "mcl/bin/mcl", input_filename,
-            "-I","5.0",
-            "--abc",
-            "-o", output_filename]
-    pprint.pprint(call_parameters)
-
-    print "**** calling..."
-
-    try:
-        subprocess.check_call(call_parameters)
-    except subprocess.CalledProcessError as err:
-        print 'Error while invoking MCL subprocess'
-        pprint.pprint(err)
-        sys.exit(1)
-
-    print "**** subprocess completed ****"
-
-def map_events_to_clusters(input_filename):
-    result = {}
-    with open('data/mcl_output', 'r') as mcl_output:
-        for index, line in enumerate( mcl_output.readlines() ):
-            fields = line.rstrip('\n').split('\t')
-            cluster_id = "cluster_%i" % index
-            for field in fields:
-                result[field] = cluster_id 
-    return result
 
 def build_event_model(filename, event_clusters):
     degrees = GraphDegree() 
@@ -151,9 +109,9 @@ def aggregate_query_responses( query_responses ):
 
 def munge(query_responses):
     aggregated_query_response = aggregate_query_responses( query_responses )
-    write_query_response(aggregated_query_response, common.datadir("mcl_input"))
-    run_mcl(common.datadir("mcl_input"),common.datadir("mcl_output"))
-    event_clusters = map_events_to_clusters(common.datadir("mcl_output"))
+    mclinterface.write_query_response(aggregated_query_response, common.datadir("mcl_input"))
+    mclinterface.run_mcl(common.datadir("mcl_input"),common.datadir("mcl_output"))
+    event_clusters = mclinterface.map_events_to_clusters(common.datadir("mcl_output"))
     event_model, node_degrees = build_event_model(common.datadir("mcl_input"), event_clusters)
     event_cluster_model = build_event_cluster_model(event_model, event_clusters)
     cluster_degrees = compute_cluster_degrees(event_model, event_clusters)
