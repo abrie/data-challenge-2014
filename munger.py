@@ -18,11 +18,11 @@ def convert_query_response_to_dict( query_response ):
         result[first][second]["hits"] = int(hits)
     return result;
 
-def compute_node_degrees(event_model, event_clusters):
+def compute_node_degrees(model, clusters):
     degrees = GraphDegree() 
 
-    for k,v in event_model.iteritems():
-        for k2,v2 in event_model[k].iteritems():
+    for k,v in model.iteritems():
+        for k2,v2 in model[k].iteritems():
             degrees[k]["out"].add(k2)
             degrees[k2]["in"].add(k)
 
@@ -31,7 +31,7 @@ def compute_node_degrees(event_model, event_clusters):
         result[k] = {
                 "indegree": len(v["in"]), 
                 "outdegree": len(v["out"]),
-                "cluster": get_cluster(k, event_clusters)}
+                "cluster": get_cluster(k, clusters) }
 
     return result 
 
@@ -101,15 +101,15 @@ def aggregate_query_responses( query_responses ):
     return aggregated
 
 def munge(query_responses):
-    event_model = aggregate_query_responses(query_responses)
-    event_clusters = mclinterface.get_clusters(event_model)
-    node_degrees = compute_node_degrees(event_model, event_clusters)
-    cluster_model = build_cluster_model(event_model, event_clusters)
-    cluster_degrees = compute_cluster_degrees(event_model, event_clusters)
+    model = aggregate_query_responses(query_responses)
+    clusters = mclinterface.get_clusters(model)
+    node_degrees = compute_node_degrees(model, clusters)
+    cluster_model = build_cluster_model(model, clusters)
+    cluster_degrees = compute_cluster_degrees(model, clusters)
 
     results = {
         'event_cluster_model' : cluster_model,
-        'event_model' : event_model, 
+        'event_model' : model, 
         'node_degrees' : node_degrees,
         'cluster_degrees' : cluster_degrees,
     }
