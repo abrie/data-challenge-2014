@@ -22,16 +22,16 @@ def compute_node_degrees(model, clusters):
     degrees = GraphDegree() 
 
     for k,v in model.iteritems():
+        cluster_a = get_cluster(k, clusters)
         for k2,v2 in model[k].iteritems():
-            degrees[k]["out"].add(k2)
-            degrees[k2]["in"].add(k)
+            cluster_b = get_cluster(k2, clusters)
+            if cluster_a == cluster_b:
+                degrees[k]["out"].add(k2)
+                degrees[k2]["in"].add(k)
 
     result = {}
     for k,v in degrees.iteritems():
-        result[k] = {
-                "indegree": len(v["in"]), 
-                "outdegree": len(v["out"]),
-                "cluster": get_cluster(k, clusters) }
+        result[k] = { "indegree": len(v["in"]), "outdegree": len(v["out"]) }
 
     return result 
 
@@ -111,6 +111,7 @@ def munge(query_responses):
         'event_cluster_model' : cluster_model,
         'event_model' : model, 
         'node_degrees' : node_degrees,
+        'clusters' : clusters,
         'cluster_degrees' : cluster_degrees,
     }
 

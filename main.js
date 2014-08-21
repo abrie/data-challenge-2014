@@ -34,7 +34,7 @@ function generateSvgElement(id) {
 
 function main() {
     $.ajax({
-        url: "data/results.json",
+        url: "data/latest/results.json",
         dataType: "json",
     })
     .done(function( data ) {
@@ -48,14 +48,14 @@ function main() {
 }
 
 function displayData( raw_data, selector ) {
-    var radius = 325;
+    var radius = 300;
     var cluster = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) { return d3.ascending(a.value, b.value) } )
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
-        var cluster_data = buildGraphData( raw_data.event_model, raw_data.node_degrees, cluster_id )
+        var cluster_data = buildGraphData( raw_data, cluster_id )
         clusters.push({
             "name":cluster_id,
             "value":raw_data.cluster_degrees[cluster_id].indegree + raw_data.cluster_degrees[cluster_id].outdegree,
@@ -87,7 +87,7 @@ function displayData( raw_data, selector ) {
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
-        .tension(.15)
+        .tension(0.85)
         .radius(function(d) { 
             return d.y; 
         })
@@ -100,11 +100,16 @@ function displayData( raw_data, selector ) {
         .attr("transform", VIEWBOX.midpoint());
 
     var bundle = d3.layout.bundle();
+    var linkColorScale = d3.scale.category10();
     var link = svg.append("g")
         .selectAll(".link")
         .data( bundle(links) )
         .enter().append("path")
-        .attr("class","link")
+        .attr("class","link")  
+        .style("stroke", function(d) {
+            var source_cluster = raw_data.clusters[d[0].name]; 
+            return linkColorScale(source_cluster);
+        })
         .attr("d", line);
 
     d3.select("input[type=range]").on("change", function() {
@@ -132,21 +137,20 @@ function displayData( raw_data, selector ) {
             return d.x < 180 ? null : "rotate(180)";
         })
         .text(function(d) { 
-            return d.name + "(" + d.value + ")"; 
+            if(d.depth === 2) {
+                return d.name + "(" + d.value + ")"; 
+            }
         });
 }
 
-function buildGraphData(model, node_degrees, cluster_id) {
+function buildGraphData(raw_data, cluster_id) {
     function inClusterFilter( key ) {
-        if( node_degrees !== undefined && cluster_id !== undefined ) 
-            return node_degrees[key].cluster == cluster_id;
-        else
-            return true;
+        return raw_data.clusters[key] === cluster_id;
     }
 
-    function buildNodeList(model) {
+    function buildNodeList( data ) {
         var result = [];
-        for( var key in model ) {
+        for( var key in data.event_model ) {
             var index = result.indexOf( key );
             if( index < 0 ) {
                 if(inClusterFilter(key)) {
@@ -156,14 +160,23 @@ function buildGraphData(model, node_degrees, cluster_id) {
         }
 
         return result.map( function(key) { 
-            return { 
-                "name":key,
-                "value":node_degrees[key].indegree+node_degrees[key].outdegree
-            } 
+            if( key === '~' ) {
+                return { 
+                    "name": key,
+                    "value": 0 
+                } 
+            }
+            else {
+                return { 
+                    "name": key,
+                    "value": data.node_degrees[key].indegree + data.node_degrees[key].outdegree
+                } 
+            }
         });
+
     }
 
     return {
-        nodes: buildNodeList( model ) 
+        nodes: buildNodeList( raw_data ) 
     }
 }
