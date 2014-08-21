@@ -10,7 +10,7 @@ FROM(
     repository_url,
     PARSE_UTC_USEC(created_at) as time,
     CASE
-      WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:", payload_ref_type) )
+      WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:", IF(payload_ref_type is null, "repository", payload_ref_type) )
       WHEN type = "DeleteEvent" THEN CONCAT("DeleteEvent:", payload_ref_type)
       WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:", payload_action)
       WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
