@@ -9,6 +9,7 @@ def read_test_response(filename):
     return result
 
 def main():
+    print "This is run:", common.new_set()
     query_responses = [
             read_test_response("test-a.json"),
             read_test_response("test-b.json")]

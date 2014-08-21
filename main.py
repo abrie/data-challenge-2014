@@ -1,4 +1,6 @@
+import argparse
 import httplib2
+import os
 import pprint
 import string
 import sys
@@ -88,7 +90,14 @@ def log_query(query, query_response):
     common.write_json(query, common.datadir("queries/%s.json" % query_jobId))
     common.write_json(query_response, common.datadir("query-responses/%s.json" % query_jobId))
 
-def main():
+def use_precollected(path):
+    common.use_set(path)
+    results = common.read_all()
+    results = munger.munge( results )
+    common.write_json(results, common.datadir("results.json"))
+
+def main(presaved):
+    print "This is run:", common.new_set()
     bigquery_service = get_bigquery_service()
     queries = [];
     for month in range(0, 13):
@@ -97,9 +106,18 @@ def main():
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
 
+def get_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--use", help="uses pregathered data")
+    return parser.parse_args()
+
 if __name__ == '__main__':
     try:
-        main()
+        args = get_arguments()
+        if (args.use != None):
+            use_precollected(args.use)
+        else:
+            main()
     except HttpError as err:
         print 'HttpError:', pprint.pprint(err.content)
 
