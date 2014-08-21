@@ -20,6 +20,6 @@ FROM
 $dataset
 WHERE
 repository_url IS NOT NULL
-AND MONTH(TIMESTAMP(created_at)) = $month 
+AND QUARTER(TIMESTAMP(created_at)) = $quarter 
 ORDER BY repository_url, time ASC
 )) GROUP BY present_state, previous_state

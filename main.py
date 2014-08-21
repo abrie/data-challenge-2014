@@ -38,72 +38,56 @@ def get_bigquery_service():
         credentials = tools.run_flow(FLOW, storage, tools.argparser.parse_args([]))
 
     http = httplib2.Http()
-    http = credentials.authorize(http)
+    return build('bigquery', 'v2', http=credentials.authorize(http))
 
-    bigquery_service = build('bigquery', 'v2', http=http)
-
-    return bigquery_service
-
-
-def queue_async_query(bigquery_service, query_filename, dataset, month):
-    print "* async:", dataset, month 
+def queue_async_query(bigquery_service, query_filename, dataset, quarter):
+    print "* async:", dataset, "%i/4" % int(quarter) 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
 
-    bql = bql_template.substitute(dataset=dataset, month=month)
-
-    jobCollection = bigquery_service.jobs()
+    bql = bql_template.substitute(dataset=dataset, quarter=quarter)
     jobData = { 'configuration': { 'query':{ 'query':bql } } }
-
-    query = jobCollection.insert(
-            projectId=PROJECT_NUMBER,
-            body=jobData).execute()
-
-    return query  
+    insertParameters = {'projectId':PROJECT_NUMBER, 'body':jobData}
+    return bigquery_service.jobs().insert( **insertParameters ).execute()
 
 def process_query_responses(bigquery_service, queries):
     jobCollection = bigquery_service.jobs()
-    results = []
     for index, query in enumerate(queries):
-        jobId = query['jobReference']['jobId']
-        print "Processing response from: ", jobId
-        reply = jobCollection.getQueryResults(
-                jobId=jobId,
-                projectId=PROJECT_NUMBER).execute()
+        parameters = {
+                "jobId":query['jobReference']['jobId'],
+                "projectId":PROJECT_NUMBER
+                }
+        print "Processing response from:", parameters["jobId"]
+        reply = jobCollection.getQueryResults(**parameters).execute()
         rows = [];
         while( ('rows' in reply) and len(rows) < reply['totalRows']):
             rows.extend(reply['rows'])
+            parameters["startIndex"] = len(rows);
             print "read %i rows of %s." % (len(rows), reply['totalRows'])
-            reply = jobCollection.getQueryResults(
-                    jobId=jobId,
-                    projectId=PROJECT_NUMBER,
-                    startIndex=len(rows)).execute()
+            reply = jobCollection.getQueryResults(**parameters).execute()
 
-        result = {"rows":rows}
-        log_query( query, result )
-        results.append(result)
+        save_query( query, {"rows":rows} )
 
-    return results
-
-def log_query(query, query_response):
+def save_query(query, result):
     query_jobId = query['jobReference']['jobId']
     common.write_json(query, common.datadir("queries/%s.json" % query_jobId))
-    common.write_json(query_response, common.datadir("query-responses/%s.json" % query_jobId))
+    common.write_json(result, common.datadir("query-responses/%s.json" % query_jobId))
 
 def use_precollected(path):
+    print "Using previous query results from:", path
     common.use_set(path)
     results = common.read_all()
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
 
-def main(presaved):
-    print "This is run:", common.new_set()
+def main():
+    print "This run will be stored in:", common.new_set()
     bigquery_service = get_bigquery_service()
     queries = [];
-    for month in range(0, 13):
-        queries.append( queue_async_query(bigquery_service, "query.sql", TEST_DATASET, month) )
-    results = process_query_responses(bigquery_service, queries)
-    results = munger.munge( results )
+    for quarter in range(1, 4):
+        queries.append( queue_async_query(bigquery_service, "query.sql", TEST_DATASET, quarter) )
+    process_query_responses(bigquery_service, queries)
+    results = munger.munge( common.read_all() )
     common.write_json(results, common.datadir("results.json"))
 
 def get_arguments():
