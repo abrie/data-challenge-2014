@@ -12,7 +12,7 @@ def new_set():
     def generate_id(size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
     
-    id = generate_id(3, "XAMURO")
+    id = generate_id(3, "XAMURE")
     time = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
     base = "".join(['data/', id, time,'/'])
     create_path(base)
