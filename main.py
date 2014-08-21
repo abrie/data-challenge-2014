@@ -94,15 +94,13 @@ def use_precollected(path):
 
 def main():
     print "Using project:", PROJECT_ID
-    destination = common.new_set()
-    print "Results will be stored in:", destination
+    common.new_set()
     bigquery_service = get_bigquery_service()
     queries = [];
     queries.append( queue_async_query(bigquery_service, "query.sql", UNION_DATASET) )
     process_query_responses(bigquery_service, queries)
     results = munger.munge( common.read_all() )
     common.write_json(results, common.datadir("results.json"))
-    print "Results written to:", destination
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -125,3 +123,6 @@ if __name__ == '__main__':
 
     except AccessTokenRefreshError:
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
+
+    finally:
+        print "Results logged to:", common.base
