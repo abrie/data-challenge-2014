@@ -1,33 +1,25 @@
 SELECT
-  previous, present,
-  COUNT(*) hits,
+previous_state, present_state,
+COUNT(*) hits
 FROM(
-  SELECT
-    HASH(repository_url) as url_hash,
-    CASE
-      WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:", payload_ref_type)
-      WHEN type = "DeleteEvent" THEN CONCAT("DeleteEvent:", payload_ref_type)
-      WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:", payload_action)
-      WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
-      ELSE type
-    END as present,
-  PARSE_UTC_USEC(created_at) as time,
-  LAG(
-    CASE
-      WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:", payload_ref_type)
-      WHEN type = "DeleteEvent" THEN CONCAT("DeleteEvent:", payload_ref_type)
-      WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:", payload_action)
-      WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
-      ELSE type
-    END,1,'~'
-  ) OVER (PARTITION BY url_hash ORDER BY time ASC) previous,
-  FROM
-    $dataset
-  WHERE
-    repository_url IS NOT NULL
-    AND MONTH(TIMESTAMP(created_at)) = $month 
-)
+SELECT
+state as present_state,
+LAG(present_state, 1, '~') OVER (PARTITION BY repository_url ORDER BY time) as previous_state
+FROM(
+SELECT
+repository_url,
+PARSE_UTC_USEC(created_at) as time,
+CASE
+WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:", payload_ref_type)
+WHEN type = "DeleteEvent" THEN CONCAT("DeleteEvent:", payload_ref_type)
+WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:", payload_action)
+WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
+ELSE type
+END as state,
+FROM
+$dataset
 WHERE
-  present IS NOT NULL AND previous IS NOT NULL
-GROUP EACH BY
-  present, previous
+repository_url IS NOT NULL
+AND MONTH(TIMESTAMP(created_at)) = $month 
+ORDER BY repository_url, time ASC
+)) GROUP BY present_state, previous_state
