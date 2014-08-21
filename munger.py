@@ -18,29 +18,22 @@ def convert_query_response_to_dict( query_response ):
         result[first][second]["hits"] = int(hits)
     return result;
 
-def build_event_model(filename, event_clusters):
+def compute_node_degrees(event_model, event_clusters):
     degrees = GraphDegree() 
-    model = MarkovModel()
 
-    with open(filename, 'r') as mcl_file:
-        for line in mcl_file.readlines():
-            fields = line.rstrip('\n').split('\t')
-            first = fields[0]
-            second = fields[1]
-            weight = float(fields[2])
-            model[first][second]["weight"] = weight
-            model[first][second]["hits"] += 1
-            degrees[first]["out"].add(second)
-            degrees[second]["in"].add(first)
+    for k,v in event_model.iteritems():
+        for k2,v2 in event_model[k].iteritems():
+            degrees[k]["out"].add(k2)
+            degrees[k2]["in"].add(k)
 
-        result = {}
-        for k,v in degrees.iteritems():
-            result[k] = {
-                    "indegree": len(v["in"]), 
-                    "outdegree": len(v["out"]),
-                    "cluster": get_cluster(k, event_clusters)}
+    result = {}
+    for k,v in degrees.iteritems():
+        result[k] = {
+                "indegree": len(v["in"]), 
+                "outdegree": len(v["out"]),
+                "cluster": get_cluster(k, event_clusters)}
 
-    return (model, result)
+    return result 
 
 def MarkovModel():
     return collections.defaultdict(
@@ -54,7 +47,7 @@ def GraphDegree():
 def get_cluster(event, event_cluster_map):
     return event_cluster_map[event]
 
-def build_event_cluster_model(event_model, event_clusters):
+def build_cluster_model(event_model, event_clusters):
     model = MarkovModel()
     totals = collections.defaultdict(lambda:0)
 
@@ -108,16 +101,14 @@ def aggregate_query_responses( query_responses ):
     return aggregated
 
 def munge(query_responses):
-    aggregated_query_response = aggregate_query_responses( query_responses )
-    mclinterface.write_query_response(aggregated_query_response, common.datadir("mcl_input"))
-    mclinterface.run_mcl(common.datadir("mcl_input"),common.datadir("mcl_output"))
-    event_clusters = mclinterface.map_events_to_clusters(common.datadir("mcl_output"))
-    event_model, node_degrees = build_event_model(common.datadir("mcl_input"), event_clusters)
-    event_cluster_model = build_event_cluster_model(event_model, event_clusters)
+    event_model = aggregate_query_responses(query_responses)
+    event_clusters = mclinterface.get_clusters(event_model)
+    node_degrees = compute_node_degrees(event_model, event_clusters)
+    cluster_model = build_cluster_model(event_model, event_clusters)
     cluster_degrees = compute_cluster_degrees(event_model, event_clusters)
 
     results = {
-        'event_cluster_model' : event_cluster_model,
+        'event_cluster_model' : cluster_model,
         'event_model' : event_model, 
         'node_degrees' : node_degrees,
         'cluster_degrees' : cluster_degrees,
