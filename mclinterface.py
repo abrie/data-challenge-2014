@@ -4,20 +4,23 @@ import sys
 
 import common
 
+INITIAL_MARKER = "~"
+
 def write_model_to_mcl_input(model, filename):
     with open(filename, 'w') as mcl_file:
         for k,v in model.iteritems():
-            for k2,v2 in model[k].iteritems():
-                fields = (k,k2,v2['weight'])
-                line = '%s\t%s\t%f\n' % fields
-                mcl_file.write(line)
+            if not k == INITIAL_MARKER:
+                for k2,v2 in model[k].iteritems():
+                    fields = (k,k2,v2['weight'])
+                    line = '%s\t%s\t%f\n' % fields
+                    mcl_file.write(line)
 
 def map_states_to_clusters(input_filename):
-    result = {}
+    result = { INITIAL_MARKER:"cluster_0" }
     with open(common.datadir("mcl_output"), 'r') as mcl_output:
         for index, line in enumerate( mcl_output.readlines() ):
             fields = line.rstrip('\n').split('\t')
-            cluster_id = "cluster_%i" % index
+            cluster_id = "cluster_%i" % (index+1)
             for field in fields:
                 result[field] = cluster_id 
     return result
