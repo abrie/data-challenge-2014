@@ -1,5 +1,6 @@
 import argparse
 import httplib2
+import json
 import os
 import pprint
 import string
@@ -19,11 +20,12 @@ from oauth2client.file import Storage
 from oauth2client.tools import run
 
 # Enter your Google Developer Project number
-PROJECT_NUMBER = 'directed-potion-651'
+PROJECT_ID = 'glass-guide-678'
 
 # These refer to datasets available on Google BigQuery
 TEST_DATASET = "[publicdata:samples.github_timeline]"
-REAL_DATASET = "[githubarchive:github.timeline], [githubarchive:github.2011]"
+UNION_DATASET = "[githubarchive:github.timeline], [githubarchive:github.2011]"
+REAL_DATASET = "[githubarchive:github.timeline]"
 
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
 def get_bigquery_service():
@@ -40,25 +42,32 @@ def get_bigquery_service():
     http = httplib2.Http()
     return build('bigquery', 'v2', http=credentials.authorize(http))
 
-def queue_async_query(bigquery_service, query_filename, dataset, quarter):
-    print "* async:", dataset, "%i/4" % int(quarter) 
+def queue_async_query(bigquery_service, query_filename, dataset):
+    print "* async request:", dataset 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
 
-    bql = bql_template.substitute(dataset=dataset, quarter=quarter)
+    bql = bql_template.substitute(dataset=dataset)
     jobData = { 'configuration': { 'query':{ 'query':bql } } }
-    insertParameters = {'projectId':PROJECT_NUMBER, 'body':jobData}
-    return bigquery_service.jobs().insert( **insertParameters ).execute()
+    insertParameters = {'projectId':PROJECT_ID, 'body':jobData}
+    query = bigquery_service.jobs().insert( **insertParameters ).execute()
+    save_query(query)
+    return query
 
 def process_query_responses(bigquery_service, queries):
     jobCollection = bigquery_service.jobs()
     for index, query in enumerate(queries):
         parameters = {
                 "jobId":query['jobReference']['jobId'],
-                "projectId":PROJECT_NUMBER
+                "projectId":PROJECT_ID
                 }
-        print "Processing response from:", parameters["jobId"]
-        reply = jobCollection.getQueryResults(**parameters).execute()
+        print "Awaiting:", parameters["jobId"]
+        resultsRequest = jobCollection.getQueryResults(**parameters)
+        reply = resultsRequest.execute()
+        while not reply['jobComplete']:
+            print '.'
+            reply = resultsRequest.execute()
+
         rows = [];
         while( ('rows' in reply) and len(rows) < reply['totalRows']):
             rows.extend(reply['rows'])
@@ -66,11 +75,14 @@ def process_query_responses(bigquery_service, queries):
             print "read %i rows of %s." % (len(rows), reply['totalRows'])
             reply = jobCollection.getQueryResults(**parameters).execute()
 
-        save_query( query, {"rows":rows} )
+        save_query_result( query, {"rows":rows} )
 
-def save_query(query, result):
+def save_query(query):
     query_jobId = query['jobReference']['jobId']
     common.write_json(query, common.datadir("queries/%s.json" % query_jobId))
+
+def save_query_result(query, result):
+    query_jobId = query['jobReference']['jobId']
     common.write_json(result, common.datadir("query-responses/%s.json" % query_jobId))
 
 def use_precollected(path):
@@ -81,14 +93,16 @@ def use_precollected(path):
     common.write_json(results, common.datadir("results.json"))
 
 def main():
-    print "This run will be stored in:", common.new_set()
+    print "Using project:", PROJECT_ID
+    destination = common.new_set()
+    print "Results will be stored in:", destination
     bigquery_service = get_bigquery_service()
     queries = [];
-    for quarter in range(1, 4):
-        queries.append( queue_async_query(bigquery_service, "query.sql", TEST_DATASET, quarter) )
+    queries.append( queue_async_query(bigquery_service, "query.sql", UNION_DATASET) )
     process_query_responses(bigquery_service, queries)
     results = munger.munge( common.read_all() )
     common.write_json(results, common.datadir("results.json"))
+    print "Results written to:", destination
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -103,7 +117,11 @@ if __name__ == '__main__':
         else:
             main()
     except HttpError as err:
-        print 'HttpError:', pprint.pprint(err.content)
+        err_json = json.loads(err.content)
+        print '- HttpError Exception -'
+        print "code:", err_json["error"]["code"] 
+        print "message:", err_json["error"]["message"]
+        common.write_json(err_json, common.datadir("error-fail-bad.json"))
 
     except AccessTokenRefreshError:
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
