@@ -10,6 +10,8 @@ import time
 import common
 import munger
 
+import numpy
+
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 
@@ -90,9 +92,12 @@ def save_query_result(prefix, query, result):
 def use_previous_query(id):
     print "Using previous query results from:", id
     common.use_set(id)
-    results = common.read_all()
-    results = munger.munge( results )
-    common.write_json(results, common.datadir("results.json"))
+    model = munger.munge_model( common.read_all('model') )
+    state = munger.munge_state( common.read_all('state') )
+
+    results = {"state":state, "model":model}
+    common.write_json(results, "results.json")
+    crunch(results)
 
 def run_new_query(model_query, state_query):
     print "Using project:", PROJECT_ID
@@ -117,26 +122,32 @@ def run_new_query(model_query, state_query):
     results = {"state":state, "model":model}
     common.write_json(results, "results.json")
 
+    crunch(results)
+
+def crunch(data):
+    print "not ready"
+
 def get_arguments():
     parser = argparse.ArgumentParser()
 
-    modelgroup = parser.add_mutually_exclusive_group(required=True)
-    modelgroup.add_argument("-p", "--previous", help="use a previous query")
-    modelgroup.add_argument("-q", "--query", help="run a new query")
+    parser.add_argument("-p", "--id", help="reuse a previous query")
+    parser.add_argument("-qm", "--modelsql", help="sql file used for model query")
+    parser.add_argument("-qs", "--statesql", help="sql file used for state query")
+    return parser
 
-    stategroup = parser.add_mutually_exclusive_group(required=True)
-    stategroup.add_argument("-ps", "--previouss", help="use a previous query")
-    stategroup.add_argument("-qs", "--querys", help="run a new query")
-    
-    return parser.parse_args()
 
 if __name__ == '__main__':
     try:
-        args = get_arguments()
-        if (args.previous != None):
-            use_previous_query(args.previous, args.previouss)
-        elif (args.query != None):
-            run_new_query(args.query, args.querys)
+        parser = get_arguments()
+        args = parser.parse_args()
+        if( args.id is None and args.modelsql is None and args.statesql is None):
+            parser.error("what to do?")
+        elif (args.id is not None):
+            use_previous_query(args.id)
+        elif (args.modelsql is not None and args.statesql is not None ):
+            run_new_query(args.modelsql, args.statesql)
+        else:
+            parser.error("-qm and -qs arguments must be used together")
 
     except HttpError as err:
         err_json = json.loads(err.content)
