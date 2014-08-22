@@ -66,6 +66,7 @@ def process_query_responses(bigquery_service, queries):
         reply = resultsRequest.execute()
         while not reply['jobComplete']:
             print '.'
+            print reply
             reply = resultsRequest.execute()
 
         rows = [];
@@ -85,14 +86,14 @@ def save_query_result(query, result):
     query_jobId = query['jobReference']['jobId']
     common.write_json(result, common.datadir("query-responses/%s.json" % query_jobId))
 
-def use_precollected(path):
+def load_previous_query(path):
     print "Using previous query results from:", path
     common.use_set(path)
     results = common.read_all()
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
 
-def main(query_file):
+def run_new_query(query_file):
     print "Using project:", PROJECT_ID
     print "Running query:", query_file
     common.new_set()
@@ -113,10 +114,10 @@ def get_arguments():
 if __name__ == '__main__':
     try:
         args = get_arguments()
-        if (args.use != None):
-            use_precollected(args.use)
+        if (args.previous != None):
+            load_previous_query(args.previous)
         elif (args.query != None):
-            main(args.query)
+            run_new_query(args.query)
 
     except HttpError as err:
         err_json = json.loads(err.content)
