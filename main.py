@@ -61,19 +61,19 @@ def process_query_responses(bigquery_service, queries):
                 "jobId":query['jobReference']['jobId'],
                 "projectId":PROJECT_ID
                 }
-        print "Awaiting:", parameters["jobId"]
+        sys.stdout.write("Awaiting: %s [" % parameters["jobId"])
         resultsRequest = jobCollection.getQueryResults(**parameters)
-        reply = resultsRequest.execute()
-        while not reply['jobComplete']:
-            print '.'
-            print reply
+        while True:
             reply = resultsRequest.execute()
+            if reply['jobComplete']: break
+            sys.stdout.write('.')
+        print "done]"
 
         rows = [];
         while( ('rows' in reply) and len(rows) < reply['totalRows']):
             rows.extend(reply['rows'])
             parameters["startIndex"] = len(rows);
-            print "read %i rows of %s." % (len(rows), reply['totalRows'])
+            print "\tread %i/%s rows." % (len(rows), reply['totalRows'])
             reply = jobCollection.getQueryResults(**parameters).execute()
 
         save_query_result( query, {"rows":rows} )
