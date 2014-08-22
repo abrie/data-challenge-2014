@@ -34,7 +34,7 @@ function generateSvgElement(id) {
 
 function main() {
     $.ajax({
-        url: "data/latest/results.json",
+        url: "data/repo-query/results.json",
         dataType: "json",
     })
     .done(function( data ) {
@@ -101,14 +101,22 @@ function displayData( raw_data, selector ) {
 
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
+    var linkWidthScale = d3.scale.pow().range([0.0,10]);
     var link = svg.append("g")
         .selectAll(".link")
         .data( bundle(links) )
         .enter().append("path")
         .attr("class","link")  
         .style("stroke", function(d) {
-            var source_cluster = raw_data.clusters[d[0].name]; 
+            var source_state = d[0].name
+            var source_cluster = raw_data.clusters[source_state]; 
             return linkColorScale(source_cluster);
+        })
+        .style("stroke-width", function(d) {
+            var source_state = d[0].name
+            var target_state = d[d.length-1].name
+            var weight = raw_data.event_model[source_state][target_state].weight;
+            return linkWidthScale(weight);  
         })
         .attr("d", line);
 
