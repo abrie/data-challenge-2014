@@ -4,7 +4,11 @@ import json
 import string
 import random
 
-base = "unset"
+base = "UnSet!"
+
+def is_initialized():
+    global base
+    return base != "UnSet!"
 
 def new_set():
     global base

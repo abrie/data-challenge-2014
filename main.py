@@ -92,19 +92,22 @@ def use_precollected(path):
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
 
-def main():
+def main(query_file):
     print "Using project:", PROJECT_ID
+    print "Running query:", query_file
     common.new_set()
     bigquery_service = get_bigquery_service()
     queries = [];
-    queries.append( queue_async_query(bigquery_service, "query.sql", UNION_DATASET) )
+    queries.append( queue_async_query(bigquery_service, query_file, UNION_DATASET) )
     process_query_responses(bigquery_service, queries)
     results = munger.munge( common.read_all() )
     common.write_json(results, common.datadir("results.json"))
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--use", help="uses pregathered data")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-p", "--previous", help="use a previous query")
+    group.add_argument("-q", "--query", help="run a new query")
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -112,8 +115,9 @@ if __name__ == '__main__':
         args = get_arguments()
         if (args.use != None):
             use_precollected(args.use)
-        else:
-            main()
+        elif (args.query != None):
+            main(args.query)
+
     except HttpError as err:
         err_json = json.loads(err.content)
         print '- HttpError Exception -'
@@ -125,4 +129,5 @@ if __name__ == '__main__':
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")
 
     finally:
-        print "Results logged to:", common.base
+        if common.is_initialized():
+            print "Results logged to:", common.base
