@@ -80,15 +80,15 @@ def process_query_responses(bigquery_service, queries):
 
 def save_query(query):
     query_jobId = query['jobReference']['jobId']
-    common.write_json(query, common.datadir("queries/%s.json" % query_jobId))
+    common.write_json(query, "queries/%s.json" % query_jobId)
 
 def save_query_result(query, result):
     query_jobId = query['jobReference']['jobId']
-    common.write_json(result, common.datadir("query-responses/%s.json" % query_jobId))
+    common.write_json(result, "query-responses/%s.json" % query_jobId)
 
-def load_previous_query(path):
-    print "Using previous query results from:", path
-    common.use_set(path)
+def use_previous_query(id):
+    print "Using previous query results from:", id
+    common.use_set(id)
     results = common.read_all()
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
@@ -102,20 +102,26 @@ def run_new_query(query_file):
     queries.append( queue_async_query(bigquery_service, query_file, UNION_DATASET) )
     process_query_responses(bigquery_service, queries)
     results = munger.munge( common.read_all() )
-    common.write_json(results, common.datadir("results.json"))
+    common.write_json(results, "results.json")
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-p", "--previous", help="use a previous query")
-    group.add_argument("-q", "--query", help="run a new query")
+
+    modelgroup = parser.add_mutually_exclusive_group(required=True)
+    modelgroup.add_argument("-p", "--previous", help="use a previous query")
+    modelgroup.add_argument("-q", "--query", help="run a new query")
+
+    stategroup = parser.add_mutually_exclusive_group(required=True)
+    stategroup.add_argument("-ps", "--previouss", help="use a previous query")
+    stategroup.add_argument("-qs", "--querys", help="run a new query")
+    
     return parser.parse_args()
 
 if __name__ == '__main__':
     try:
         args = get_arguments()
         if (args.previous != None):
-            load_previous_query(args.previous)
+            use_previous_query(args.previous)
         elif (args.query != None):
             run_new_query(args.query)
 
@@ -124,7 +130,7 @@ if __name__ == '__main__':
         print '- HttpError Exception -'
         print "code:", err_json["error"]["code"] 
         print "message:", err_json["error"]["message"]
-        common.write_json(err_json, common.datadir("error-fail-bad.json"))
+        common.write_json(err_json, "error-fail-bad.json")
 
     except AccessTokenRefreshError:
         print ("Credentials have been revoked or expired, please re-run the application to re-authorize")

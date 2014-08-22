@@ -4,6 +4,7 @@ import json
 import string
 import random
 
+dataroot = "data"
 base = "UnSet!"
 
 def is_initialized():
@@ -18,13 +19,11 @@ def new_set():
     
     id = generate_id(3, "XAMURE")
     time = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    base = "".join(['data/', id, time,'/'])
-    create_path(base)
-    return base
+    base = "%s-%s" % (id,time)
 
-def use_set(name):
+def use_set(id):
     global base
-    base = name
+    base = id
 
 def read_all():
     path = datadir('query-responses')
@@ -38,15 +37,15 @@ def read_all():
 
 def datadir(path):
     global base
-    return os.path.join(base,path) 
+    return os.path.join(dataroot,base,path) 
 
 def create_path(path):
-    directory = os.path.dirname(path) 
+    directory = os.path.dirname(datadir(path)) 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def write_json(data, path):
+def write_json(data,path):
     create_path(path)
-    with open(path, "w") as output_file:
+    with open(datadir(path), "w") as output_file:
         pretty_json = json.dumps(data, indent=4, sort_keys=True )
         output_file.write(pretty_json)
