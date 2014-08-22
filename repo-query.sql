@@ -15,6 +15,7 @@ FROM(
       WHEN type = "DeleteEvent" THEN CONCAT("DeleteEvent:", payload_ref_type)
       WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:", payload_action)
       WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
+      WHEN type = "GistEvent" THEN CONCAT("GistEvent:", payload_action)
       ELSE type
     END as state,
     FROM
