@@ -25,8 +25,8 @@ def use_set(id):
     global base
     base = id
 
-def read_all():
-    path = datadir('query-responses')
+def read_all(prefix):
+    path = datadir(os.path.join(prefix,'query-responses'))
     result = []
     for dir_entry in os.listdir(path):
         dir_entry_path = os.path.join(path, dir_entry)

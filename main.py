@@ -23,9 +23,10 @@ from oauth2client.tools import run
 PROJECT_ID = 'glass-guide-678'
 
 # These refer to datasets available on Google BigQuery
-TEST_DATASET = "[publicdata:samples.github_timeline]"
-UNION_DATASET = "[githubarchive:github.timeline], [githubarchive:github.2011]"
-REAL_DATASET = "[githubarchive:github.timeline]"
+DATASET_TEST = "[publicdata:samples.github_timeline]"
+DATASET_UNION = "[githubarchive:github.timeline], [githubarchive:github.2011]"
+DATASET_PRESENT = "[githubarchive:github.timeline]"
+DATASET_2011 = "[githubarchive:github.2011]"
 
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
 def get_bigquery_service():
@@ -42,7 +43,7 @@ def get_bigquery_service():
     http = httplib2.Http()
     return build('bigquery', 'v2', http=credentials.authorize(http))
 
-def queue_async_query(bigquery_service, query_filename, dataset):
+def queue_async_query(bigquery_service, prefix, query_filename, dataset):
     print "* async request:", dataset 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
@@ -51,10 +52,10 @@ def queue_async_query(bigquery_service, query_filename, dataset):
     jobData = { 'configuration': { 'query':{ 'query':bql } } }
     insertParameters = {'projectId':PROJECT_ID, 'body':jobData}
     query = bigquery_service.jobs().insert( **insertParameters ).execute()
-    save_query(query)
+    save_query(prefix, query)
     return query
 
-def process_query_responses(bigquery_service, queries):
+def process_query_responses(bigquery_service, prefix, queries):
     jobCollection = bigquery_service.jobs()
     for index, query in enumerate(queries):
         parameters = {
@@ -76,15 +77,15 @@ def process_query_responses(bigquery_service, queries):
             print "\tread %i/%s rows." % (len(rows), reply['totalRows'])
             reply = jobCollection.getQueryResults(**parameters).execute()
 
-        save_query_result( query, {"rows":rows} )
+        save_query_result( prefix, query, {"rows":rows} )
 
-def save_query(query):
+def save_query(prefix, query):
     query_jobId = query['jobReference']['jobId']
-    common.write_json(query, "queries/%s.json" % query_jobId)
+    common.write_json(query, "%s/queries/%s.json" % (prefix, query_jobId))
 
-def save_query_result(query, result):
+def save_query_result(prefix, query, result):
     query_jobId = query['jobReference']['jobId']
-    common.write_json(result, "query-responses/%s.json" % query_jobId)
+    common.write_json(result, "%s/query-responses/%s.json" % (prefix, query_jobId))
 
 def use_previous_query(id):
     print "Using previous query results from:", id
@@ -93,15 +94,27 @@ def use_previous_query(id):
     results = munger.munge( results )
     common.write_json(results, common.datadir("results.json"))
 
-def run_new_query(query_file):
+def run_new_query(model_query, state_query):
     print "Using project:", PROJECT_ID
-    print "Running query:", query_file
     common.new_set()
     bigquery_service = get_bigquery_service()
-    queries = [];
-    queries.append( queue_async_query(bigquery_service, query_file, UNION_DATASET) )
-    process_query_responses(bigquery_service, queries)
-    results = munger.munge( common.read_all() )
+
+    #run the model query
+    model_queries = [];
+    model_queries.append(
+            queue_async_query(bigquery_service, 'model', model_query, DATASET_UNION) )
+    process_query_responses(bigquery_service, 'model', model_queries)
+    model = munger.munge_model( common.read_all('model') )
+
+    #run the state queries
+    state_queries = [];
+    state_queries.append(
+            queue_async_query(bigquery_service, 'state', state_query, DATASET_UNION) )
+    process_query_responses(bigquery_service, 'state', state_queries)
+
+    state = munger.munge_state( common.read_all('state') )
+
+    results = {"state":state, "model":model}
     common.write_json(results, "results.json")
 
 def get_arguments():
@@ -121,9 +134,9 @@ if __name__ == '__main__':
     try:
         args = get_arguments()
         if (args.previous != None):
-            use_previous_query(args.previous)
+            use_previous_query(args.previous, args.previouss)
         elif (args.query != None):
-            run_new_query(args.query)
+            run_new_query(args.query, args.querys)
 
     except HttpError as err:
         err_json = json.loads(err.content)

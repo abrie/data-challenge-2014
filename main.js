@@ -34,13 +34,14 @@ function generateSvgElement(id) {
 
 function main() {
     $.ajax({
-        url: "data/repo-query/results.json",
+        url: "data/latest/results.json",
         dataType: "json",
     })
     .done(function( data ) {
         var svgElement = generateSvgElement("main-svg");
         $("#graph").append( svgElement );
-        displayData( data , "#main-svg" );
+        displayData( data.model , "#main-svg" );
+        console.log( data.state );
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 

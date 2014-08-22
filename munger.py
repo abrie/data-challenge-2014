@@ -3,12 +3,8 @@ import collections
 import mclinterface
 import common
 
-def convert_query_response_to_dict( query_response ):
+def convert_query_response_to_markovmodel( query_response ):
     result = MarkovModel() 
-
-    if not query_response.has_key('rows'):
-        print "no rows for jobId:", query_response['jobReference']['jobId'] 
-        return result
 
     for row in query_response['rows']:
         fields = row['f'];
@@ -16,6 +12,26 @@ def convert_query_response_to_dict( query_response ):
         second = fields[1]['v'];
         hits = fields[2]['v'];
         result[first][second]["hits"] = int(hits)
+
+    for k1,v1 in result.iteritems():
+        total = 0
+        for k2,v2 in v1.iteritems():
+            total += v2['hits']
+        for k2,v2 in v1.iteritems():
+            v2['weight'] = v2['hits'] / float(total)
+
+    return result;
+
+def convert_query_response_to_markovstate( query_response ):
+    result = MarkovState() 
+
+    for row in query_response['rows']:
+        fields = row['f'];
+        state = fields[0]['v'];
+        hits = fields[1]['v'];
+        weight = fields[2]['v'];
+        result[state]["hits"] = int(hits)
+        result[state]["weight"] = float(weight)
     return result;
 
 def compute_node_degrees(model, clusters):
@@ -34,6 +50,10 @@ def compute_node_degrees(model, clusters):
         result[k] = { "indegree": len(v["in"]), "outdegree": len(v["out"]) }
 
     return result 
+
+def MarkovState():
+    return collections.defaultdict(
+            lambda: {"hits":0, "weight":0})
 
 def MarkovModel():
     return collections.defaultdict(
@@ -82,38 +102,25 @@ def compute_cluster_degrees(event_model, event_clusters):
             } for cluster_id, events in nodes.iteritems()
         }
 
-def aggregate_query_responses( query_responses ):
-    aggregated = MarkovModel()
-    for index, query_response in enumerate(query_responses):
-        print " aggregate %i of %i..." % (index+1, len(query_responses))
-        d = convert_query_response_to_dict( query_response )
-        for k1,v1 in d.iteritems():
-            for k2,v2 in v1.iteritems():
-                aggregated[k1][k2]['hits'] += v2['hits']
-
-    for k1,v1 in aggregated.iteritems():
-        total = 0
-        for k2,v2 in v1.iteritems():
-            total += v2['hits']
-        for k2,v2 in v1.iteritems():
-            v2['weight'] = v2['hits'] / float(total)
-
-    return aggregated
-
-def munge(query_responses):
-    model = aggregate_query_responses(query_responses)
+def munge_state(query_responses):
+    result = convert_query_response_to_markovstate(query_responses[0])
+    print "markov state generation complete."
+    return result
+    
+def munge_model(query_responses):
+    model = convert_query_response_to_markovmodel(query_responses[0])
     clusters = mclinterface.get_clusters(model)
     node_degrees = compute_node_degrees(model, clusters)
     cluster_model = build_cluster_model(model, clusters)
     cluster_degrees = compute_cluster_degrees(model, clusters)
 
     results = {
-        'event_cluster_model' : cluster_model,
+        'cluster_model' : cluster_model,
         'event_model' : model, 
         'node_degrees' : node_degrees,
         'clusters' : clusters,
         'cluster_degrees' : cluster_degrees,
     }
 
-    print "processing complete."
+    print "markov model generation complete."
     return results
