@@ -56,9 +56,11 @@ function displayData( raw_data, selector ) {
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
+        var indegree = raw_data.cluster_degrees[cluster_id].indegree;
+        var outdegree = raw_data.cluster_degrees[cluster_id].outdegree;
         clusters.push({
             "name":cluster_id,
-            "degree":raw_data.cluster_degrees[cluster_id].indegree - raw_data.cluster_degrees[cluster_id].outdegree,
+            "degree":indegree - outdegree,
             "children": getNodesForCluster( raw_data, cluster_id )
         });
     }
@@ -157,9 +159,11 @@ function getNodesForCluster(data, cluster_id) {
            continue;
         }
         else {
+            var indegree = data.node_degrees[key].indegree;
+            var outdegree = data.node_degrees[key].outdegree;
             setCollection[key] = { 
                 "name": key,
-                "degree": data.node_degrees[key].indegree - data.node_degrees[key].outdegree
+                "degree": indegree - outdegree
             } 
         }
     }
