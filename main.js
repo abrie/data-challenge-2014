@@ -5,8 +5,8 @@ $( document ).ready( main );
 var VIEWBOX = {
     "min_x":0,
     "min_y":0,
-    "width":2000,
-    "height":2000,
+    "width":2500,
+    "height":2500,
     "str": function() {
         return [
             this.min_x,
