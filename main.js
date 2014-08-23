@@ -156,12 +156,6 @@ function getNodesForCluster(data, cluster_id) {
         if( data.clusters[key] !== cluster_id ) {
            continue;
         }
-        else if( key === '~' ) {
-            setCollection[key] = { 
-                "name": key,
-                "value": 0 
-            } 
-        }
         else {
             setCollection[key] = { 
                 "name": key,
