@@ -13,6 +13,9 @@ FROM(
       WHEN subselect_A.type = "IssuesEvent" THEN CONCAT("IssuesEvent:", subselect_A.payload_action)
       WHEN subselect_A.type = "GistEvent" THEN CONCAT("GistEvent:", subselect_A.payload_action)
       WHEN subselect_A.type = "IssueCommentEvent" THEN CONCAT("IssueCommentEvent:", subselect_A.payload_action)
+      WHEN subselect_A.type = "ReleaseEvent" THEN CONCAT("ReleaseEvent:", subselect_A.payload_action)
+      WHEN subselect_A.type = "WatchEvent" THEN CONCAT("StarEvent:", subselect_A.payload_action)
+      WHEN subselect_A.type = "MemberEvent" THEN CONCAT("MemberEvent:", subselect_A.payload_action)
       ELSE subselect_A.type
     END as concated_type,
     // the following subselect is because of a bigquery limitation with joins and table unions
@@ -37,6 +40,9 @@ FROM(
           WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
           WHEN type = "GistEvent" THEN CONCAT("GistEvent:", payload_action)
           WHEN type = "IssueCommentEvent" THEN CONCAT("IssueCommentEvent:", payload_action)
+          WHEN type = "ReleaseEvent" THEN CONCAT("ReleaseEvent:", payload_action)
+          WHEN type = "WatchEvent" THEN CONCAT("StarEvent:", payload_action)
+          WHEN type = "MemberEvent" THEN CONCAT("MemberEvent:", payload_action)
           ELSE type
         END as concated_type,
         FROM
