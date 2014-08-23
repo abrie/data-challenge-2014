@@ -2,28 +2,28 @@
 
 $( document ).ready( main );
 
-var VIEWBOX = {
-    "min_x":0,
-    "min_y":0,
-    "width":2500,
-    "height":2500,
-    "str": function() {
-        return [
-            this.min_x,
-            this.min_y,
-            this.width,
-            this.height
-        ].join(" ")},
-    "midpoint": function() {
-        return "translate(" + this.width/2 + "," + this.height/2 + ")";
+function ViewBox(width, height) {
+    return { 
+        "min_x":-width/2,
+        "min_y":-height/2,
+        "width":width,
+        "height":height,
+        "attr": function() {
+            return [
+                this.min_x,
+                this.min_y,
+                this.width,
+                this.height
+            ].join(" ")},
     }
 }
 
 function generateSvgElement(id) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    var viewBox = new ViewBox(1450,1450);
     svg.setAttribute('id', id);
-    svg.setAttribute('preserveAspectRatio',"xMidYMid slice");
-    svg.setAttribute('viewBox',VIEWBOX.str());
+    svg.setAttribute('preserveAspectRatio',"xMidYMid meet");
+    svg.setAttribute('viewBox',viewBox.attr());
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
@@ -96,8 +96,7 @@ function displayData( raw_data, selector ) {
         });
 
     var svg = d3.select(selector)
-        .append("g")
-        .attr("transform", VIEWBOX.midpoint());
+        .append("g");
 
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
