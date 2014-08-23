@@ -41,48 +41,49 @@ function main() {
         var svgElement = generateSvgElement("main-svg");
         $("#graph").append( svgElement );
         displayData( data.model , "#main-svg" );
-        console.log( data.state );
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
     })
 }
 
-function displayData( raw_data, selector ) {
+function displayData( data, selector ) {
     var radius = 300;
-    var cluster = d3.layout.cluster()
-        .size([360, radius])
-        .sort( function(a,b) { return d3.ascending(a.degree, b.degree) } )
 
     var clusters = [];
-    for( var cluster_id in raw_data.cluster_degrees ) {
-        var indegree = raw_data.cluster_degrees[cluster_id].indegree;
-        var outdegree = raw_data.cluster_degrees[cluster_id].outdegree;
+    for( var cluster_id in data.cluster_degrees ) {
+        var indegree = data.cluster_degrees[cluster_id].indegree;
+        var outdegree = data.cluster_degrees[cluster_id].outdegree;
         clusters.push({
-            "name":cluster_id,
-            "degree":indegree - outdegree,
-            "children": getNodesForCluster( raw_data, cluster_id )
+            "name": cluster_id,
+            "degree": indegree - outdegree,
+            "children": getNodesForCluster( data, cluster_id )
         });
     }
 
-    var node_data = {
-        "name":"root", 
-        "degree":0,
-        children: clusters
-    };
+    var clusterLayout = d3.layout.cluster()
+        .size([360, radius])
+        .sort( function(a,b) {
+            return d3.ascending(a.degree, b.degree)
+        })
 
-    var nodes = cluster.nodes( node_data );
-    var node_name_map = {}
+    var nodes = clusterLayout.nodes( {
+            "name":"root", 
+            "degree":0,
+            children: clusters
+        });
+
+    var node_names = {}
     nodes.forEach( function(node) {
-        node_name_map[node.name] = node;
+        node_names[node.name] = node;
     });
 
     var links = [];
-    for(var k in raw_data.event_model) {
-        for(var k2 in raw_data.event_model[k] ) {
+    for(var k in data.event_model) {
+        for(var k2 in data.event_model[k] ) {
             links.push({
-                source:node_name_map[k],
-                target:node_name_map[k2]
+                source:node_names[k],
+                target:node_names[k2]
             });
         } 
     }
@@ -91,10 +92,13 @@ function displayData( raw_data, selector ) {
         .interpolate("bundle")
         .tension(0.85)
         .radius(function(d) { 
-            return d.y; 
+            var jitter = Math.random()/50;
+            return d.y-jitter; 
         })
         .angle(function(d) { 
-            return d.x / 180 * Math.PI; 
+            var jitter = Math.random()/10;
+            jitter -= jitter/2;
+            return d.x / 180 * Math.PI + jitter; 
         });
 
     var svg = d3.select(selector)
@@ -110,13 +114,13 @@ function displayData( raw_data, selector ) {
         .attr("class","link")  
         .style("stroke", function(d) {
             var source_state = d[0].name
-            var source_cluster = raw_data.clusters[source_state]; 
+            var source_cluster = data.clusters[source_state]; 
             return linkColorScale(source_cluster);
         })
         .style("stroke-width", function(d) {
             var source_state = d[0].name
             var target_state = d[d.length-1].name
-            var weight = raw_data.event_model[source_state][target_state].weight;
+            var weight = data.event_model[source_state][target_state].weight;
             return linkWidthScale(weight);  
         })
         .attr("d", line);
