@@ -56,11 +56,10 @@ function displayData( raw_data, selector ) {
 
     var clusters = [];
     for( var cluster_id in raw_data.cluster_degrees ) {
-        var cluster_data = buildGraphData( raw_data, cluster_id )
         clusters.push({
             "name":cluster_id,
             "value":raw_data.cluster_degrees[cluster_id].indegree + raw_data.cluster_degrees[cluster_id].outdegree,
-            "children":cluster_data.nodes
+            "children": getNodesForCluster( raw_data, cluster_id )
         });
     }
 
@@ -152,40 +151,30 @@ function displayData( raw_data, selector ) {
         });
 }
 
-function buildGraphData(raw_data, cluster_id) {
-    function inClusterFilter( key ) {
-        return raw_data.clusters[key] === cluster_id;
-    }
-
-    function buildNodeList( data ) {
-        var result = [];
-        for( var key in data.event_model ) {
-            var index = result.indexOf( key );
-            if( index < 0 ) {
-                if(inClusterFilter(key)) {
-                    result.push( key );
-                }
-            }
+function getNodesForCluster(data, cluster_id) {
+    var setCollection = {};
+    for( var key in data.event_model ) {
+        if( data.clusters[key] !== cluster_id ) {
+           continue;
         }
-
-        return result.map( function(key) { 
-            if( key === '~' ) {
-                return { 
-                    "name": key,
-                    "value": 0 
-                } 
-            }
-            else {
-                return { 
-                    "name": key,
-                    "value": data.node_degrees[key].indegree + data.node_degrees[key].outdegree
-                } 
-            }
-        });
-
+        else if( key === '~' ) {
+            setCollection[key] = { 
+                "name": key,
+                "value": 0 
+            } 
+        }
+        else {
+            setCollection[key] = { 
+                "name": key,
+                "value": data.node_degrees[key].indegree - data.node_degrees[key].outdegree
+            } 
+        }
     }
 
-    return {
-        nodes: buildNodeList( raw_data ) 
-    }
+    var result = [];
+    for( var key in setCollection ) {
+        result.push(setCollection[key]);
+    } 
+
+    return result;
 }
