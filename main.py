@@ -22,7 +22,7 @@ from oauth2client.file import Storage
 from oauth2client.tools import run
 
 # Enter your Google Developer Project number
-PROJECT_ID = 'glass-guide-678'
+PROJECT_ID = 'linear-quasar-662'
 
 # These refer to datasets available on Google BigQuery
 DATASET_TEST = "[publicdata:samples.github_timeline]"
@@ -99,6 +99,27 @@ def use_previous_query(id):
     common.write_json(results, "results.json")
     crunch(results)
 
+def use_previous_time_query(id):
+    print "Using previous query results from:", id
+    common.use_set(id)
+    times = munger.munge_times( common.read_all('times') )
+    results = {"times":times}
+    common.write_json(results, "results.json")
+
+def run_new_time_query(time_query):
+    print "Using project:", PROJECT_ID
+    common.new_set()
+    bigquery_service = get_bigquery_service()
+
+    #run the time query
+    time_queries = [];
+    time_queries.append(
+            queue_async_query(bigquery_service, 'times', time_query, DATASET_UNION) )
+    process_query_responses(bigquery_service, 'times', time_queries)
+    times = munger.munge_times( common.read_all('times') )
+    results = {"times":time}
+    common.write_json(results, "results.json")
+
 def run_new_query(model_query, state_query):
     print "Using project:", PROJECT_ID
     common.new_set()
@@ -131,6 +152,8 @@ def get_arguments():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-p", "--id", help="reuse a previous query")
+    parser.add_argument("-t", "--time", help="run a time query")
+    parser.add_argument("-pt", "--tid", help="reuse a time query")
     parser.add_argument("-qm", "--modelsql", help="sql file used for model query")
     parser.add_argument("-qs", "--statesql", help="sql file used for state query")
     return parser
@@ -140,7 +163,11 @@ if __name__ == '__main__':
     try:
         parser = get_arguments()
         args = parser.parse_args()
-        if( args.id is None and args.modelsql is None and args.statesql is None):
+        if (args.time is not None):
+            run_new_time_query(args.time)
+        elif (args.tid is not None):
+            use_previous_time_query(args.tid)
+        elif( args.id is None and args.modelsql is None and args.statesql is None):
             parser.error("what to do?")
         elif (args.id is not None):
             use_previous_query(args.id)

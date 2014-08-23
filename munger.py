@@ -3,14 +3,27 @@ import collections
 import mclinterface
 import common
 
+def convert_query_response_to_eventtimes( query_response ):
+    result = EventTimes()
+
+    for row in query_response['rows']:
+        fields = row['f']
+        event = fields[0]['v']
+        first = fields[1]['v']
+        last = fields[2]['v']
+        result[event]["first"] = first
+        result[event]["last"] = last
+
+    return result
+
 def convert_query_response_to_markovmodel( query_response ):
     result = MarkovModel() 
 
     for row in query_response['rows']:
-        fields = row['f'];
-        first = fields[0]['v'];
-        second = fields[1]['v'];
-        hits = fields[2]['v'];
+        fields = row['f']
+        first = fields[0]['v']
+        second = fields[1]['v']
+        hits = fields[2]['v']
         result[first][second]["hits"] = int(hits)
 
     for k1,v1 in result.iteritems():
@@ -50,6 +63,10 @@ def compute_node_degrees(model, clusters):
         result[k] = { "indegree": len(v["in"]), "outdegree": len(v["out"]) }
 
     return result 
+
+def EventTimes():
+    return collections.defaultdict(
+            lambda: {"first":"unspecified","last":"unspecified"})
 
 def MarkovState():
     return collections.defaultdict(
@@ -101,6 +118,11 @@ def compute_cluster_degrees(event_model, event_clusters):
                 "outdegree": len(events["out"])
             } for cluster_id, events in nodes.iteritems()
         }
+
+def munge_times(query_responses):
+    result = convert_query_response_to_eventtimes(query_responses[0])
+    print "eventtimes gathered."
+    return result
 
 def munge_state(query_responses):
     result = convert_query_response_to_markovstate(query_responses[0])
