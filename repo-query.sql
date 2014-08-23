@@ -26,6 +26,7 @@ FROM(
       WHEN type = "ReleaseEvent" THEN CONCAT("ReleaseEvent:", payload_action)
       WHEN type = "WatchEvent" THEN CONCAT("StarEvent:", payload_action)
       WHEN type = "MemberEvent" THEN CONCAT("MemberEvent:", payload_action)
+      WHEN type = "GollumEvent" Then CONCAT("GollumEvent:", payload_page_action)
       ELSE type
     END as state,
     FROM
