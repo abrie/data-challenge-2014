@@ -65,13 +65,18 @@ def process_query_responses(bigquery_service, prefix, queries):
                 "jobId":query['jobReference']['jobId'],
                 "projectId":PROJECT_ID
                 }
-        sys.stdout.write("Awaiting: %s [" % parameters["jobId"])
+        sys.stdout.write("Awaiting: %s [..." % parameters["jobId"])
+        sys.stdout.flush()
         resultsRequest = jobCollection.getQueryResults(**parameters)
         while True:
             reply = resultsRequest.execute()
-            if reply['jobComplete']: break
-            sys.stdout.write('.')
-        print "done]"
+            if reply['jobComplete']:
+                break
+            else:
+                sys.stdout.write('...')
+                sys.stdout.flush()
+        sys.stdout.write("done]\n")
+        sys.stdout.flush()
 
         rows = [];
         while( ('rows' in reply) and len(rows) < reply['totalRows']):
@@ -94,8 +99,7 @@ def use_previous_query(id):
     print "Using previous query results from:", id
     common.use_set(id)
     model = munger.munge_model( common.read_all('model') )
-    state = {}
-    #state = munger.munge_state( common.read_all('state') )
+    state = munger.munge_state( common.read_all('state') )
     times = munger.munge_times( common.read_all('times') )
 
     results = {"state":state, "model":model, "times":times}
@@ -116,11 +120,11 @@ def run_new_query(model_query, state_query, time_query):
 
     #run the state queries
     state = {}
-    #state_queries = [];
-    #state_queries.append(
-    #        queue_async_query(bigquery_service, 'state', state_query, DATASET_REAL) )
-    #process_query_responses(bigquery_service, 'state', state_queries)
-    #state = munger.munge_state( common.read_all('state') )
+    state_queries = [];
+    state_queries.append(
+            queue_async_query(bigquery_service, 'state', state_query, DATASET_REAL) )
+    process_query_responses(bigquery_service, 'state', state_queries)
+    state = munger.munge_state( common.read_all('state') )
 
     #run the time query
     time_queries = [];
