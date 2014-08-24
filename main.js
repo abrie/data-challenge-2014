@@ -218,7 +218,24 @@ function displayModel( data, selector ) {
 
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
-    var linkWidthScale = d3.scale.pow().range([0.0,10]);
+
+    function weightsList() {
+        var set = {};
+        for(k in data.event_model) {
+            for(k2 in data.event_model[k]) {
+                var weight = data.event_model[k][k2].weight;
+                set[weight] = true;
+            }
+        }
+        var result = [];
+        for(k in set) {
+            result.push(parseFloat(k));
+        }
+
+        return result;
+    }
+
+    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,30]);
     var link = svg.append("g")
         .selectAll(".link")
         .data( bundle(links) )
