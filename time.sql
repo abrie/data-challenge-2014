@@ -29,7 +29,6 @@ FROM(
     $dataset
   WHERE 
     type IS NOT NULL
-    AND repository_url IS NOT NULL
     AND NOT (type = "PullRequestEvent" AND payload_action = "merged")
     AND created_at >= "2011-2-12" // the offical start date of the archive. 
   GROUP EACH BY
