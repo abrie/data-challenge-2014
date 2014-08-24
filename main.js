@@ -69,7 +69,7 @@ function main() {
             displayTimes( data.times , "#main-svg" );
         }
 
-        b();
+        a();
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
@@ -90,9 +90,8 @@ function displayTimes( data, selector ) {
         minimumDate = minimumDate > firstDate ? firstDate : minimumDate; 
         maximumDate = maximumDate < lastDate ? lastDate : maximumDate;
         var days = Math.ceil( Math.abs(lastDate-firstDate)/(1000*60*60*24) )
-        console.log(key, lastDate,firstDate,lastDate-firstDate);
         keys.push({
-            name: key.replace("Event:",":"),
+            name: key,
             min: firstDate,
             max: lastDate,
             days: days
@@ -115,7 +114,6 @@ function displayTimes( data, selector ) {
     for( var d in ageSet ) {
         ages.push(d);
     }
-    console.log(ages);
     var ageScale = d3.scale.threshold().domain(ages).range([0,10]);
 
     var x = d3.time.scale()
@@ -159,9 +157,6 @@ function displayTimes( data, selector ) {
         .attr("text-anchor", "start")
         .attr("font-size", "25")
         .text(function(d) { return d.name; });
-
-    //svg.append("g").call(xAxis);
-    //svg.append("g").call(yAxis);
 }
 
 function displayModel( data, selector ) {
@@ -253,18 +248,24 @@ function displayModel( data, selector ) {
         .attr("class", "node")
         .attr("transform", function(d) { 
             return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; 
-        })
-        .append("text")
+        });
+
+    var font_size = 30;
+    node.append("text")
         .attr("dx", function(d) { 
-            return d.x < 180 ? 8 : -8; 
+            var offset = Math.ceil(font_size/2);
+            return d.x < 180 ? offset : -offset; 
         })
-        .attr("dy", "0.5")
+        .attr("dy", function(d) {
+            var offset = Math.ceil(font_size/2);
+            return d.x < 180 ? offset : 0;
+        })
         .attr("text-anchor", function(d) { 
             return d.x < 180 ? "start" : "end";
         })
-        .attr("font-size", "30")
+        .attr("font-size", function(d) { return font_size; })
         .attr("transform", function(d) { 
-            return d.x < 180 ? null : "rotate(180)";
+            return d.x < 180 ? "rotate(0)" : "rotate(180)";
         })
         .text(function(d) { 
             if(d.depth > 1) {
