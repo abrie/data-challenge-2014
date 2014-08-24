@@ -4,11 +4,11 @@ SELECT
 FROM(
   SELECT
     state as present_state,
-    LAG(present_state, 1, '~') OVER (PARTITION BY repository_url ORDER BY time) as previous_state
+    LAG(present_state, 1, '~') OVER (PARTITION BY repository_url ORDER BY created_at) as previous_state
   FROM(
     SELECT
     repository_url,
-    PARSE_UTC_USEC(created_at) as time,
+    created_at,
     CASE
       WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:",
         IF(payload_ref_type is null, "repository", payload_ref_type))
@@ -16,7 +16,7 @@ FROM(
       WHEN type = "PullRequestEvent" THEN CONCAT("PullRequestEvent:",
         CASE
             WHEN payload_action = "closed" THEN
-              IF(payload_pull_request_merged == "false", "closedUnmerged","merged")
+              IF(payload_pull_request_merged == "false", "closed-not-merged","closed-merged")
             ELSE payload_action
         END)
       WHEN type = "IssuesEvent" THEN CONCAT("IssuesEvent:", payload_action)
@@ -24,7 +24,7 @@ FROM(
       WHEN type = "IssueCommentEvent" THEN CONCAT("IssueCommentEvent:",
         IF(payload_action is null, "created", payload_action))
       WHEN type = "ReleaseEvent" THEN CONCAT("ReleaseEvent:", payload_action)
-      WHEN type = "WatchEvent" THEN CONCAT("StarEvent:", payload_action)
+      WHEN type = "WatchEvent" THEN CONCAT("WatchEvent:", payload_action)
       WHEN type = "MemberEvent" THEN CONCAT("MemberEvent:", payload_action)
       WHEN type = "GollumEvent" Then CONCAT("GollumEvent:", payload_page_action)
       ELSE type
@@ -32,8 +32,10 @@ FROM(
     FROM
         $dataset
     WHERE
-      repository_url IS NOT NULL
+      type IS NOT NULL  
+      AND repository_url IS NOT NULL
       AND NOT (type = "PullRequestEvent" AND payload_action = "merged")
-    GROUP EACH BY repository_url, time, state
-  ) GROUP EACH BY repository_url, time, present_state
+      AND created_at >= "2011-2-12" // the offical start date of the archive. 
+    GROUP EACH BY repository_url, created_at, state
+  ) GROUP EACH BY repository_url, created_at, present_state
 ) GROUP EACH BY previous_state, present_state

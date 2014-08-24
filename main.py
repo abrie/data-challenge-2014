@@ -22,13 +22,14 @@ from oauth2client.file import Storage
 from oauth2client.tools import run
 
 # Enter your Google Developer Project number
-PROJECT_ID = 'linear-quasar-662'
+#PROJECT_ID = 'glass-guide-678'
+#PROJECT_ID = 'linear-quasar-662'
+#PROJECT_ID = 'directed-potion-651'
+PROJECT_ID = 'tough-pod-681'
 
 # These refer to datasets available on Google BigQuery
 DATASET_TEST = "[publicdata:samples.github_timeline]"
-DATASET_UNION = "[githubarchive:github.timeline], [githubarchive:github.2011]"
-DATASET_PRESENT = "[githubarchive:github.timeline]"
-DATASET_2011 = "[githubarchive:github.2011]"
+DATASET_REAL = "[githubarchive:github.timeline]"
 
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
 def get_bigquery_service():
@@ -93,88 +94,65 @@ def use_previous_query(id):
     print "Using previous query results from:", id
     common.use_set(id)
     model = munger.munge_model( common.read_all('model') )
-    state = munger.munge_state( common.read_all('state') )
-
-    results = {"state":state, "model":model}
-    common.write_json(results, "results.json")
-    crunch(results)
-
-def use_previous_time_query(id):
-    print "Using previous query results from:", id
-    common.use_set(id)
+    state = {}
+    #state = munger.munge_state( common.read_all('state') )
     times = munger.munge_times( common.read_all('times') )
-    results = {"times":times}
+
+    results = {"state":state, "model":model, "times":times}
     common.write_json(results, "results.json")
 
-def run_new_time_query(time_query):
-    print "Using project:", PROJECT_ID
-    common.new_set()
-    bigquery_service = get_bigquery_service()
-
-    #run the time query
-    time_queries = [];
-    time_queries.append(
-            queue_async_query(bigquery_service, 'times', time_query, DATASET_UNION) )
-    process_query_responses(bigquery_service, 'times', time_queries)
-    times = munger.munge_times( common.read_all('times') )
-    results = {"times":time}
-    common.write_json(results, "results.json")
-
-def run_new_query(model_query, state_query):
+def run_new_query(model_query, state_query, time_query):
     print "Using project:", PROJECT_ID
     common.new_set()
     bigquery_service = get_bigquery_service()
 
     #run the model query
     model_queries = [];
+    model = {}
     model_queries.append(
-            queue_async_query(bigquery_service, 'model', model_query, DATASET_UNION) )
+            queue_async_query(bigquery_service, 'model', model_query, DATASET_REAL) )
     process_query_responses(bigquery_service, 'model', model_queries)
     model = munger.munge_model( common.read_all('model') )
 
     #run the state queries
-    state_queries = [];
-    state_queries.append(
-            queue_async_query(bigquery_service, 'state', state_query, DATASET_UNION) )
-    process_query_responses(bigquery_service, 'state', state_queries)
+    state = {}
+    #state_queries = [];
+    #state_queries.append(
+    #        queue_async_query(bigquery_service, 'state', state_query, DATASET_REAL) )
+    #process_query_responses(bigquery_service, 'state', state_queries)
+    #state = munger.munge_state( common.read_all('state') )
 
-    state = munger.munge_state( common.read_all('state') )
+    #run the time query
+    time_queries = [];
+    times = {}
+    time_queries.append(
+            queue_async_query(bigquery_service, 'times', time_query, DATASET_REAL) )
+    process_query_responses(bigquery_service, 'times', time_queries)
+    times = munger.munge_times( common.read_all('times') )
 
-    results = {"state":state, "model":model}
+    results = {"state":state, "model":model, "times":times}
     common.write_json(results, "results.json")
-
-    crunch(results)
-
-def crunch(data):
-    print "not ready"
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-
     parser.add_argument("-p", "--id", help="reuse a previous query")
-    parser.add_argument("-t", "--time", help="run a time query")
-    parser.add_argument("-pt", "--tid", help="reuse a time query")
     parser.add_argument("-qm", "--modelsql", help="sql file used for model query")
     parser.add_argument("-qs", "--statesql", help="sql file used for state query")
+    parser.add_argument("-qt", "--timessql", help="sql file used for times query")
     return parser
-
 
 if __name__ == '__main__':
     try:
         parser = get_arguments()
         args = parser.parse_args()
-        if (args.time is not None):
-            run_new_time_query(args.time)
-        elif (args.tid is not None):
-            use_previous_time_query(args.tid)
-        elif( args.id is None and args.modelsql is None and args.statesql is None):
+        if( args.id is None and args.modelsql is None and args.statesql is None and args.timessql is None):
             parser.error("what to do?")
         elif (args.id is not None):
             use_previous_query(args.id)
-        elif (args.modelsql is not None and args.statesql is not None ):
-            run_new_query(args.modelsql, args.statesql)
+        elif (args.modelsql is not None and args.statesql is not None and args.timessql is not None ):
+            run_new_query(args.modelsql, args.statesql, args.timessql)
         else:
-            parser.error("-qm and -qs arguments must be used together")
+            parser.error("-qm, -qs, and -qt arguments must be used together")
 
     except HttpError as err:
         err_json = json.loads(err.content)

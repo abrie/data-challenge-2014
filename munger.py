@@ -1,4 +1,5 @@
 import collections
+import time
 
 import mclinterface
 import common
@@ -11,8 +12,8 @@ def convert_query_response_to_eventtimes( query_response ):
         event = fields[0]['v']
         first = fields[1]['v']
         last = fields[2]['v']
-        result[event]["first"] = first
-        result[event]["last"] = last
+        result[event]["first"] = long(first) 
+        result[event]["last"] = long(last) 
 
     return result
 
@@ -66,7 +67,7 @@ def compute_node_degrees(model, clusters):
 
 def EventTimes():
     return collections.defaultdict(
-            lambda: {"first":"unspecified","last":"unspecified"})
+            lambda: {"first":0,"last":0})
 
 def MarkovState():
     return collections.defaultdict(

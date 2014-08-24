@@ -2,12 +2,13 @@
 
 $( document ).ready( main );
 
-function ViewBox(width, height) {
+function ViewBox(width, height, aspect) {
     return { 
         "min_x":-width/2,
         "min_y":-height/2,
         "width":width,
         "height":height,
+        "aspect":aspect,
         "attr": function() {
             return [
                 this.min_x,
@@ -18,11 +19,27 @@ function ViewBox(width, height) {
     }
 }
 
-function generateSvgElement(id) {
+function CornerViewBox(width, height, aspect) {
+    return { 
+        "min_x":0,
+        "min_y":0,
+        "width":width,
+        "height":height,
+        "aspect":aspect,
+        "attr": function() {
+            return [
+                this.min_x,
+                this.min_y,
+                this.width,
+                this.height
+            ].join(" ")},
+    }
+}
+
+function generateSvgElement(id, viewBox) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    var viewBox = new ViewBox(1450,1450);
     svg.setAttribute('id', id);
-    svg.setAttribute('preserveAspectRatio',"xMidYMid meet");
+    svg.setAttribute('preserveAspectRatio',viewBox.aspect);
     svg.setAttribute('viewBox',viewBox.attr());
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
@@ -38,16 +55,116 @@ function main() {
         dataType: "json",
     })
     .done(function( data ) {
-        var svgElement = generateSvgElement("main-svg");
-        $("#graph").append( svgElement );
-        displayData( data.model , "#main-svg" );
+        function a() {
+            var svgElement = generateSvgElement( "main-svg",
+                new ViewBox(1450,1450, "xMidYMid meet"));
+            $("#graph").append( svgElement );
+            displayModel( data.model , "#main-svg" );
+        }
+        
+        function b() {
+            var svgElement_b = generateSvgElement( "main-svg",
+                new CornerViewBox(1450,1450, "xMinYMin meet"));
+            $("#graph").append( svgElement_b );
+            displayTimes( data.times , "#main-svg" );
+        }
+
+        b();
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
     })
 }
 
-function displayData( data, selector ) {
+function displayTimes( data, selector ) {
+    // example format: "2011-02-12 00:01:31" 
+    var timeFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
+
+    // http://stackoverflow.com/a/11526569
+    var minimumDate = new Date(8640000000000000);
+    var maximumDate = new Date(-8640000000000000); 
+    var keys = [];
+    for(var key in data) {
+        var firstDate = new Date(data[key]["first"]);
+        var lastDate = new Date(data[key]["last"]); 
+        minimumDate = minimumDate > firstDate ? firstDate : minimumDate; 
+        maximumDate = maximumDate < lastDate ? lastDate : maximumDate;
+        var days = Math.ceil( Math.abs(lastDate-firstDate)/(1000*60*60*24) )
+        console.log(key, lastDate,firstDate,lastDate-firstDate);
+        keys.push({
+            name: key.replace("Event:",":"),
+            min: firstDate,
+            max: lastDate,
+            days: days
+        });
+    }
+
+    keys.sort( function(a,b) {
+        return d3.descending(a.min, b.min)
+    })
+
+    keys.forEach( function(d) {
+        console.log(d.days);
+    });
+
+    var ageSet = {};
+    keys.forEach( function(d) {
+        ageSet[d.days] = true;
+    });
+    var ages = [];
+    for( var d in ageSet ) {
+        ages.push(d);
+    }
+    console.log(ages);
+    var ageScale = d3.scale.threshold().domain(ages).range([0,10]);
+
+    var x = d3.time.scale()
+        .domain([minimumDate,maximumDate])
+        .range([0, 1100]);
+
+    var y = d3.scale.ordinal().domain(
+        keys.map( function(d) {
+            return d.name;
+        })).rangeRoundBands([0,1400]);
+
+    var svg = d3.select(selector).append("g");
+
+    var bar = svg.append("g")
+        .selectAll()
+        .data(keys, function(d) { return d.name; } )
+        .enter().append("g")
+
+    function translate(x,y) {
+        return "translate(" + x + "," + y + ")";
+    }
+
+    var barColorScale = d3.scale.category10();
+    bar.append("rect")
+        .attr("width", function(d) { return x(d.max) - x(d.min); })
+        .attr("height", y.rangeBand()-4)
+        .attr("dy", 2)
+        .attr("transform", function(d) { 
+            return translate(x(d.min), y(d.name));
+        })
+        .style("fill", function(d) { return barColorScale(ageScale(d.days)); })
+        .style("stroke", "gray")
+
+    bar.append("text")
+        .attr("x", 0)
+        .attr("y", y.rangeBand() / 2)
+        .attr("dy", 10)
+        .attr("transform", function(d) { 
+            return translate(x(maximumDate), y(d.name));
+        })
+        .attr("text-anchor", "start")
+        .attr("font-size", "25")
+        .text(function(d) { return d.name; });
+
+    //svg.append("g").call(xAxis);
+    //svg.append("g").call(yAxis);
+}
+
+function displayModel( data, selector ) {
     var radius = 300;
 
     var clusters = [];
