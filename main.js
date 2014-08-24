@@ -235,12 +235,19 @@ function displayModel( data, selector ) {
         return result;
     }
 
-    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,30]);
+    var linkOpacityScale = d3.scale.linear().domain(weightsList()).range([0.1,0.5]);
+    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,10]);
     var link = svg.append("g")
         .selectAll(".link")
         .data( bundle(links) )
         .enter().append("path")
         .attr("class","link")  
+        .style("opacity", function(d) {
+            var source_state = d[0].name
+            var target_state = d[d.length-1].name
+            var weight = data.event_model[source_state][target_state].weight;
+            return linkOpacityScale(weight);  
+        })
         .style("stroke", function(d) {
             var source_state = d[0].name
             var source_cluster = data.clusters[source_state]; 
