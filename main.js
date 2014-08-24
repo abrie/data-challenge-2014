@@ -59,7 +59,7 @@ function main() {
             var svgElement = generateSvgElement( "main-svg",
                 new ViewBox(1450,1450, "xMidYMid meet"));
             $("#graph").append( svgElement );
-            displayModel( data.model , "#main-svg" );
+            displayModel( data.model, data.state, "#main-svg" );
         }
         
         function b() {
@@ -159,7 +159,7 @@ function displayTimes( data, selector ) {
         .text(function(d) { return d.name; });
 }
 
-function displayModel( data, selector ) {
+function displayModel( data, state, selector ) {
     var svg = d3.select(selector).append("g");
     var linkGroup = svg.append("g").attr("class","link-group");
     var nodeGroup = svg.append("g").attr("class","node-group");
@@ -220,6 +220,23 @@ function displayModel( data, selector ) {
 
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
+
+    function populationDomain() {
+        var result = [];
+        for(k in state) {
+            result.push(state[k].hits)
+        }
+
+        var sorted = result.sort(function(a,b) { 
+            if(a<b) return -1;
+            if(a>b) return 1;
+            return 0
+        });
+
+        return [sorted[0], sorted[sorted.length-1]];
+    }
+
+    var populationScale = d3.scale.linear().domain(populationDomain()).range([1,400]);
 
     function weightsList() {
         var set = {};
@@ -285,7 +302,11 @@ function displayModel( data, selector ) {
 
     var box = label.append("rect")
         .attr("height",font_size*1.5 )
-        .attr("width", 400)
+        .attr("width", function(d) { 
+            var population = state[d.name];
+            var hits = population ? population.hits : 1;
+            return populationScale(hits);
+        })
         .attr("transform", function(d) {
             var t = d3.svg.transform()
                 .translate(0,-font_size/4);
