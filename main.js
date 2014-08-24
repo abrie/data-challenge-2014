@@ -161,10 +161,17 @@ function displayTimes( data, selector ) {
 
 function displayModel( data, state, selector ) {
     var svg = d3.select(selector).append("g");
-    var linkGroup = svg.append("g").attr("class","link-group");
     var nodeGroup = svg.append("g").attr("class","node-group");
+    var circleTemplateGroup = svg.append("g").attr("class","circle-template-group");
+    var linkGroup = svg.append("g").attr("class","link-group");
 
     var radius = 300;
+
+    circleTemplateGroup.append("circle")
+        .attr("r",301)
+        .attr("fill","white")
+        .attr("stroke-width", "5")
+        .attr("stroke", "#777");
 
     var clusters = [];
     for( var cluster_id in data.cluster_degrees ) {
@@ -304,8 +311,12 @@ function displayModel( data, state, selector ) {
         .attr("height",font_size*1.5 )
         .attr("width", function(d) { 
             var population = state[d.name];
-            var hits = population ? population.hits : 1;
-            return populationScale(hits);
+            if( population === undefined ) {
+                return 1;
+            }
+            else {
+                return populationScale(population.hits);
+            }
         })
         .attr("transform", function(d) {
             var t = d3.svg.transform()
