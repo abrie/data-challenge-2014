@@ -245,32 +245,69 @@ function displayModel( data, selector ) {
     var node = svg.append("g").selectAll(".node")
         .data(nodes)
         .enter().append("g")
-        .attr("class", "node")
-        .attr("transform", function(d) { 
-            return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; 
-        });
+        .attr("class", "node");
 
     var font_size = 30;
-    node.append("text")
-        .attr("dx", function(d) { 
-            var offset = Math.ceil(font_size/2);
-            return d.x < 180 ? offset : -offset; 
-        })
-        .attr("dy", function(d) {
-            var offset = Math.ceil(font_size/2);
-            return d.x < 180 ? offset : 0;
-        })
-        .attr("text-anchor", function(d) { 
-            return d.x < 180 ? "start" : "end";
-        })
-        .attr("font-size", function(d) { return font_size; })
+    var label = node.filter( function(d) { return d.depth > 1})
+        .append("g")
         .attr("transform", function(d) { 
-            return d.x < 180 ? "rotate(0)" : "rotate(180)";
+            var t = d3.svg.transform()
+                .rotate(d.x-90)
+                .translate(d.y, 0);
+            return t();
+        });
+
+    var box = label.append("rect")
+        .attr("height",font_size*1.5 )
+        .attr("width", 400)
+        .attr("transform", function(d) {
+            var t = d3.svg.transform()
+                .translate(0,-font_size/4);
+            return t();
+        })
+        .style("fill", function(d) {
+            var source_state = d.name
+            var source_cluster = data.clusters[source_state]; 
+            return linkColorScale(source_cluster);
+        })
+        .style("opacity", "0.25")
+
+    var text = label.append("text")
+        .attr("class","node-text")
+        .attr("dx", function(d) {
+            var offset = 20;
+            if( d.x > 180 && d.x < 360 ) {
+                offset = -20;
+            }
+            return offset;
+        })
+        .style("font-size", font_size)
+        .attr("alignment-baseline", function(d) {
+            var alignment = "before-edge";
+            if( d.x > 180 && d.x < 360 ) {
+                alignment = "auto";
+            }
+            return alignment;
+        })
+        .attr("text-anchor", function(d) {
+            if( d.x > 180 && d.x < 360 ) {
+                return "end";
+            }
+            else {
+                return "start";
+            }
+        })
+        .attr("transform", function(d) {
+            var angle = 0;
+            if( d.x > 180 && d.x < 360 ) {
+               angle = 180 
+            }
+            var t = d3.svg.transform()
+                .rotate(angle);
+            return t();
         })
         .text(function(d) { 
-            if(d.depth > 1) {
-                return d.name + "(" + d.degree + ")"; 
-            }
+            return d.name + "(" + d.degree + ")"; 
         });
 }
 
