@@ -71,7 +71,7 @@ def EventTimes():
 
 def MarkovState():
     return collections.defaultdict(
-            lambda: {"hits":0, "weight":0})
+            lambda: {"hits":0})
 
 def MarkovModel():
     return collections.defaultdict(
@@ -122,22 +122,56 @@ def compute_cluster_degrees(event_model, event_clusters):
 
 def munge_times(query_responses):
     result = convert_query_response_to_eventtimes(query_responses[0])
-    print "eventtimes gathered."
+    print "lifetimes measured."
     return result
 
 def munge_state(query_responses):
     result = convert_query_response_to_markovstate(query_responses[0])
-    print "markov state generation complete."
+    print "population counted."
     return result
     
+def compute_stationary_model(model):
+    row_names = set() 
+    col_names = set()
+    for k,v in model.iteritems():
+        row_names.add(k)
+        for k2,v2 in v.iteritems():
+            col_names.add(k)
+
+    row_names = sorted(row_names)
+    col_names = sorted(col_names)
+
+    rows_cols = [];
+    for row_name in row_names:
+        row = []
+        for col_name in col_names:
+            row.append(model[row_name][col_name]["weight"])
+        rows_cols.append(row)
+
+    # based on: http://stackoverflow.com/q/10504158
+    matrix = numpy.array(rows_cols)
+    for i in xrange(10):
+        matrix = numpy.dot(matrix, matrix)
+
+    print "equilibrium probabilities:"
+    print matrix[0]
+
+    result = {}
+    for name, value in zip(row_names, matrix[0].tolist()):
+        result[name] = value
+
+    return result
+
 def munge_model(query_responses):
     model = convert_query_response_to_markovmodel(query_responses[0])
     clusters = mclinterface.get_clusters(model)
     node_degrees = compute_node_degrees(model, clusters)
     cluster_model = build_cluster_model(model, clusters)
     cluster_degrees = compute_cluster_degrees(model, clusters)
+    stationary_model = compute_stationary_model(model)
 
     results = {
+        'stationary_model' : stationary_model,
         'cluster_model' : cluster_model,
         'event_model' : model, 
         'node_degrees' : node_degrees,
@@ -145,5 +179,5 @@ def munge_model(query_responses):
         'cluster_degrees' : cluster_degrees,
     }
 
-    print "markov model generation complete."
+    print "model constructed."
     return results
