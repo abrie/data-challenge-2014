@@ -7,7 +7,7 @@ FROM(
   FROM 
     $dataset AS t 
   JOIN EACH
-    (SELECT actor, 
+    (SELECT repository_url, 
       MAX(created_at) AS max_created_at,
       CASE
         WHEN type = "CreateEvent" THEN CONCAT("CreateEvent:",
@@ -30,17 +30,18 @@ FROM(
         ELSE type
       END as concated_type,
       FROM
-        $dataset
+        $dataset 
       WHERE
         type IS NOT NULL
+        AND repository_url IS NOT NULL
         AND NOT (type = "PullRequestEvent" AND payload_action = "merged")
         AND created_at >= "2011-2-12" // the offical start date of the archive.
       GROUP EACH BY
-        actor,
+        repository_url,
         concated_type
     ) AS keys
   ON
-    keys.actor = t.actor
+    keys.repository_url = t.repository_url
     AND keys.max_created_at = t.created_at)
 GROUP EACH BY
   event
