@@ -160,6 +160,10 @@ function displayTimes( data, selector ) {
 }
 
 function displayModel( data, selector ) {
+    var svg = d3.select(selector).append("g");
+    var linkGroup = svg.append("g").attr("class","link-group");
+    var nodeGroup = svg.append("g").attr("class","node-group");
+
     var radius = 300;
 
     var clusters = [];
@@ -213,8 +217,6 @@ function displayModel( data, selector ) {
             return d.x / 180 * Math.PI + jitter; 
         });
 
-    var svg = d3.select(selector)
-        .append("g");
 
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
@@ -237,11 +239,11 @@ function displayModel( data, selector ) {
 
     var linkOpacityScale = d3.scale.linear().domain(weightsList()).range([0.1,0.5]);
     var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,10]);
-    var link = svg.append("g")
-        .selectAll(".link")
+    var link = linkGroup.selectAll(".link")
         .data( bundle(links) )
         .enter().append("path")
         .attr("class","link")  
+        .style("stroke-linecap","round")
         .style("opacity", function(d) {
             var source_state = d[0].name
             var target_state = d[d.length-1].name
@@ -266,7 +268,7 @@ function displayModel( data, selector ) {
         link.attr("d", line );
     });
 
-    var node = svg.append("g").selectAll(".node")
+    var node = nodeGroup.selectAll(".node")
         .data(nodes)
         .enter().append("g")
         .attr("class", "node");
@@ -294,7 +296,7 @@ function displayModel( data, selector ) {
             var source_cluster = data.clusters[source_state]; 
             return linkColorScale(source_cluster);
         })
-        .style("opacity", "0.25")
+        .style("opacity", "1.0")
 
     var text = label.append("text")
         .attr("class","node-text")
