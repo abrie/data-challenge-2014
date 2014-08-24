@@ -4,8 +4,6 @@ import sys
 
 import common
 
-INITIAL_MARKER = "~"
-
 def write_model_to_mcl_input(model, filename):
     with open(filename, 'w') as mcl_file:
         for k,v in model.iteritems():
@@ -19,7 +17,7 @@ def map_states_to_clusters(input_filename):
     with open(common.datadir("mcl_output"), 'r') as mcl_output:
         for index, line in enumerate( mcl_output.readlines() ):
             fields = line.rstrip('\n').split('\t')
-            cluster_id = "cluster_%i" % (index+1)
+            cluster_id = "cluster_%i" % (index)
             for field in fields:
                 result[field] = cluster_id 
     return result
