@@ -1,19 +1,26 @@
 import collections
+import numpy
 import time
 
 import mclinterface
 import common
+
+def trim_type_name(type_name):
+    trimmed = type_name.replace("Event","")
+    print type_name, trimmed
+    return trimmed
 
 def convert_query_response_to_eventtimes( query_response ):
     result = EventTimes()
 
     for row in query_response['rows']:
         fields = row['f']
-        event = fields[0]['v']
-        first = fields[1]['v']
-        last = fields[2]['v']
-        result[event]["first"] = long(first) 
-        result[event]["last"] = long(last) 
+        event = trim_type_name(fields[0]['v'])
+        first = long(fields[1]['v'])
+        last = long(fields[2]['v'])
+
+        result[event]["first"] = first 
+        result[event]["last"] = last 
 
     return result
 
@@ -22,10 +29,11 @@ def convert_query_response_to_markovmodel( query_response ):
 
     for row in query_response['rows']:
         fields = row['f']
-        first = fields[0]['v']
-        second = fields[1]['v']
-        hits = fields[2]['v']
-        result[first][second]["hits"] = int(hits)
+        first = trim_type_name(fields[0]['v'])
+        second = trim_type_name(fields[1]['v'])
+        hits = int(fields[2]['v'])
+
+        result[first][second]["hits"] = hits
 
     for k1,v1 in result.iteritems():
         total = 0
@@ -41,11 +49,9 @@ def convert_query_response_to_markovstate( query_response ):
 
     for row in query_response['rows']:
         fields = row['f'];
-        state = fields[0]['v'];
-        hits = fields[1]['v'];
-        weight = fields[2]['v'];
-        result[state]["hits"] = int(hits)
-        result[state]["weight"] = float(weight)
+        state = trim_type_name(fields[0]['v']);
+        hits = int(fields[1]['v']);
+        result[state]["hits"] = hits
     return result;
 
 def compute_node_degrees(model, clusters):
