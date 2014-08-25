@@ -19,7 +19,12 @@ body {
     border: 1px solid black;
 }
 
-.link {
+.link-a {
+    fill: #eee;
+}
+
+.link-b {
+    fill: none;
 }
 
 .node-text {

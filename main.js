@@ -163,7 +163,8 @@ function displayModel( data, state, selector ) {
     var svg = d3.select(selector).append("g");
     var nodeGroup = svg.append("g").attr("class","node-group");
     var circleTemplateGroup = svg.append("g").attr("class","circle-template-group");
-    var linkGroup = svg.append("g").attr("class","link-group");
+    var linkGroup_a = svg.append("g").attr("class","link-group");
+    var linkGroup_b = svg.append("g").attr("class","link-group");
 
     var radius = 300;
 
@@ -180,7 +181,7 @@ function displayModel( data, state, selector ) {
         clusters.push({
             "name": cluster_id,
             "degree": indegree - outdegree,
-            "children": getNodesForCluster( data, cluster_id )
+            "children": getNodesForCluster( data, cluster_id, 0.20 )
         });
     }
 
@@ -201,15 +202,24 @@ function displayModel( data, state, selector ) {
         node_names[node.name] = node;
     });
 
-    var links = [];
-    for(var k in data.event_model) {
-        for(var k2 in data.event_model[k] ) {
-            links.push({
-                source:node_names[k],
-                target:node_names[k2]
-            });
-        } 
+    function getLinks(minWeight,maxWeight) {
+        var result = [];
+        for(var k in data.event_model) {
+            for(var k2 in data.event_model[k] ) {
+                var weight = data.event_model[k][k2].weight;
+                if( weight >= minWeight && weight < maxWeight ) {
+                    var source = node_names[k];
+                    var target = node_names[k2];
+                    result.push({
+                        source:source,
+                        target:target,
+                    });
+                }
+            } 
+        }
+        return result;
     }
+
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
@@ -224,13 +234,12 @@ function displayModel( data, state, selector ) {
             return d.x / 180 * Math.PI + jitter; 
         });
 
-
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
 
     function populationDomain() {
         var result = [];
-        for(k in state) {
+        for(var k in state) {
             result.push(state[k].hits)
         }
 
@@ -247,49 +256,60 @@ function displayModel( data, state, selector ) {
 
     function weightsList() {
         var set = {};
-        for(k in data.event_model) {
-            for(k2 in data.event_model[k]) {
+        for(var k in data.event_model) {
+            for(var k2 in data.event_model[k]) {
                 var weight = data.event_model[k][k2].weight;
                 set[weight] = true;
             }
         }
         var result = [];
-        for(k in set) {
+        for(var k in set) {
             result.push(parseFloat(k));
         }
 
         return result;
     }
 
-    var linkOpacityScale = d3.scale.linear().domain(weightsList()).range([0.1,0.5]);
+    function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
+        return linkGroup.selectAll(".link")
+            .data( bundle(linkCollection) )
+            .enter().append("path")
+            .attr("class", linkClass)  
+            .style("stroke-linecap","butt")
+            .style("opacity", function(d) {
+                var source_state = d[0].name
+                var target_state = d[d.length-1].name
+                var weight = data.event_model[source_state][target_state].weight;
+                return opacityScale(weight);  
+            })
+            .style("stroke", function(d) {
+                var source_state = d[0].name
+                var source_cluster = data.clusters[source_state]; 
+                return linkColorScale(source_cluster);
+            })
+            .style("stroke-width", function(d) {
+                var source_state = d[0].name
+                var target_state = d[d.length-1].name
+                var weight = data.event_model[source_state][target_state].weight;
+                return linkWidthScale(weight);  
+            })
+            .attr("d", line);
+    }
+
     var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,10]);
-    var link = linkGroup.selectAll(".link")
-        .data( bundle(links) )
-        .enter().append("path")
-        .attr("class","link")  
-        .style("stroke-linecap","round")
-        .style("opacity", function(d) {
-            var source_state = d[0].name
-            var target_state = d[d.length-1].name
-            var weight = data.event_model[source_state][target_state].weight;
-            return linkOpacityScale(weight);  
-        })
-        .style("stroke", function(d) {
-            var source_state = d[0].name
-            var source_cluster = data.clusters[source_state]; 
-            return linkColorScale(source_cluster);
-        })
-        .style("stroke-width", function(d) {
-            var source_state = d[0].name
-            var target_state = d[d.length-1].name
-            var weight = data.event_model[source_state][target_state].weight;
-            return linkWidthScale(weight);  
-        })
-        .attr("d", line);
+
+    var links_a = getLinks(0,0.009);
+    var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.1,0.5]);
+    var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
+
+    var links_b = getLinks(0.009,1.0);
+    var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
+    var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
     d3.select("input[type=range]").on("change", function() {
         line.tension(this.value / 100);
-        link.attr("d", line );
+        drawnLink_a.attr("d", line );
+        drawnLink_b.attr("d", line );
     });
 
     var node = nodeGroup.selectAll(".node")
@@ -328,7 +348,7 @@ function displayModel( data, state, selector ) {
             var source_cluster = data.clusters[source_state]; 
             return linkColorScale(source_cluster);
         })
-        .style("opacity", "1.0")
+        .style("opacity", "0.80")
 
     var text = label.append("text")
         .attr("class","node-text")
