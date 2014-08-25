@@ -162,17 +162,10 @@ function displayTimes( data, selector ) {
 function displayModel( data, state, selector ) {
     var svg = d3.select(selector).append("g");
     var nodeGroup = svg.append("g").attr("class","node-group");
-    var circleTemplateGroup = svg.append("g").attr("class","circle-template-group");
     var linkGroup_a = svg.append("g").attr("class","link-group");
     var linkGroup_b = svg.append("g").attr("class","link-group");
 
-    var radius = 300;
-
-    circleTemplateGroup.append("circle")
-        .attr("r",301)
-        .attr("fill","white")
-        .attr("stroke-width", "5")
-        .attr("stroke", "#777");
+    var radius = 350;
 
     var clusters = [];
     for( var cluster_id in data.cluster_degrees ) {
@@ -181,14 +174,25 @@ function displayModel( data, state, selector ) {
         clusters.push({
             "name": cluster_id,
             "degree": indegree - outdegree,
-            "children": getNodesForCluster( data, cluster_id, 0.20 )
+            "children": getNodesForCluster( data, cluster_id )
         });
+    }
+
+    function sumInWeight(name) {
+        var sum = 0;
+        for(var k in data.event_model) {
+            var event = data.event_model[k][name];
+            sum += event ? event.weight : 0;
+        }
+        return sum;
     }
 
     var clusterLayout = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) {
-            return d3.ascending(a.degree, b.degree)
+            var a = sumInWeight(a.name);
+            var b = sumInWeight(b.name);
+            return d3.descending(a, b)
         })
 
     var nodes = clusterLayout.nodes( {
@@ -223,15 +227,12 @@ function displayModel( data, state, selector ) {
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
-        .tension(0.85)
+        .tension(0.35)
         .radius(function(d) { 
-            var jitter = Math.random()/50;
-            return d.y-jitter; 
+            return d.y; 
         })
         .angle(function(d) { 
-            var jitter = Math.random()/10;
-            jitter -= jitter/2;
-            return d.x / 180 * Math.PI + jitter; 
+            return d.x / 180 * Math.PI; 
         });
 
     var bundle = d3.layout.bundle();
@@ -252,7 +253,17 @@ function displayModel( data, state, selector ) {
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.log().domain(populationDomain()).range([1,400]);
+    var populationScale = d3.scale.log().domain(populationDomain()).range([1,250]);
+
+    function getScaledPopulation(name) {
+        var event = state[name];
+        if(event) {
+            return populationScale(event.hits);
+        }
+        else {
+            return 1;
+        }
+    }
 
     function weightsList() {
         var set = {};
@@ -275,7 +286,7 @@ function displayModel( data, state, selector ) {
             .data( bundle(linkCollection) )
             .enter().append("path")
             .attr("class", linkClass)  
-            .style("stroke-linecap","butt")
+            .style("stroke-linecap","rounded")
             .style("opacity", function(d) {
                 var source_state = d[0].name
                 var target_state = d[d.length-1].name
@@ -296,13 +307,13 @@ function displayModel( data, state, selector ) {
             .attr("d", line);
     }
 
-    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,10]);
+    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,7]);
 
-    var links_a = getLinks(0,0.009);
-    var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.1,0.5]);
+    var links_a = getLinks(0,0.30);
+    var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.3,0.5]);
     var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
 
-    var links_b = getLinks(0.009,1.0);
+    var links_b = getLinks(0.30,1.0);
     var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
@@ -328,15 +339,9 @@ function displayModel( data, state, selector ) {
         });
 
     var box = label.append("rect")
-        .attr("height",font_size*1.5 )
+        .attr("height",8 )
         .attr("width", function(d) { 
-            var population = state[d.name];
-            if( population === undefined ) {
-                return 1;
-            }
-            else {
-                return populationScale(population.hits);
-            }
+            return getScaledPopulation(d.name);
         })
         .attr("transform", function(d) {
             var t = d3.svg.transform()
@@ -381,11 +386,12 @@ function displayModel( data, state, selector ) {
                angle = 180 
             }
             var t = d3.svg.transform()
+                .translate(getScaledPopulation(d.name),0)
                 .rotate(angle);
             return t();
         })
         .text(function(d) { 
-            return d.name + "(" + d.degree + ")"; 
+            return d.name; 
         });
 }
 
