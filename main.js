@@ -19,23 +19,6 @@ function ViewBox(width, height, aspect) {
     }
 }
 
-function CornerViewBox(width, height, aspect) {
-    return { 
-        "min_x":0,
-        "min_y":0,
-        "width":width,
-        "height":height,
-        "aspect":aspect,
-        "attr": function() {
-            return [
-                this.min_x,
-                this.min_y,
-                this.width,
-                this.height
-            ].join(" ")},
-    }
-}
-
 function generateSvgElement(id, viewBox) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute('id', id);
@@ -50,117 +33,42 @@ function generateSvgElement(id, viewBox) {
 }
 
 function main() {
+    get_and_display("/data/repo/results.json", "container");
+    //get_and_display("/data/actor/results.json", "second");
+}
+
+function get_and_display(url, id) {
     $.ajax({
-        url: "data/latest/results.json",
+        url: url,
         dataType: "json",
     })
-    .done(function( data ) {
-        function a() {
-            var svgElement = generateSvgElement( "main-svg",
-                new ViewBox(1450,1450, "xMidYMid meet"));
-            $("#graph").append( svgElement );
-            displayModel( data.model, data.state, "#main-svg" );
-        }
-        
-        function b() {
-            var svgElement_b = generateSvgElement( "main-svg",
-                new CornerViewBox(1450,1450, "xMinYMin meet"));
-            $("#graph").append( svgElement_b );
-            displayTimes( data.times , "#main-svg" );
-        }
-
-        a();
+    .done(function( d ) {
+        generateDisplay(d, id );
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
     })
 }
 
-function displayTimes( data, selector ) {
-    // example format: "2011-02-12 00:01:31" 
-    var timeFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
-
-    // http://stackoverflow.com/a/11526569
-    var minimumDate = new Date(8640000000000000);
-    var maximumDate = new Date(-8640000000000000); 
-    var keys = [];
-    for(var key in data) {
-        var firstDate = new Date(data[key]["first"]);
-        var lastDate = new Date(data[key]["last"]); 
-        minimumDate = minimumDate > firstDate ? firstDate : minimumDate; 
-        maximumDate = maximumDate < lastDate ? lastDate : maximumDate;
-        var days = Math.ceil( Math.abs(lastDate-firstDate)/(1000*60*60*24) )
-        keys.push({
-            name: key,
-            min: firstDate,
-            max: lastDate,
-            days: days
-        });
-    }
-
-    keys.sort( function(a,b) {
-        return d3.descending(a.min, b.min)
-    })
-
-    keys.forEach( function(d) {
-        console.log(d.days);
-    });
-
-    var ageSet = {};
-    keys.forEach( function(d) {
-        ageSet[d.days] = true;
-    });
-    var ages = [];
-    for( var d in ageSet ) {
-        ages.push(d);
-    }
-    var ageScale = d3.scale.threshold().domain(ages).range([0,10]);
-
-    var x = d3.time.scale()
-        .domain([minimumDate,maximumDate])
-        .range([0, 1100]);
-
-    var y = d3.scale.ordinal().domain(
-        keys.map( function(d) {
-            return d.name;
-        })).rangeRoundBands([0,1400]);
-
-    var svg = d3.select(selector).append("g");
-
-    var bar = svg.append("g")
-        .selectAll()
-        .data(keys, function(d) { return d.name; } )
-        .enter().append("g")
-
-    function translate(x,y) {
-        return "translate(" + x + "," + y + ")";
-    }
-
-    var barColorScale = d3.scale.category10();
-    bar.append("rect")
-        .attr("width", function(d) { return x(d.max) - x(d.min); })
-        .attr("height", y.rangeBand()-4)
-        .attr("dy", 2)
-        .attr("transform", function(d) { 
-            return translate(x(d.min), y(d.name));
-        })
-        .style("fill", function(d) { return barColorScale(ageScale(d.days)); })
-        .style("stroke", "gray")
-
-    bar.append("text")
-        .attr("x", 0)
-        .attr("y", y.rangeBand() / 2)
-        .attr("dy", 10)
-        .attr("transform", function(d) { 
-            return translate(x(maximumDate), y(d.name));
-        })
-        .attr("text-anchor", "start")
-        .attr("font-size", "25")
-        .text(function(d) { return d.name; });
+function generateDisplay(data, id) {
+    var svgElement = generateSvgElement( "svg-"+id,
+        new ViewBox(3000,3000, "xMidYMid meet"));
+    $("#"+id).append( svgElement );
+    var selector = "#svg-"+id;
+    displayModel( data.model, data.state, selector );
 }
 
 function displayModel( data, state, selector ) {
-    var svg = d3.select(selector).append("g");
+    var svg = d3.select(selector)
+        .append("g")
+        .call( d3.behavior.zoom().scaleExtent([1,8]).on("zoom",zoom))
+        .append("g").attr("class","overlay");
+
+    function zoom() {
+        svg.attr("transform", 
+                 "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+    }
+
     var nodeGroup = svg.append("g").attr("class","node-group");
     var linkGroup_a = svg.append("g").attr("class","link-group");
     var linkGroup_b = svg.append("g").attr("class","link-group");
@@ -317,7 +225,7 @@ function displayModel( data, state, selector ) {
     var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
-    d3.select("input[type=range]").on("change", function() {
+    $(selector+" input[type=range]").on("change", function() {
         line.tension(this.value / 100);
         drawnLink_a.attr("d", line );
         drawnLink_b.attr("d", line );
@@ -328,7 +236,7 @@ function displayModel( data, state, selector ) {
         .enter().append("g")
         .attr("class", "node");
 
-    var font_size = 20;
+    var font_size = 30;
     var label = node.filter( function(d) { return d.depth > 1})
         .append("g")
         .attr("transform", function(d) { 
