@@ -3,7 +3,14 @@ data-challenge-2014
 
 ## Installation of dependencies
 
-This application uses [MCL](http://micans.org/mcl/). An archived source distribution is in the 3rdparty/ directory. The application expects it to be installed it into 'mcl/' relative to the project root.
+This application uses [MCL](http://micans.org/mcl/). The source is contained in the `external/` directory. Install as follows:
+
+- `tar xfz mcl-latest.tar.gz`
+- ``configure --prefix=`pwd```
+- `make`
+- `make install`
+
+MCL will then be installed to `external/mcl-14-137` which is where the application will assume it to be. If you install to a different path, then change the `MCL_BIN` string found in `mclinterface.py`.
  
 ## Authorization of APIs
 
@@ -39,7 +46,7 @@ Emitted output is recorded in the data/[id] directory. Within it will be the raw
 
 ## Scripts
 
-Two scripts are provided which automate the above processes. They must be run sequentially:
+Two scripts are provided which automate the collection and generator processes. They must be run sequentially:
 
 - `collect.sh` runs queries and munges the data. You'll need to specify a projectId. For example: `./collect.sh gilded-toad-681`
 - `deploy.sh` will use collected data and generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
