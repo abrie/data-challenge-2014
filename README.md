@@ -31,19 +31,18 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 Emitted output is recorded in the data/[id] directory. Within it will be the raw queries, the query results, and a results.json file which contains all the munged data.
 
-#### Let the script collect it
 
-protip: Use the included `collect.sh` script to collect preset data sets. Or inspect the script to see how the utility works. You'll need to specify a projectId:
-
-`./collect.sh gilded-toad-681`
 
 ## Displaying data
 
 `main.js` exposes the gui functions. It uses ajax calls to retrieve the results.json file, so it must be served through a webserver of some description.
 
-#### Let the script collect it
+## Scripts
 
-protip: There is a script named 'deploy.sh' which will generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
+Two scripts are provided which automate the above processes. They must be run sequentially:
+
+- `collect.sh` runs queries and munges the data. You'll need to specify a projectId. For example: `./collect.sh gilded-toad-681`
+- `deploy.sh` will use collected data and generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
 
 ## Contact
 abrhie@gmail.com
