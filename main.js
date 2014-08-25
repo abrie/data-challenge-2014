@@ -253,7 +253,7 @@ function displayModel( data, state, selector ) {
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.log().domain(populationDomain()).range([1,250]);
+    var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
 
     function getScaledPopulation(name) {
         var event = state[name];
@@ -328,7 +328,7 @@ function displayModel( data, state, selector ) {
         .enter().append("g")
         .attr("class", "node");
 
-    var font_size = 30;
+    var font_size = 20;
     var label = node.filter( function(d) { return d.depth > 1})
         .append("g")
         .attr("transform", function(d) { 
