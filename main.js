@@ -160,7 +160,7 @@ function displayModel( data, state, selector ) {
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
+    var populationScale = d3.scale.linear().domain(populationDomain()).range([1,220]);
 
     function getScaledPopulation(name) {
         var event = state[name];
