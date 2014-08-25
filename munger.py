@@ -7,7 +7,6 @@ import common
 
 def trim_type_name(type_name):
     trimmed = type_name.replace("Event","")
-    print type_name, trimmed
     return trimmed
 
 def convert_query_response_to_eventtimes( query_response ):
