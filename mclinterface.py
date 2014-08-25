@@ -4,6 +4,8 @@ import sys
 
 import common
 
+MCL_BIN="external/mcl-14-137/bin/mcl"
+
 def write_model_to_mcl_input(model, filename):
     with open(filename, 'w') as mcl_file:
         for k,v in model.iteritems():
@@ -25,7 +27,7 @@ def map_states_to_clusters(input_filename):
 def run_mcl(input_filename, output_filename):
     print "**** subprocess will call as follows:"
     call_parameters = [
-            "mcl/bin/mcl", input_filename,
+            MCL_BIN, input_filename,
             "-I","6.0",
             "--abc",
             "-o", output_filename]
