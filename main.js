@@ -1,6 +1,8 @@
-"use strict";
-
-$( document ).ready( main );
+function go(url, id) {
+    load_json( url, function(result) { 
+        generateDisplay(result, id) 
+    });
+}
 
 function ViewBox(width, height, aspect) {
     return { 
@@ -32,21 +34,20 @@ function generateSvgElement(id, viewBox) {
     return $(svg);
 }
 
-function main() {
-    get_and_display("data/repo/results.json", "container");
-}
-
-function get_and_display(url, id) {
+function load_json(url, callback) {
     $.ajax({
         url: url,
         dataType: "json",
     })
     .done(function( d ) {
-        generateDisplay(d, id );
+        callback(d);
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
     })
+}
+
+function get_and_display(url, id) {
 }
 
 function generateDisplay(data, id) {
@@ -160,7 +161,7 @@ function displayModel( data, state, selector ) {
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.linear().domain(populationDomain()).range([1,220]);
+    var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
 
     function getScaledPopulation(name) {
         var event = state[name];
@@ -271,7 +272,7 @@ function displayModel( data, state, selector ) {
             }
             return offset;
         })
-        .style("font-size", function(d) { return d.name === '~' ? font_size*1.2 : font_size })
+        .style("font-size", font_size)
         .attr("alignment-baseline", function(d) {
             var alignment = "before-edge";
             if( d.x > 180 && d.x < 360 ) {
@@ -298,7 +299,7 @@ function displayModel( data, state, selector ) {
             return t();
         })
         .text(function(d) { 
-            return d.name === '~' ? "start -->" : d.name; 
+            return d.name; 
         });
 }
 

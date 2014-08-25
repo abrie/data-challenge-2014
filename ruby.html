@@ -6,17 +6,20 @@
         <link rel="stylesheet" type="text/css" href="style.css" >
     </head>
     <body>
-        <div id="description">
-            <p>A Bundled Edge View of the Github Event Graph</p>
-            <p><small>This is an aggregate view of repositories which use Ruby. <a href="index.html">Here</a> is a view of all repositories independent of language.</small></p>
-            <p><small>The graph can be zoomed and panned. The bundling parameter can be adjusted with this slider:</small></p>
-            <p><input type="range" min="0" max="100"></p>
-        </div>
-        <div id="container">
-        </div>
+        <div id="description"><p>A Bundled Edge View of the Github Event Graph</p>
+<p><small>This is an aggregate view of repositories which use Ruby. <a href="index.html">Here</a> is a view of all repositories independent of language.</small></p>
+<p><small>The graph can be zoomed and panned. The bundling parameter can be adjusted with this slider:</small></p>
+<p><input type="range" min="0" max="100"></p>
+</div>
+        <div id="container"></div>
         <script type="application/javascript" src="lib/d3.v3.js" charset="utf-8"></script>
         <script type="application/javascript" src="lib/d3-transform.js" charset="utf-8"></script>
         <script type="application/javascript" src="lib/jquery-1.11.1.min.js"></script>
-        <script type="application/javascript" src="ruby.js"></script>
+        <script type="application/javascript" src="main.js"></script>
+        <script type="application/javascript">
+            $( document ).ready( function() {
+                go("data/ruby/results.json","container");
+            });
+        </script>
     </body>
 </html>
