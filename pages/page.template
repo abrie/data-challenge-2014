@@ -8,7 +8,7 @@
     <body>
         <div id="description">${data_description}</div>
         <div id="container"></div>
-        <div id="links"><a href="http://github.com/abrie/data-challenge-2014">source</a></div>
+        <div id="links"><a href="http://github.com/abrie/data-challenge-2014">sourcecode</a></div>
         <script type="application/javascript" src="lib/d3.v3.js" charset="utf-8"></script>
         <script type="application/javascript" src="lib/d3-transform.js" charset="utf-8"></script>
         <script type="application/javascript" src="lib/jquery-1.11.1.min.js"></script>
