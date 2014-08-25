@@ -299,7 +299,12 @@ function displayModel( data, state, selector ) {
             return t();
         })
         .text(function(d) { 
-            return d.name; 
+            if( d.name === '~' ) {
+                return "start -->";
+            }
+            else {
+                return d.name; 
+            }
         });
 }
 
