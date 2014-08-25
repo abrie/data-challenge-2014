@@ -25,6 +25,19 @@ def use_set(id):
     global base
     base = id
 
+def read_most_recent(prefix):
+    result = []
+    path = datadir(os.path.join(prefix,'query-responses'))
+    cwd = os.getcwd()
+    os.chdir(path)
+    most_recent_file = max(os.listdir('.'), key=os.path.getctime)
+    os.chdir(cwd)
+    dir_entry_path = os.path.join(path, most_recent_file)
+    if os.path.isfile(dir_entry_path):
+        with open(dir_entry_path, 'r') as my_file:
+            result.append( json.load(my_file) )
+    return result
+
 def read_all(prefix):
     path = datadir(os.path.join(prefix,'query-responses'))
     result = []
