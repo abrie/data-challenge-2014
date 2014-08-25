@@ -25,6 +25,7 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 `python main.py -i firstquery --model sql/repo-model.sql --state sql/repo-state.sql`
 
 - `-i [id]` is an optional parameter. Use it to manually set the ID for query results. Omit it and a random ID will be generated.
+- `-p [projectId]` this is the unique projectId number associated with the BigQuery project, (ex: 'spark-mark-911')
 - `--model [sql]` specifies the query used to generate the markov model.
 - `--state [sql]` specifies the query used to generate the population table.
 
@@ -32,7 +33,9 @@ Emitted output is recorded in the data/[id] directory. Within it will be the raw
 
 #### Let the script collect it
 
-protip: Use the included `collect.sh` script to collect preset data sets. Or inspect the script to see how the utility works.
+protip: Use the included `collect.sh` script to collect preset data sets. Or inspect the script to see how the utility works. You'll need to specify a projectId:
+
+`./collect.sh gilded-toad-681`
 
 ## Displaying data
 
