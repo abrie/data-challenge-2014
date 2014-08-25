@@ -1,19 +1,20 @@
 #!/bin/sh
-rm -rf ghpages
-mkdir -p ghpages/data
+DEST="ghpages"
+rm -rf $DEST
+mkdir -p $DEST/data
 
-cp -R lib ghpages
-cp main.js ghpages
-cp style.css ghpages
+cp -R lib $DEST
+cp main.js $DEST
+cp style.css $DEST
 
-python templates/make_page.py -t templates/page.template -d templates/descriptions/actor.html -i actor -o ghpages/actor.html
-cp -vR data/actor ghpages/data/
+python pages/make_page.py -t pages/page.template -d pages/descriptions/actor.html -i actor -o $DEST/actor.html
+cp -R data/actor $DEST/data/
 
-python templates/make_page.py -t templates/page.template -d templates/descriptions/index.html -i repo -o ghpages/index.html
-cp -vR data/repo ghpages/data/
+python pages/make_page.py -t pages/page.template -d pages/descriptions/index.html -i repo -o $DEST/index.html
+cp -R data/repo $DEST/data/
 
-python templates/make_page.py -t templates/page.template -d templates/descriptions/python.html -i python -o ghpages/python.html
-cp -vR data/python ghpages/data/
+python pages/make_page.py -t pages/page.template -d pages/descriptions/python.html -i python -o $DEST/python.html
+cp -R data/python $DEST/data/
 
-python templates/make_page.py -t templates/page.template -d templates/descriptions/ruby.html -i ruby -o ghpages/ruby.html
-cp -vR data/ruby ghpages/data/
+python pages/make_page.py -t pages/page.template -d pages/descriptions/ruby.html -i ruby -o $DEST/ruby.html
+cp -R data/ruby $DEST/data/
