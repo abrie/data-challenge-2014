@@ -1,0 +1,45 @@
+body {
+    font-family: Palatino, 'Palatino Linotype', 'Hoefler Text', Times, 'Times New Roman', serif;
+    padding: 0;
+    margin: 0;
+}
+
+
+#container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 100%;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+#description {
+    position: absolute;
+    padding-left: 1em;
+    text-align: justify;
+    top: 0px;
+    width: 50%;
+}
+
+svg {
+    overflow: visible;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+.link-a {
+    fill: none;
+}
+
+.link-b {
+    fill: none;
+}
+
+.node-text {
+    fill: #000;
+}
