@@ -57,6 +57,10 @@ def create_path(path):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
+def read_json(filename):
+    with open(datadir(filename), 'r') as my_file:
+        return json.load(my_file)
+
 def write_json(data,path):
     create_path(path)
     with open(datadir(path), "w") as output_file:

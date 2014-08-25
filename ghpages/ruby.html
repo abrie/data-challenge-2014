@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>github 2014 data challenge</title>
+        <link rel="stylesheet" type="text/css" href="style.css" >
+    </head>
+    <body>
+        <div id="description"><p>A Bundled Edge View of the Github Event Graph</p>
+<p><small>This is an aggregate view of repositories which use Ruby. <a href="index.html">Here</a> is a view of all repositories independent of language.</small></p>
+<p><small>The graph can be zoomed and panned. The bundling parameter can be adjusted with this slider:</small></p>
+<p><input type="range" min="0" max="100"></p>
+</div>
+        <div id="container"></div>
+        <script type="application/javascript" src="lib/d3.v3.js" charset="utf-8"></script>
+        <script type="application/javascript" src="lib/d3-transform.js" charset="utf-8"></script>
+        <script type="application/javascript" src="lib/jquery-1.11.1.min.js"></script>
+        <script type="application/javascript" src="main.js"></script>
+        <script type="application/javascript">
+            $( document ).ready( function() {
+                go("data/ruby/results.json","container");
+            });
+        </script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-54140437-1', 'auto');
+          ga('send', 'pageview');
+        </script>
+    </body>
+</html>

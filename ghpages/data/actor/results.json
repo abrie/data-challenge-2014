@@ -1,0 +1,4254 @@
+{
+    "model": {
+        "cluster_degrees": {
+            "cluster_0": {
+                "indegree": 3, 
+                "outdegree": 3
+            }, 
+            "cluster_1": {
+                "indegree": 3, 
+                "outdegree": 3
+            }, 
+            "cluster_2": {
+                "indegree": 3, 
+                "outdegree": 3
+            }
+        }, 
+        "cluster_model": {
+            "cluster_0": {
+                "cluster_0": {
+                    "hits": 520, 
+                    "weight": 0.7647058823529411
+                }, 
+                "cluster_1": {
+                    "hits": 92, 
+                    "weight": 0.13529411764705881
+                }, 
+                "cluster_2": {
+                    "hits": 68, 
+                    "weight": 0.1
+                }
+            }, 
+            "cluster_1": {
+                "cluster_0": {
+                    "hits": 91, 
+                    "weight": 0.7647058823529411
+                }, 
+                "cluster_1": {
+                    "hits": 16, 
+                    "weight": 0.13445378151260504
+                }, 
+                "cluster_2": {
+                    "hits": 12, 
+                    "weight": 0.10084033613445378
+                }
+            }, 
+            "cluster_2": {
+                "cluster_0": {
+                    "hits": 67, 
+                    "weight": 0.7613636363636364
+                }, 
+                "cluster_1": {
+                    "hits": 12, 
+                    "weight": 0.13636363636363635
+                }, 
+                "cluster_2": {
+                    "hits": 9, 
+                    "weight": 0.10227272727272728
+                }
+            }
+        }, 
+        "clusters": {
+            "CommitComment": "cluster_0", 
+            "Create:branch": "cluster_0", 
+            "Create:repository": "cluster_0", 
+            "Create:tag": "cluster_0", 
+            "Delete:branch": "cluster_0", 
+            "Delete:tag": "cluster_0", 
+            "Download": "cluster_0", 
+            "Follow": "cluster_0", 
+            "Fork": "cluster_0", 
+            "ForkApply": "cluster_0", 
+            "Gist:create": "cluster_2", 
+            "Gist:fork": "cluster_2", 
+            "Gist:update": "cluster_2", 
+            "Gollum:created": "cluster_0", 
+            "Gollum:edited": "cluster_0", 
+            "IssueComment:created": "cluster_1", 
+            "Issues:closed": "cluster_1", 
+            "Issues:opened": "cluster_1", 
+            "Issues:reopened": "cluster_1", 
+            "Member:added": "cluster_0", 
+            "Public": "cluster_0", 
+            "PullRequest:closed-merged": "cluster_0", 
+            "PullRequest:closed-not-merged": "cluster_0", 
+            "PullRequest:opened": "cluster_0", 
+            "PullRequest:reopened": "cluster_0", 
+            "PullRequestReviewComment": "cluster_0", 
+            "Push": "cluster_0", 
+            "Release:published": "cluster_0", 
+            "TeamAdd": "cluster_0", 
+            "Watch:started": "cluster_0", 
+            "~": "cluster_0"
+        }, 
+        "event_model": {
+            "CommitComment": {
+                "CommitComment": {
+                    "hits": 760228, 
+                    "weight": 0.4478504910739533
+                }, 
+                "Create:branch": {
+                    "hits": 42421, 
+                    "weight": 0.02499022093615096
+                }, 
+                "Create:repository": {
+                    "hits": 24618, 
+                    "weight": 0.014502469508171998
+                }, 
+                "Create:tag": {
+                    "hits": 2650, 
+                    "weight": 0.0015611156144551058
+                }, 
+                "Delete:branch": {
+                    "hits": 7773, 
+                    "weight": 0.0045790761023243535
+                }, 
+                "Delete:tag": {
+                    "hits": 220, 
+                    "weight": 0.0001296020510113673
+                }, 
+                "Download": {
+                    "hits": 432, 
+                    "weight": 0.00025449130016777575
+                }, 
+                "Follow": {
+                    "hits": 8800, 
+                    "weight": 0.005184082040454691
+                }, 
+                "Fork": {
+                    "hits": 32899, 
+                    "weight": 0.019380808528286237
+                }, 
+                "ForkApply": {
+                    "hits": 18, 
+                    "weight": 1.0603804173657322e-05
+                }, 
+                "Gist:create": {
+                    "hits": 3040, 
+                    "weight": 0.0017908647048843478
+                }, 
+                "Gist:fork": {
+                    "hits": 254, 
+                    "weight": 0.00014963145889494223
+                }, 
+                "Gist:update": {
+                    "hits": 432, 
+                    "weight": 0.00025449130016777575
+                }, 
+                "Gollum:created": {
+                    "hits": 3330, 
+                    "weight": 0.001961703772126605
+                }, 
+                "Gollum:edited": {
+                    "hits": 4097, 
+                    "weight": 0.0024135436499707805
+                }, 
+                "IssueComment:created": {
+                    "hits": 217756, 
+                    "weight": 0.12828011009105134
+                }, 
+                "Issues:closed": {
+                    "hits": 17850, 
+                    "weight": 0.010515439138876845
+                }, 
+                "Issues:opened": {
+                    "hits": 39857, 
+                    "weight": 0.023479767941636663
+                }, 
+                "Issues:reopened": {
+                    "hits": 1114, 
+                    "weight": 0.0006562576583030144
+                }, 
+                "Member:added": {
+                    "hits": 2055, 
+                    "weight": 0.0012106009764925444
+                }, 
+                "Public": {
+                    "hits": 526, 
+                    "weight": 0.00030986672196354174
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 35517, 
+                    "weight": 0.02092307293532151
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 13713, 
+                    "weight": 0.00807833147963127
+                }, 
+                "PullRequest:opened": {
+                    "hits": 12356, 
+                    "weight": 0.007278922464983882
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 270, 
+                    "weight": 0.00015905706260485985
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 24546, 
+                    "weight": 0.01446005429147737
+                }, 
+                "Push": {
+                    "hits": 389744, 
+                    "weight": 0.2295982807698833
+                }, 
+                "Release:published": {
+                    "hits": 378, 
+                    "weight": 0.00022267988764680378
+                }, 
+                "TeamAdd": {
+                    "hits": 4, 
+                    "weight": 2.356400927479405e-06
+                }, 
+                "Watch:started": {
+                    "hits": 50606, 
+                    "weight": 0.029812006334005693
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Create:branch": {
+                "CommitComment": {
+                    "hits": 29609, 
+                    "weight": 0.0029419535251029843
+                }, 
+                "Create:branch": {
+                    "hits": 1258700, 
+                    "weight": 0.1250645716521033
+                }, 
+                "Create:repository": {
+                    "hits": 974669, 
+                    "weight": 0.09684321997901316
+                }, 
+                "Create:tag": {
+                    "hits": 126954, 
+                    "weight": 0.012614163525479559
+                }, 
+                "Delete:branch": {
+                    "hits": 350667, 
+                    "weight": 0.0348423120263193
+                }, 
+                "Delete:tag": {
+                    "hits": 2542, 
+                    "weight": 0.00025257340203356364
+                }, 
+                "Download": {
+                    "hits": 3754, 
+                    "weight": 0.00037299785650432647
+                }, 
+                "Follow": {
+                    "hits": 44581, 
+                    "weight": 0.004429573106238514
+                }, 
+                "Fork": {
+                    "hits": 207902, 
+                    "weight": 0.020657165786617603
+                }, 
+                "ForkApply": {
+                    "hits": 17, 
+                    "weight": 1.689121886141063e-06
+                }, 
+                "Gist:create": {
+                    "hits": 18036, 
+                    "weight": 0.0017920589610847183
+                }, 
+                "Gist:fork": {
+                    "hits": 1625, 
+                    "weight": 0.00016146018029289573
+                }, 
+                "Gist:update": {
+                    "hits": 1468, 
+                    "weight": 0.00014586064287382827
+                }, 
+                "Gollum:created": {
+                    "hits": 60470, 
+                    "weight": 0.00600830590911471
+                }, 
+                "Gollum:edited": {
+                    "hits": 11015, 
+                    "weight": 0.0010944516221084593
+                }, 
+                "IssueComment:created": {
+                    "hits": 180942, 
+                    "weight": 0.017978417195419778
+                }, 
+                "Issues:closed": {
+                    "hits": 20810, 
+                    "weight": 0.00206768390885856
+                }, 
+                "Issues:opened": {
+                    "hits": 83791, 
+                    "weight": 0.0083254830565674
+                }, 
+                "Issues:reopened": {
+                    "hits": 785, 
+                    "weight": 7.799768709533732e-05
+                }, 
+                "Member:added": {
+                    "hits": 112485, 
+                    "weight": 0.011176522080151616
+                }, 
+                "Public": {
+                    "hits": 5952, 
+                    "weight": 0.000591391380371271
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 32256, 
+                    "weight": 0.0032049597387862425
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 17596, 
+                    "weight": 0.0017483405122669497
+                }, 
+                "PullRequest:opened": {
+                    "hits": 1370287, 
+                    "weight": 0.13615186835262227
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 2210, 
+                    "weight": 0.0002195858451983382
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 15463, 
+                    "weight": 0.001536405395611721
+                }, 
+                "Push": {
+                    "hits": 4899934, 
+                    "weight": 0.4868579858851014
+                }, 
+                "Release:published": {
+                    "hits": 5541, 
+                    "weight": 0.0005505543747710371
+                }, 
+                "TeamAdd": {
+                    "hits": 92, 
+                    "weight": 9.141130207351634e-06
+                }, 
+                "Watch:started": {
+                    "hits": 224248, 
+                    "weight": 0.02228130616019771
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Create:repository": {
+                "CommitComment": {
+                    "hits": 7927, 
+                    "weight": 0.0009080645109556545
+                }, 
+                "Create:branch": {
+                    "hits": 4296184, 
+                    "weight": 0.49214232659713736
+                }, 
+                "Create:repository": {
+                    "hits": 1530668, 
+                    "weight": 0.17534316751046675
+                }, 
+                "Create:tag": {
+                    "hits": 15929, 
+                    "weight": 0.0018247205241595334
+                }, 
+                "Delete:branch": {
+                    "hits": 2742, 
+                    "weight": 0.0003141053221950807
+                }, 
+                "Delete:tag": {
+                    "hits": 240, 
+                    "weight": 2.7492807194317786e-05
+                }, 
+                "Download": {
+                    "hits": 3435, 
+                    "weight": 0.0003934908029686733
+                }, 
+                "Follow": {
+                    "hits": 42044, 
+                    "weight": 0.004816281606991237
+                }, 
+                "Fork": {
+                    "hits": 233323, 
+                    "weight": 0.026727934387499205
+                }, 
+                "ForkApply": {
+                    "hits": 2, 
+                    "weight": 2.291067266193149e-07
+                }, 
+                "Gist:create": {
+                    "hits": 9756, 
+                    "weight": 0.001117582612449018
+                }, 
+                "Gist:fork": {
+                    "hits": 1278, 
+                    "weight": 0.0001463991983097422
+                }, 
+                "Gist:update": {
+                    "hits": 852, 
+                    "weight": 9.759946553982815e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 207917, 
+                    "weight": 0.023817591639254048
+                }, 
+                "Gollum:edited": {
+                    "hits": 3013, 
+                    "weight": 0.0003451492836519979
+                }, 
+                "IssueComment:created": {
+                    "hits": 30176, 
+                    "weight": 0.003456762291232223
+                }, 
+                "Issues:closed": {
+                    "hits": 3913, 
+                    "weight": 0.00044824731063068955
+                }, 
+                "Issues:opened": {
+                    "hits": 79986, 
+                    "weight": 0.00916266531768626
+                }, 
+                "Issues:reopened": {
+                    "hits": 162, 
+                    "weight": 1.8557644856164505e-05
+                }, 
+                "Member:added": {
+                    "hits": 214463, 
+                    "weight": 0.024567457955479065
+                }, 
+                "Public": {
+                    "hits": 9010, 
+                    "weight": 0.0010321258034200135
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 4453, 
+                    "weight": 0.0005101061268179046
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 1014, 
+                    "weight": 0.00011615711039599265
+                }, 
+                "PullRequest:opened": {
+                    "hits": 2745, 
+                    "weight": 0.0003144489822850097
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 19, 
+                    "weight": 2.1765139028834914e-06
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 1117, 
+                    "weight": 0.00012795610681688737
+                }, 
+                "Push": {
+                    "hits": 1847423, 
+                    "weight": 0.21162851810561728
+                }, 
+                "Release:published": {
+                    "hits": 1325, 
+                    "weight": 0.00015178320638529612
+                }, 
+                "TeamAdd": {
+                    "hits": 1580, 
+                    "weight": 0.00018099431402925876
+                }, 
+                "Watch:started": {
+                    "hits": 176860, 
+                    "weight": 0.020259907834946016
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Create:tag": {
+                "CommitComment": {
+                    "hits": 6979, 
+                    "weight": 0.003120449158677008
+                }, 
+                "Create:branch": {
+                    "hits": 108724, 
+                    "weight": 0.048612654295457663
+                }, 
+                "Create:repository": {
+                    "hits": 52536, 
+                    "weight": 0.023489886373442515
+                }, 
+                "Create:tag": {
+                    "hits": 498230, 
+                    "weight": 0.22276850327090497
+                }, 
+                "Delete:branch": {
+                    "hits": 18339, 
+                    "weight": 0.008199730207906241
+                }, 
+                "Delete:tag": {
+                    "hits": 63785, 
+                    "weight": 0.0285195371236872
+                }, 
+                "Download": {
+                    "hits": 6066, 
+                    "weight": 0.002712228771533849
+                }, 
+                "Follow": {
+                    "hits": 4834, 
+                    "weight": 0.0021613771647864535
+                }, 
+                "Fork": {
+                    "hits": 24461, 
+                    "weight": 0.010936997688837699
+                }, 
+                "ForkApply": {
+                    "hits": 4, 
+                    "weight": 1.7884792426863495e-06
+                }, 
+                "Gist:create": {
+                    "hits": 2388, 
+                    "weight": 0.0010677221078837507
+                }, 
+                "Gist:fork": {
+                    "hits": 216, 
+                    "weight": 9.657787910506287e-05
+                }, 
+                "Gist:update": {
+                    "hits": 386, 
+                    "weight": 0.00017258824691923272
+                }, 
+                "Gollum:created": {
+                    "hits": 5009, 
+                    "weight": 0.002239623131653981
+                }, 
+                "Gollum:edited": {
+                    "hits": 8468, 
+                    "weight": 0.0037862105567670018
+                }, 
+                "IssueComment:created": {
+                    "hits": 102337, 
+                    "weight": 0.045756900064698236
+                }, 
+                "Issues:closed": {
+                    "hits": 25148, 
+                    "weight": 0.011244168998769078
+                }, 
+                "Issues:opened": {
+                    "hits": 30263, 
+                    "weight": 0.013531186830354248
+                }, 
+                "Issues:reopened": {
+                    "hits": 613, 
+                    "weight": 0.00027408444394168307
+                }, 
+                "Member:added": {
+                    "hits": 2143, 
+                    "weight": 0.0009581777542692117
+                }, 
+                "Public": {
+                    "hits": 818, 
+                    "weight": 0.00036574400512935846
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 14577, 
+                    "weight": 0.006517665480159729
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 4211, 
+                    "weight": 0.0018828215227380545
+                }, 
+                "PullRequest:opened": {
+                    "hits": 8770, 
+                    "weight": 0.003921240739589821
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 89, 
+                    "weight": 3.979366314977128e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 3944, 
+                    "weight": 0.0017634405332887407
+                }, 
+                "Push": {
+                    "hits": 1069870, 
+                    "weight": 0.47836007184321117
+                }, 
+                "Release:published": {
+                    "hits": 120673, 
+                    "weight": 0.053955288913172465
+                }, 
+                "TeamAdd": {
+                    "hits": 36, 
+                    "weight": 1.6096313184177146e-05
+                }, 
+                "Watch:started": {
+                    "hits": 52620, 
+                    "weight": 0.023527444437538927
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Delete:branch": {
+                "CommitComment": {
+                    "hits": 12911, 
+                    "weight": 0.006087383731017886
+                }, 
+                "Create:branch": {
+                    "hits": 497928, 
+                    "weight": 0.23476716028334552
+                }, 
+                "Create:repository": {
+                    "hits": 39954, 
+                    "weight": 0.018837838245611388
+                }, 
+                "Create:tag": {
+                    "hits": 19993, 
+                    "weight": 0.00942646293348622
+                }, 
+                "Delete:branch": {
+                    "hits": 517129, 
+                    "weight": 0.24382020458814566
+                }, 
+                "Delete:tag": {
+                    "hits": 3706, 
+                    "weight": 0.0017473351488771038
+                }, 
+                "Download": {
+                    "hits": 255, 
+                    "weight": 0.00012022948272090164
+                }, 
+                "Follow": {
+                    "hits": 3645, 
+                    "weight": 0.001718574370657594
+                }, 
+                "Fork": {
+                    "hits": 29442, 
+                    "weight": 0.013881554628505042
+                }, 
+                "ForkApply": {
+                    "hits": 4, 
+                    "weight": 1.8859526701317904e-06
+                }, 
+                "Gist:create": {
+                    "hits": 2460, 
+                    "weight": 0.001159860892131051
+                }, 
+                "Gist:fork": {
+                    "hits": 220, 
+                    "weight": 0.00010372739685724847
+                }, 
+                "Gist:update": {
+                    "hits": 179, 
+                    "weight": 8.439638198839762e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 3380, 
+                    "weight": 0.001593630006261363
+                }, 
+                "Gollum:edited": {
+                    "hits": 4266, 
+                    "weight": 0.0020113685226955543
+                }, 
+                "IssueComment:created": {
+                    "hits": 148204, 
+                    "weight": 0.06987643238105297
+                }, 
+                "Issues:closed": {
+                    "hits": 25456, 
+                    "weight": 0.012002202792718714
+                }, 
+                "Issues:opened": {
+                    "hits": 32439, 
+                    "weight": 0.015294604666601286
+                }, 
+                "Issues:reopened": {
+                    "hits": 652, 
+                    "weight": 0.0003074102852314818
+                }, 
+                "Member:added": {
+                    "hits": 2441, 
+                    "weight": 0.0011509026169479251
+                }, 
+                "Public": {
+                    "hits": 611, 
+                    "weight": 0.000288079270362631
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 43892, 
+                    "weight": 0.020694558649356137
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 46106, 
+                    "weight": 0.02173843345227408
+                }, 
+                "PullRequest:opened": {
+                    "hits": 35095, 
+                    "weight": 0.016546877239568797
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 308, 
+                    "weight": 0.00014521835560014787
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 21223, 
+                    "weight": 0.010006393379551747
+                }, 
+                "Push": {
+                    "hits": 584484, 
+                    "weight": 0.27557729011232734
+                }, 
+                "Release:published": {
+                    "hits": 3124, 
+                    "weight": 0.0014729290353729283
+                }, 
+                "TeamAdd": {
+                    "hits": 21, 
+                    "weight": 9.9012515181919e-06
+                }, 
+                "Watch:started": {
+                    "hits": 41416, 
+                    "weight": 0.019527153946544556
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Delete:tag": {
+                "CommitComment": {
+                    "hits": 259, 
+                    "weight": 0.0008293812303662406
+                }, 
+                "Create:branch": {
+                    "hits": 3721, 
+                    "weight": 0.011915550417732746
+                }, 
+                "Create:repository": {
+                    "hits": 1426, 
+                    "weight": 0.004566400133213356
+                }, 
+                "Create:tag": {
+                    "hits": 69419, 
+                    "weight": 0.2222965854470813
+                }, 
+                "Delete:branch": {
+                    "hits": 2691, 
+                    "weight": 0.008617238961063914
+                }, 
+                "Delete:tag": {
+                    "hits": 168614, 
+                    "weight": 0.5399431921890862
+                }, 
+                "Download": {
+                    "hits": 133, 
+                    "weight": 0.000425898469647529
+                }, 
+                "Follow": {
+                    "hits": 114, 
+                    "weight": 0.0003650558311264534
+                }, 
+                "Fork": {
+                    "hits": 1009, 
+                    "weight": 0.0032310643298823815
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 41, 
+                    "weight": 0.0001312920094402157
+                }, 
+                "Gist:fork": {
+                    "hits": 8, 
+                    "weight": 2.5617953061505504e-05
+                }, 
+                "Gist:update": {
+                    "hits": 16, 
+                    "weight": 5.123590612301101e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 220, 
+                    "weight": 0.0007044937091914013
+                }, 
+                "Gollum:edited": {
+                    "hits": 317, 
+                    "weight": 0.0010151113900621555
+                }, 
+                "IssueComment:created": {
+                    "hits": 2448, 
+                    "weight": 0.007839093636820683
+                }, 
+                "Issues:closed": {
+                    "hits": 652, 
+                    "weight": 0.0020878631745126987
+                }, 
+                "Issues:opened": {
+                    "hits": 1022, 
+                    "weight": 0.003272693503607328
+                }, 
+                "Issues:reopened": {
+                    "hits": 39, 
+                    "weight": 0.00012488752117483933
+                }, 
+                "Member:added": {
+                    "hits": 70, 
+                    "weight": 0.00022415708928817316
+                }, 
+                "Public": {
+                    "hits": 26, 
+                    "weight": 8.325834744989288e-05
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 413, 
+                    "weight": 0.0013225268268002217
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 236, 
+                    "weight": 0.0007557296153144124
+                }, 
+                "PullRequest:opened": {
+                    "hits": 391, 
+                    "weight": 0.0012520774558810815
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 12, 
+                    "weight": 3.842692959225825e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 135, 
+                    "weight": 0.0004323029579129054
+                }, 
+                "Push": {
+                    "hits": 49371, 
+                    "weight": 0.1580979950749485
+                }, 
+                "Release:published": {
+                    "hits": 7872, 
+                    "weight": 0.025208065812521416
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 3.202244132688188e-06
+                }, 
+                "Watch:started": {
+                    "hits": 1605, 
+                    "weight": 0.005139601832964542
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Download": {
+                "CommitComment": {
+                    "hits": 575, 
+                    "weight": 0.0037756911156346445
+                }, 
+                "Create:branch": {
+                    "hits": 1996, 
+                    "weight": 0.01310657298575087
+                }, 
+                "Create:repository": {
+                    "hits": 3979, 
+                    "weight": 0.02612778252019174
+                }, 
+                "Create:tag": {
+                    "hits": 1721, 
+                    "weight": 0.01130080766957778
+                }, 
+                "Delete:branch": {
+                    "hits": 192, 
+                    "weight": 0.0012607525116553942
+                }, 
+                "Delete:tag": {
+                    "hits": 138, 
+                    "weight": 0.0009061658677523147
+                }, 
+                "Download": {
+                    "hits": 83980, 
+                    "weight": 0.5514478954626042
+                }, 
+                "Follow": {
+                    "hits": 940, 
+                    "weight": 0.006172434171646202
+                }, 
+                "Fork": {
+                    "hits": 1739, 
+                    "weight": 0.011419003217545472
+                }, 
+                "ForkApply": {
+                    "hits": 1, 
+                    "weight": 6.566419331538512e-06
+                }, 
+                "Gist:create": {
+                    "hits": 595, 
+                    "weight": 0.0039070195022654144
+                }, 
+                "Gist:fork": {
+                    "hits": 40, 
+                    "weight": 0.00026265677326154047
+                }, 
+                "Gist:update": {
+                    "hits": 129, 
+                    "weight": 0.000847068093768468
+                }, 
+                "Gollum:created": {
+                    "hits": 1717, 
+                    "weight": 0.011274541992251625
+                }, 
+                "Gollum:edited": {
+                    "hits": 2311, 
+                    "weight": 0.015174995075185502
+                }, 
+                "IssueComment:created": {
+                    "hits": 4649, 
+                    "weight": 0.03052728347232254
+                }, 
+                "Issues:closed": {
+                    "hits": 1175, 
+                    "weight": 0.007715542714557752
+                }, 
+                "Issues:opened": {
+                    "hits": 2046, 
+                    "weight": 0.013434893952327796
+                }, 
+                "Issues:reopened": {
+                    "hits": 33, 
+                    "weight": 0.0002166918379407709
+                }, 
+                "Member:added": {
+                    "hits": 239, 
+                    "weight": 0.0015693742202377043
+                }, 
+                "Public": {
+                    "hits": 35, 
+                    "weight": 0.00022982467660384793
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 448, 
+                    "weight": 0.002941755860529253
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 117, 
+                    "weight": 0.0007682710617900059
+                }, 
+                "PullRequest:opened": {
+                    "hits": 226, 
+                    "weight": 0.0014840107689277036
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 74, 
+                    "weight": 0.0004859150305338499
+                }, 
+                "Push": {
+                    "hits": 40264, 
+                    "weight": 0.26439030796506663
+                }, 
+                "Release:published": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "TeamAdd": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Watch:started": {
+                    "hits": 2931, 
+                    "weight": 0.01924617506073938
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Follow": {
+                "CommitComment": {
+                    "hits": 9179, 
+                    "weight": 0.003928855148987461
+                }, 
+                "Create:branch": {
+                    "hits": 25964, 
+                    "weight": 0.011113279778658941
+                }, 
+                "Create:repository": {
+                    "hits": 157746, 
+                    "weight": 0.06751946664475171
+                }, 
+                "Create:tag": {
+                    "hits": 1387, 
+                    "weight": 0.0005936727412186086
+                }, 
+                "Delete:branch": {
+                    "hits": 1885, 
+                    "weight": 0.0008068299330908992
+                }, 
+                "Delete:tag": {
+                    "hits": 60, 
+                    "weight": 2.5681589382203687e-05
+                }, 
+                "Download": {
+                    "hits": 495, 
+                    "weight": 0.00021187311240318041
+                }, 
+                "Follow": {
+                    "hits": 972217, 
+                    "weight": 0.41613462973996534
+                }, 
+                "Fork": {
+                    "hits": 177180, 
+                    "weight": 0.07583773344564748
+                }, 
+                "ForkApply": {
+                    "hits": 32, 
+                    "weight": 1.3696847670508632e-05
+                }, 
+                "Gist:create": {
+                    "hits": 12800, 
+                    "weight": 0.005478739068203453
+                }, 
+                "Gist:fork": {
+                    "hits": 2413, 
+                    "weight": 0.0010328279196542916
+                }, 
+                "Gist:update": {
+                    "hits": 1886, 
+                    "weight": 0.0008072579595806025
+                }, 
+                "Gollum:created": {
+                    "hits": 7879, 
+                    "weight": 0.0033724207123730474
+                }, 
+                "Gollum:edited": {
+                    "hits": 4044, 
+                    "weight": 0.0017309391243605285
+                }, 
+                "IssueComment:created": {
+                    "hits": 58150, 
+                    "weight": 0.024889740376252405
+                }, 
+                "Issues:closed": {
+                    "hits": 4529, 
+                    "weight": 0.0019385319718666749
+                }, 
+                "Issues:opened": {
+                    "hits": 38527, 
+                    "weight": 0.01649057656880269
+                }, 
+                "Issues:reopened": {
+                    "hits": 216, 
+                    "weight": 9.245372177593327e-05
+                }, 
+                "Member:added": {
+                    "hits": 15239, 
+                    "weight": 0.0065226956765900325
+                }, 
+                "Public": {
+                    "hits": 4178, 
+                    "weight": 0.0017882946739807832
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 6394, 
+                    "weight": 0.0027368013751635062
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 1320, 
+                    "weight": 0.0005649949664084811
+                }, 
+                "PullRequest:opened": {
+                    "hits": 2618, 
+                    "weight": 0.0011205733500434874
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 35, 
+                    "weight": 1.4980927139618817e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 1827, 
+                    "weight": 0.0007820043966881023
+                }, 
+                "Push": {
+                    "hits": 276093, 
+                    "weight": 0.11817511762167937
+                }, 
+                "Release:published": {
+                    "hits": 145, 
+                    "weight": 6.206384100699224e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 20, 
+                    "weight": 8.560529794067896e-06
+                }, 
+                "Watch:started": {
+                    "hits": 551846, 
+                    "weight": 0.23620470623685957
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Fork": {
+                "CommitComment": {
+                    "hits": 17947, 
+                    "weight": 0.002779272176646928
+                }, 
+                "Create:branch": {
+                    "hits": 382559, 
+                    "weight": 0.059243081552675776
+                }, 
+                "Create:repository": {
+                    "hits": 458724, 
+                    "weight": 0.07103799241991339
+                }, 
+                "Create:tag": {
+                    "hits": 7426, 
+                    "weight": 0.001149990259306853
+                }, 
+                "Delete:branch": {
+                    "hits": 13367, 
+                    "weight": 0.0020700134387496233
+                }, 
+                "Delete:tag": {
+                    "hits": 491, 
+                    "weight": 7.603625334226565e-05
+                }, 
+                "Download": {
+                    "hits": 1039, 
+                    "weight": 0.0001608995259116375
+                }, 
+                "Follow": {
+                    "hits": 139667, 
+                    "weight": 0.02162882972617967
+                }, 
+                "Fork": {
+                    "hits": 2198845, 
+                    "weight": 0.34051310688467235
+                }, 
+                "ForkApply": {
+                    "hits": 79, 
+                    "weight": 1.2233938928796308e-05
+                }, 
+                "Gist:create": {
+                    "hits": 18102, 
+                    "weight": 0.0028032754745451996
+                }, 
+                "Gist:fork": {
+                    "hits": 5247, 
+                    "weight": 0.0008125503488530915
+                }, 
+                "Gist:update": {
+                    "hits": 2081, 
+                    "weight": 0.0003222636317825964
+                }, 
+                "Gollum:created": {
+                    "hits": 30227, 
+                    "weight": 0.004680952810135772
+                }, 
+                "Gollum:edited": {
+                    "hits": 8613, 
+                    "weight": 0.0013338090632116783
+                }, 
+                "IssueComment:created": {
+                    "hits": 158134, 
+                    "weight": 0.024488629095775635
+                }, 
+                "Issues:closed": {
+                    "hits": 8537, 
+                    "weight": 0.0013220397042422035
+                }, 
+                "Issues:opened": {
+                    "hits": 138519, 
+                    "weight": 0.021451050461746023
+                }, 
+                "Issues:reopened": {
+                    "hits": 413, 
+                    "weight": 6.395717439990981e-05
+                }, 
+                "Member:added": {
+                    "hits": 23573, 
+                    "weight": 0.003650514460360954
+                }, 
+                "Public": {
+                    "hits": 18814, 
+                    "weight": 0.0029135357848908065
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 12173, 
+                    "weight": 0.0018851106149397146
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 3433, 
+                    "weight": 0.0005316343334500977
+                }, 
+                "PullRequest:opened": {
+                    "hits": 29284, 
+                    "weight": 0.004534919842922419
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 79, 
+                    "weight": 1.2233938928796308e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 4991, 
+                    "weight": 0.0007729061923243338
+                }, 
+                "Push": {
+                    "hits": 1837142, 
+                    "weight": 0.28449978520919883
+                }, 
+                "Release:published": {
+                    "hits": 1228, 
+                    "weight": 0.00019016806334888438
+                }, 
+                "TeamAdd": {
+                    "hits": 24805, 
+                    "weight": 0.0038413019636556
+                }, 
+                "Watch:started": {
+                    "hits": 911907, 
+                    "weight": 0.14121790565496017
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "ForkApply": {
+                "CommitComment": {
+                    "hits": 13, 
+                    "weight": 0.007076755579749592
+                }, 
+                "Create:branch": {
+                    "hits": 11, 
+                    "weight": 0.005988023952095809
+                }, 
+                "Create:repository": {
+                    "hits": 19, 
+                    "weight": 0.010342950462710943
+                }, 
+                "Create:tag": {
+                    "hits": 1, 
+                    "weight": 0.0005443658138268917
+                }, 
+                "Delete:branch": {
+                    "hits": 1, 
+                    "weight": 0.0005443658138268917
+                }, 
+                "Delete:tag": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Download": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Follow": {
+                    "hits": 13, 
+                    "weight": 0.007076755579749592
+                }, 
+                "Fork": {
+                    "hits": 47, 
+                    "weight": 0.02558519324986391
+                }, 
+                "ForkApply": {
+                    "hits": 295, 
+                    "weight": 0.16058791507893305
+                }, 
+                "Gist:create": {
+                    "hits": 6, 
+                    "weight": 0.00326619488296135
+                }, 
+                "Gist:fork": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:update": {
+                    "hits": 1, 
+                    "weight": 0.0005443658138268917
+                }, 
+                "Gollum:created": {
+                    "hits": 1, 
+                    "weight": 0.0005443658138268917
+                }, 
+                "Gollum:edited": {
+                    "hits": 2, 
+                    "weight": 0.0010887316276537834
+                }, 
+                "IssueComment:created": {
+                    "hits": 17, 
+                    "weight": 0.009254218835057159
+                }, 
+                "Issues:closed": {
+                    "hits": 2, 
+                    "weight": 0.0010887316276537834
+                }, 
+                "Issues:opened": {
+                    "hits": 15, 
+                    "weight": 0.008165487207403375
+                }, 
+                "Issues:reopened": {
+                    "hits": 2, 
+                    "weight": 0.0010887316276537834
+                }, 
+                "Member:added": {
+                    "hits": 1, 
+                    "weight": 0.0005443658138268917
+                }, 
+                "Public": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 5, 
+                    "weight": 0.0027218290691344584
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 4, 
+                    "weight": 0.002177463255307567
+                }, 
+                "PullRequest:opened": {
+                    "hits": 12, 
+                    "weight": 0.0065323897659227
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Push": {
+                    "hits": 1340, 
+                    "weight": 0.7294501905280348
+                }, 
+                "Release:published": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "TeamAdd": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Watch:started": {
+                    "hits": 29, 
+                    "weight": 0.015786608600979857
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Gist:create": {
+                "CommitComment": {
+                    "hits": 2100, 
+                    "weight": 0.0020159858074599154
+                }, 
+                "Create:branch": {
+                    "hits": 13272, 
+                    "weight": 0.012741030303146666
+                }, 
+                "Create:repository": {
+                    "hits": 30928, 
+                    "weight": 0.029690670977676317
+                }, 
+                "Create:tag": {
+                    "hits": 468, 
+                    "weight": 0.0004492768370910669
+                }, 
+                "Delete:branch": {
+                    "hits": 464, 
+                    "weight": 0.00044543686412447657
+                }, 
+                "Delete:tag": {
+                    "hits": 22, 
+                    "weight": 2.1119851316246734e-05
+                }, 
+                "Download": {
+                    "hits": 226, 
+                    "weight": 0.0002169584726123528
+                }, 
+                "Follow": {
+                    "hits": 9362, 
+                    "weight": 0.008987456728304633
+                }, 
+                "Fork": {
+                    "hits": 20294, 
+                    "weight": 0.019482102845995965
+                }, 
+                "ForkApply": {
+                    "hits": 1, 
+                    "weight": 9.599932416475788e-07
+                }, 
+                "Gist:create": {
+                    "hits": 664953, 
+                    "weight": 0.6383503860132824
+                }, 
+                "Gist:fork": {
+                    "hits": 3491, 
+                    "weight": 0.0033513364065916977
+                }, 
+                "Gist:update": {
+                    "hits": 140330, 
+                    "weight": 0.13471585160040472
+                }, 
+                "Gollum:created": {
+                    "hits": 1042, 
+                    "weight": 0.0010003129577967772
+                }, 
+                "Gollum:edited": {
+                    "hits": 1130, 
+                    "weight": 0.001084792363061764
+                }, 
+                "IssueComment:created": {
+                    "hits": 20437, 
+                    "weight": 0.01961938187955157
+                }, 
+                "Issues:closed": {
+                    "hits": 1398, 
+                    "weight": 0.0013420705518233152
+                }, 
+                "Issues:opened": {
+                    "hits": 13118, 
+                    "weight": 0.01259319134393294
+                }, 
+                "Issues:reopened": {
+                    "hits": 62, 
+                    "weight": 5.9519580982149885e-05
+                }, 
+                "Member:added": {
+                    "hits": 652, 
+                    "weight": 0.0006259155935542214
+                }, 
+                "Public": {
+                    "hits": 640, 
+                    "weight": 0.0006143956746544505
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 1913, 
+                    "weight": 0.0018364670712718181
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 490, 
+                    "weight": 0.0004703966884073136
+                }, 
+                "PullRequest:opened": {
+                    "hits": 1889, 
+                    "weight": 0.0018134272334722763
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 11, 
+                    "weight": 1.0559925658123367e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 732, 
+                    "weight": 0.0007027150528860277
+                }, 
+                "Push": {
+                    "hits": 65625, 
+                    "weight": 0.06299955648312236
+                }, 
+                "Release:published": {
+                    "hits": 24, 
+                    "weight": 2.303983779954189e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Watch:started": {
+                    "hits": 46600, 
+                    "weight": 0.04473568506077717
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Gist:fork": {
+                "CommitComment": {
+                    "hits": 175, 
+                    "weight": 0.0027926274634963695
+                }, 
+                "Create:branch": {
+                    "hits": 827, 
+                    "weight": 0.013197159498922844
+                }, 
+                "Create:repository": {
+                    "hits": 4005, 
+                    "weight": 0.06391127423601692
+                }, 
+                "Create:tag": {
+                    "hits": 70, 
+                    "weight": 0.0011170509853985478
+                }, 
+                "Delete:branch": {
+                    "hits": 97, 
+                    "weight": 0.0015479135083379877
+                }, 
+                "Delete:tag": {
+                    "hits": 1, 
+                    "weight": 1.5957871219979253e-05
+                }, 
+                "Download": {
+                    "hits": 8, 
+                    "weight": 0.00012766296975983402
+                }, 
+                "Follow": {
+                    "hits": 1948, 
+                    "weight": 0.031085933136519587
+                }, 
+                "Fork": {
+                    "hits": 5510, 
+                    "weight": 0.08792787042208569
+                }, 
+                "ForkApply": {
+                    "hits": 1, 
+                    "weight": 1.5957871219979253e-05
+                }, 
+                "Gist:create": {
+                    "hits": 4782, 
+                    "weight": 0.0763105401739408
+                }, 
+                "Gist:fork": {
+                    "hits": 11301, 
+                    "weight": 0.18033990265698555
+                }, 
+                "Gist:update": {
+                    "hits": 14664, 
+                    "weight": 0.2340062235697758
+                }, 
+                "Gollum:created": {
+                    "hits": 96, 
+                    "weight": 0.0015319556371180085
+                }, 
+                "Gollum:edited": {
+                    "hits": 103, 
+                    "weight": 0.0016436607356578633
+                }, 
+                "IssueComment:created": {
+                    "hits": 1419, 
+                    "weight": 0.022644219261150563
+                }, 
+                "Issues:closed": {
+                    "hits": 96, 
+                    "weight": 0.0015319556371180085
+                }, 
+                "Issues:opened": {
+                    "hits": 969, 
+                    "weight": 0.015463177212159897
+                }, 
+                "Issues:reopened": {
+                    "hits": 5, 
+                    "weight": 7.978935609989628e-05
+                }, 
+                "Member:added": {
+                    "hits": 90, 
+                    "weight": 0.001436208409798133
+                }, 
+                "Public": {
+                    "hits": 62, 
+                    "weight": 0.0009893880156387137
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 131, 
+                    "weight": 0.0020904811298172823
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 28, 
+                    "weight": 0.00044682039415941914
+                }, 
+                "PullRequest:opened": {
+                    "hits": 32, 
+                    "weight": 0.0005106518790393361
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 49, 
+                    "weight": 0.0007819356897789835
+                }, 
+                "Push": {
+                    "hits": 5141, 
+                    "weight": 0.08203941594191334
+                }, 
+                "Release:published": {
+                    "hits": 2, 
+                    "weight": 3.1915742439958506e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 1.5957871219979253e-05
+                }, 
+                "Watch:started": {
+                    "hits": 11052, 
+                    "weight": 0.17636639272321072
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Gist:update": {
+                "CommitComment": {
+                    "hits": 992, 
+                    "weight": 0.0017149515422462407
+                }, 
+                "Create:branch": {
+                    "hits": 3582, 
+                    "weight": 0.006192496395489954
+                }, 
+                "Create:repository": {
+                    "hits": 13829, 
+                    "weight": 0.02390732346544684
+                }, 
+                "Create:tag": {
+                    "hits": 319, 
+                    "weight": 0.000551481393121523
+                }, 
+                "Delete:branch": {
+                    "hits": 209, 
+                    "weight": 0.0003613153954934116
+                }, 
+                "Delete:tag": {
+                    "hits": 22, 
+                    "weight": 3.8033199525622275e-05
+                }, 
+                "Download": {
+                    "hits": 180, 
+                    "weight": 0.00031118072339145496
+                }, 
+                "Follow": {
+                    "hits": 5773, 
+                    "weight": 0.00998025731188261
+                }, 
+                "Fork": {
+                    "hits": 10924, 
+                    "weight": 0.01888521234626808
+                }, 
+                "ForkApply": {
+                    "hits": 4, 
+                    "weight": 6.915127186476777e-06
+                }, 
+                "Gist:create": {
+                    "hits": 68089, 
+                    "weight": 0.11771102375000432
+                }, 
+                "Gist:fork": {
+                    "hits": 5668, 
+                    "weight": 0.009798735223237593
+                }, 
+                "Gist:update": {
+                    "hits": 382259, 
+                    "weight": 0.6608424007938566
+                }, 
+                "Gollum:created": {
+                    "hits": 560, 
+                    "weight": 0.0009681178061067488
+                }, 
+                "Gollum:edited": {
+                    "hits": 873, 
+                    "weight": 0.0015092265084485567
+                }, 
+                "IssueComment:created": {
+                    "hits": 10032, 
+                    "weight": 0.017343138983683757
+                }, 
+                "Issues:closed": {
+                    "hits": 794, 
+                    "weight": 0.0013726527465156403
+                }, 
+                "Issues:opened": {
+                    "hits": 5558, 
+                    "weight": 0.009608569225609482
+                }, 
+                "Issues:reopened": {
+                    "hits": 44, 
+                    "weight": 7.606639905124455e-05
+                }, 
+                "Member:added": {
+                    "hits": 363, 
+                    "weight": 0.0006275477921727675
+                }, 
+                "Public": {
+                    "hits": 344, 
+                    "weight": 0.0005947009380370029
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 935, 
+                    "weight": 0.0016164109798389467
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 205, 
+                    "weight": 0.0003544002683069348
+                }, 
+                "PullRequest:opened": {
+                    "hits": 245, 
+                    "weight": 0.0004235515401717026
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 7, 
+                    "weight": 1.2101472576334361e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 377, 
+                    "weight": 0.0006517507373254363
+                }, 
+                "Push": {
+                    "hits": 38790, 
+                    "weight": 0.06705944589085855
+                }, 
+                "Release:published": {
+                    "hits": 9, 
+                    "weight": 1.555903616957275e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 1.7287817966191943e-06
+                }, 
+                "Watch:started": {
+                    "hits": 27455, 
+                    "weight": 0.04746370422617998
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Gollum:created": {
+                "CommitComment": {
+                    "hits": 2493, 
+                    "weight": 0.0025279924717945806
+                }, 
+                "Create:branch": {
+                    "hits": 61533, 
+                    "weight": 0.06239669505292256
+                }, 
+                "Create:repository": {
+                    "hits": 89347, 
+                    "weight": 0.09060110043218227
+                }, 
+                "Create:tag": {
+                    "hits": 1840, 
+                    "weight": 0.0018658267742085954
+                }, 
+                "Delete:branch": {
+                    "hits": 1903, 
+                    "weight": 0.0019297110604994331
+                }, 
+                "Delete:tag": {
+                    "hits": 133, 
+                    "weight": 0.00013486682661399086
+                }, 
+                "Download": {
+                    "hits": 1149, 
+                    "weight": 0.0011651276975900412
+                }, 
+                "Follow": {
+                    "hits": 10673, 
+                    "weight": 0.010822809326700183
+                }, 
+                "Fork": {
+                    "hits": 31453, 
+                    "weight": 0.031894483439773344
+                }, 
+                "ForkApply": {
+                    "hits": 3, 
+                    "weight": 3.0421088709922752e-06
+                }, 
+                "Gist:create": {
+                    "hits": 1863, 
+                    "weight": 0.0018891496088862029
+                }, 
+                "Gist:fork": {
+                    "hits": 247, 
+                    "weight": 0.00025046696371169733
+                }, 
+                "Gist:update": {
+                    "hits": 238, 
+                    "weight": 0.00024134063709872048
+                }, 
+                "Gollum:created": {
+                    "hits": 223928, 
+                    "weight": 0.22707111842118605
+                }, 
+                "Gollum:edited": {
+                    "hits": 226373, 
+                    "weight": 0.22955043715104476
+                }, 
+                "IssueComment:created": {
+                    "hits": 15042, 
+                    "weight": 0.015253133879155268
+                }, 
+                "Issues:closed": {
+                    "hits": 3372, 
+                    "weight": 0.0034193303709953173
+                }, 
+                "Issues:opened": {
+                    "hits": 21611, 
+                    "weight": 0.021914338270338018
+                }, 
+                "Issues:reopened": {
+                    "hits": 168, 
+                    "weight": 0.00017035809677556742
+                }, 
+                "Member:added": {
+                    "hits": 14934, 
+                    "weight": 0.015143617959799545
+                }, 
+                "Public": {
+                    "hits": 987, 
+                    "weight": 0.0010008538185564584
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 2265, 
+                    "weight": 0.0022967921975991677
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 506, 
+                    "weight": 0.0005131023629073638
+                }, 
+                "PullRequest:opened": {
+                    "hits": 2292, 
+                    "weight": 0.002324171177438098
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 29, 
+                    "weight": 2.940705241959199e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 489, 
+                    "weight": 0.0004958637459717408
+                }, 
+                "Push": {
+                    "hits": 227761, 
+                    "weight": 0.23095791952202385
+                }, 
+                "Release:published": {
+                    "hits": 628, 
+                    "weight": 0.0006368147903277162
+                }, 
+                "TeamAdd": {
+                    "hits": 77, 
+                    "weight": 7.808079435546839e-05
+                }, 
+                "Watch:started": {
+                    "hits": 42821, 
+                    "weight": 0.0434220479882534
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Gollum:edited": {
+                "CommitComment": {
+                    "hits": 4465, 
+                    "weight": 0.002322484668480268
+                }, 
+                "Create:branch": {
+                    "hits": 20401, 
+                    "weight": 0.010611648313922944
+                }, 
+                "Create:repository": {
+                    "hits": 23042, 
+                    "weight": 0.011985373288045316
+                }, 
+                "Create:tag": {
+                    "hits": 3409, 
+                    "weight": 0.0017732027401678014
+                }, 
+                "Delete:branch": {
+                    "hits": 2272, 
+                    "weight": 0.001181788391217731
+                }, 
+                "Delete:tag": {
+                    "hits": 361, 
+                    "weight": 0.00018777535617500038
+                }, 
+                "Download": {
+                    "hits": 1649, 
+                    "weight": 0.000857732859647024
+                }, 
+                "Follow": {
+                    "hits": 5254, 
+                    "weight": 0.002732885654691003
+                }, 
+                "Fork": {
+                    "hits": 16131, 
+                    "weight": 0.008390593546977649
+                }, 
+                "ForkApply": {
+                    "hits": 2, 
+                    "weight": 1.0403066824099744e-06
+                }, 
+                "Gist:create": {
+                    "hits": 1835, 
+                    "weight": 0.0009544813811111516
+                }, 
+                "Gist:fork": {
+                    "hits": 158, 
+                    "weight": 8.218422791038799e-05
+                }, 
+                "Gist:update": {
+                    "hits": 495, 
+                    "weight": 0.0002574759038964687
+                }, 
+                "Gollum:created": {
+                    "hits": 129350, 
+                    "weight": 0.0672818346848651
+                }, 
+                "Gollum:edited": {
+                    "hits": 1277931, 
+                    "weight": 0.6647200794794306
+                }, 
+                "IssueComment:created": {
+                    "hits": 64545, 
+                    "weight": 0.0335732974080759
+                }, 
+                "Issues:closed": {
+                    "hits": 13338, 
+                    "weight": 0.006937805264992119
+                }, 
+                "Issues:opened": {
+                    "hits": 34291, 
+                    "weight": 0.017836578223260218
+                }, 
+                "Issues:reopened": {
+                    "hits": 543, 
+                    "weight": 0.00028244326427430806
+                }, 
+                "Member:added": {
+                    "hits": 3689, 
+                    "weight": 0.001918845675705198
+                }, 
+                "Public": {
+                    "hits": 458, 
+                    "weight": 0.00023823023027188416
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 5219, 
+                    "weight": 0.0027146802877488284
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 1088, 
+                    "weight": 0.0005659268352310261
+                }, 
+                "PullRequest:opened": {
+                    "hits": 2172, 
+                    "weight": 0.0011297730570972323
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 19, 
+                    "weight": 9.882913482894758e-06
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 2859, 
+                    "weight": 0.0014871184025050585
+                }, 
+                "Push": {
+                    "hits": 273648, 
+                    "weight": 0.14233892151406236
+                }, 
+                "Release:published": {
+                    "hits": 1083, 
+                    "weight": 0.0005633260685250012
+                }, 
+                "TeamAdd": {
+                    "hits": 6, 
+                    "weight": 3.1209200472299233e-06
+                }, 
+                "Watch:started": {
+                    "hits": 32797, 
+                    "weight": 0.017059469131499968
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "IssueComment:created": {
+                "CommitComment": {
+                    "hits": 215831, 
+                    "weight": 0.01289457528215229
+                }, 
+                "Create:branch": {
+                    "hits": 439023, 
+                    "weight": 0.026228925057551252
+                }, 
+                "Create:repository": {
+                    "hits": 218524, 
+                    "weight": 0.013055465475103422
+                }, 
+                "Create:tag": {
+                    "hits": 35678, 
+                    "weight": 0.0021315411452322852
+                }, 
+                "Delete:branch": {
+                    "hits": 111814, 
+                    "weight": 0.006680199047396231
+                }, 
+                "Delete:tag": {
+                    "hits": 2471, 
+                    "weight": 0.000147627057847104
+                }, 
+                "Download": {
+                    "hits": 3011, 
+                    "weight": 0.00017988873782987867
+                }, 
+                "Follow": {
+                    "hits": 67610, 
+                    "weight": 0.004039281821547026
+                }, 
+                "Fork": {
+                    "hits": 351741, 
+                    "weight": 0.021014362183002108
+                }, 
+                "ForkApply": {
+                    "hits": 53, 
+                    "weight": 3.166424146457512e-06
+                }, 
+                "Gist:create": {
+                    "hits": 29453, 
+                    "weight": 0.0017596356676530774
+                }, 
+                "Gist:fork": {
+                    "hits": 2679, 
+                    "weight": 0.00016005377902565424
+                }, 
+                "Gist:update": {
+                    "hits": 4560, 
+                    "weight": 0.00027243196429898594
+                }, 
+                "Gollum:created": {
+                    "hits": 21485, 
+                    "weight": 0.0012835966563516914
+                }, 
+                "Gollum:edited": {
+                    "hits": 59761, 
+                    "weight": 0.003570352328612215
+                }, 
+                "IssueComment:created": {
+                    "hits": 7478297, 
+                    "weight": 0.44678226783359953
+                }, 
+                "Issues:closed": {
+                    "hits": 1707370, 
+                    "weight": 0.10200486028183325
+                }, 
+                "Issues:opened": {
+                    "hits": 1094404, 
+                    "weight": 0.0653839104071639
+                }, 
+                "Issues:reopened": {
+                    "hits": 67987, 
+                    "weight": 0.004061805253683149
+                }, 
+                "Member:added": {
+                    "hits": 14112, 
+                    "weight": 0.0008431052368831776
+                }, 
+                "Public": {
+                    "hits": 6228, 
+                    "weight": 0.00037208470913466766
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 543936, 
+                    "weight": 0.03249683178353799
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 367805, 
+                    "weight": 0.021974087418637836
+                }, 
+                "PullRequest:opened": {
+                    "hits": 63753, 
+                    "weight": 0.0038088497850774674
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 12726, 
+                    "weight": 0.0007603002582607227
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 318196, 
+                    "weight": 0.019010254673701783
+                }, 
+                "Push": {
+                    "hits": 2815651, 
+                    "weight": 0.16821783612070265
+                }, 
+                "Release:published": {
+                    "hits": 5479, 
+                    "weight": 0.00032733656412152284
+                }, 
+                "TeamAdd": {
+                    "hits": 49, 
+                    "weight": 2.9274487391777e-06
+                }, 
+                "Watch:started": {
+                    "hits": 678437, 
+                    "weight": 0.040532439597173495
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Issues:closed": {
+                "CommitComment": {
+                    "hits": 17936, 
+                    "weight": 0.004655019601380207
+                }, 
+                "Create:branch": {
+                    "hits": 45959, 
+                    "weight": 0.011927968658554469
+                }, 
+                "Create:repository": {
+                    "hits": 34228, 
+                    "weight": 0.008883363677299383
+                }, 
+                "Create:tag": {
+                    "hits": 15614, 
+                    "weight": 0.004052379351915173
+                }, 
+                "Delete:branch": {
+                    "hits": 19243, 
+                    "weight": 0.0049942318348215504
+                }, 
+                "Delete:tag": {
+                    "hits": 758, 
+                    "weight": 0.00019672752329650964
+                }, 
+                "Download": {
+                    "hits": 1130, 
+                    "weight": 0.0002932745400066701
+                }, 
+                "Follow": {
+                    "hits": 7901, 
+                    "weight": 0.0020505859651262833
+                }, 
+                "Fork": {
+                    "hits": 29435, 
+                    "weight": 0.007639412464687021
+                }, 
+                "ForkApply": {
+                    "hits": 8, 
+                    "weight": 2.0762799292507614e-06
+                }, 
+                "Gist:create": {
+                    "hits": 3106, 
+                    "weight": 0.0008061156825316081
+                }, 
+                "Gist:fork": {
+                    "hits": 268, 
+                    "weight": 6.95553776299005e-05
+                }, 
+                "Gist:update": {
+                    "hits": 547, 
+                    "weight": 0.0001419656401625208
+                }, 
+                "Gollum:created": {
+                    "hits": 6924, 
+                    "weight": 0.001797020278766534
+                }, 
+                "Gollum:edited": {
+                    "hits": 14474, 
+                    "weight": 0.00375650946199694
+                }, 
+                "IssueComment:created": {
+                    "hits": 1525929, 
+                    "weight": 0.39603196952021064
+                }, 
+                "Issues:closed": {
+                    "hits": 532598, 
+                    "weight": 0.13822781721988714
+                }, 
+                "Issues:opened": {
+                    "hits": 478886, 
+                    "weight": 0.12428767377489752
+                }, 
+                "Issues:reopened": {
+                    "hits": 59918, 
+                    "weight": 0.01555081760010589
+                }, 
+                "Member:added": {
+                    "hits": 2854, 
+                    "weight": 0.0007407128647602091
+                }, 
+                "Public": {
+                    "hits": 885, 
+                    "weight": 0.00022968846717336548
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 65608, 
+                    "weight": 0.017027571699785495
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 15973, 
+                    "weight": 0.004145552413740302
+                }, 
+                "PullRequest:opened": {
+                    "hits": 8809, 
+                    "weight": 0.0022862437370962446
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 389, 
+                    "weight": 0.00010095911155981827
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 10831, 
+                    "weight": 0.0028110234892143745
+                }, 
+                "Push": {
+                    "hits": 876380, 
+                    "weight": 0.2274512755495978
+                }, 
+                "Release:published": {
+                    "hits": 3014, 
+                    "weight": 0.0007822384633452244
+                }, 
+                "TeamAdd": {
+                    "hits": 9, 
+                    "weight": 2.3358149204071065e-06
+                }, 
+                "Watch:started": {
+                    "hits": 73431, 
+                    "weight": 0.01905791393560158
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Issues:opened": {
+                "CommitComment": {
+                    "hits": 28476, 
+                    "weight": 0.004627861494391668
+                }, 
+                "Create:branch": {
+                    "hits": 131907, 
+                    "weight": 0.021437256852813658
+                }, 
+                "Create:repository": {
+                    "hits": 113325, 
+                    "weight": 0.018417348077396253
+                }, 
+                "Create:tag": {
+                    "hits": 8260, 
+                    "weight": 0.0013423983685796872
+                }, 
+                "Delete:branch": {
+                    "hits": 10469, 
+                    "weight": 0.0017014005472954898
+                }, 
+                "Delete:tag": {
+                    "hits": 610, 
+                    "weight": 9.913595700164761e-05
+                }, 
+                "Download": {
+                    "hits": 992, 
+                    "weight": 0.0001612178185994007
+                }, 
+                "Follow": {
+                    "hits": 26618, 
+                    "weight": 0.004325903120442387
+                }, 
+                "Fork": {
+                    "hits": 153727, 
+                    "weight": 0.02498339879015128
+                }, 
+                "ForkApply": {
+                    "hits": 9, 
+                    "weight": 1.4626616606800466e-06
+                }, 
+                "Gist:create": {
+                    "hits": 10458, 
+                    "weight": 0.0016996128497102142
+                }, 
+                "Gist:fork": {
+                    "hits": 868, 
+                    "weight": 0.00014106559127447562
+                }, 
+                "Gist:update": {
+                    "hits": 1631, 
+                    "weight": 0.00026506679650768403
+                }, 
+                "Gollum:created": {
+                    "hits": 19059, 
+                    "weight": 0.0030974298434334455
+                }, 
+                "Gollum:edited": {
+                    "hits": 22997, 
+                    "weight": 0.0037374255789621147
+                }, 
+                "IssueComment:created": {
+                    "hits": 1512182, 
+                    "weight": 0.24575673726338604
+                }, 
+                "Issues:closed": {
+                    "hits": 473066, 
+                    "weight": 0.076881722352363
+                }, 
+                "Issues:opened": {
+                    "hits": 2413868, 
+                    "weight": 0.3922969086158248
+                }, 
+                "Issues:reopened": {
+                    "hits": 9864, 
+                    "weight": 0.001603077180105331
+                }, 
+                "Member:added": {
+                    "hits": 9507, 
+                    "weight": 0.0015450582675650226
+                }, 
+                "Public": {
+                    "hits": 2202, 
+                    "weight": 0.00035786455297971806
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 23140, 
+                    "weight": 0.003760665647570698
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 5028, 
+                    "weight": 0.0008171403144332527
+                }, 
+                "PullRequest:opened": {
+                    "hits": 16214, 
+                    "weight": 0.002635066240696253
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 229, 
+                    "weight": 3.72166133661923e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 15930, 
+                    "weight": 0.0025889111394036828
+                }, 
+                "Push": {
+                    "hits": 873787, 
+                    "weight": 0.14200608272229287
+                }, 
+                "Release:published": {
+                    "hits": 1573, 
+                    "weight": 0.0002556407546944126
+                }, 
+                "TeamAdd": {
+                    "hits": 29, 
+                    "weight": 4.713020906635706e-06
+                }, 
+                "Watch:started": {
+                    "hits": 267141, 
+                    "weight": 0.04341521096619204
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Issues:reopened": {
+                "CommitComment": {
+                    "hits": 1063, 
+                    "weight": 0.006372481431080684
+                }, 
+                "Create:branch": {
+                    "hits": 2442, 
+                    "weight": 0.01463932234684763
+                }, 
+                "Create:repository": {
+                    "hits": 1783, 
+                    "weight": 0.010688743548087356
+                }, 
+                "Create:tag": {
+                    "hits": 285, 
+                    "weight": 0.001708520421315141
+                }, 
+                "Delete:branch": {
+                    "hits": 314, 
+                    "weight": 0.0018823698676945764
+                }, 
+                "Delete:tag": {
+                    "hits": 43, 
+                    "weight": 0.0002577767653212318
+                }, 
+                "Download": {
+                    "hits": 27, 
+                    "weight": 0.00016185982938775022
+                }, 
+                "Follow": {
+                    "hits": 410, 
+                    "weight": 0.002457871483295466
+                }, 
+                "Fork": {
+                    "hits": 1649, 
+                    "weight": 0.009885439209644449
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 133, 
+                    "weight": 0.0007973095299470659
+                }, 
+                "Gist:fork": {
+                    "hits": 12, 
+                    "weight": 7.193770195011121e-05
+                }, 
+                "Gist:update": {
+                    "hits": 24, 
+                    "weight": 0.00014387540390022242
+                }, 
+                "Gollum:created": {
+                    "hits": 520, 
+                    "weight": 0.003117300417838152
+                }, 
+                "Gollum:edited": {
+                    "hits": 593, 
+                    "weight": 0.003554921438034662
+                }, 
+                "IssueComment:created": {
+                    "hits": 86479, 
+                    "weight": 0.5184250439119722
+                }, 
+                "Issues:closed": {
+                    "hits": 22600, 
+                    "weight": 0.13548267200604278
+                }, 
+                "Issues:opened": {
+                    "hits": 15307, 
+                    "weight": 0.09176253364586268
+                }, 
+                "Issues:reopened": {
+                    "hits": 5087, 
+                    "weight": 0.030495590818351306
+                }, 
+                "Member:added": {
+                    "hits": 262, 
+                    "weight": 0.0015706398259107612
+                }, 
+                "Public": {
+                    "hits": 44, 
+                    "weight": 0.0002637715738170744
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 1040, 
+                    "weight": 0.006234600835676304
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 298, 
+                    "weight": 0.001786452931761095
+                }, 
+                "PullRequest:opened": {
+                    "hits": 483, 
+                    "weight": 0.002895492503491976
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 121, 
+                    "weight": 0.0007253718279969547
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 447, 
+                    "weight": 0.002679679397641642
+                }, 
+                "Push": {
+                    "hits": 21943, 
+                    "weight": 0.13154408282427418
+                }, 
+                "Release:published": {
+                    "hits": 77, 
+                    "weight": 0.0004616002541798802
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 5.9948084958426e-06
+                }, 
+                "Watch:started": {
+                    "hits": 3324, 
+                    "weight": 0.019926743440180802
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Member:added": {
+                "CommitComment": {
+                    "hits": 3386, 
+                    "weight": 0.003417916504317315
+                }, 
+                "Create:branch": {
+                    "hits": 52796, 
+                    "weight": 0.0532936561612336
+                }, 
+                "Create:repository": {
+                    "hits": 132083, 
+                    "weight": 0.1333280170229604
+                }, 
+                "Create:tag": {
+                    "hits": 1112, 
+                    "weight": 0.001122481734436165
+                }, 
+                "Delete:branch": {
+                    "hits": 1921, 
+                    "weight": 0.0019391073847588784
+                }, 
+                "Delete:tag": {
+                    "hits": 80, 
+                    "weight": 8.075408161411258e-05
+                }, 
+                "Download": {
+                    "hits": 352, 
+                    "weight": 0.0003553179591020954
+                }, 
+                "Follow": {
+                    "hits": 18332, 
+                    "weight": 0.018504797801873897
+                }, 
+                "Fork": {
+                    "hits": 27594, 
+                    "weight": 0.027854101600747784
+                }, 
+                "ForkApply": {
+                    "hits": 3, 
+                    "weight": 3.028278060529222e-06
+                }, 
+                "Gist:create": {
+                    "hits": 1603, 
+                    "weight": 0.001618109910342781
+                }, 
+                "Gist:fork": {
+                    "hits": 280, 
+                    "weight": 0.00028263928564939406
+                }, 
+                "Gist:update": {
+                    "hits": 197, 
+                    "weight": 0.00019885692597475225
+                }, 
+                "Gollum:created": {
+                    "hits": 22988, 
+                    "weight": 0.02320468535181525
+                }, 
+                "Gollum:edited": {
+                    "hits": 2952, 
+                    "weight": 0.0029798256115607545
+                }, 
+                "IssueComment:created": {
+                    "hits": 18320, 
+                    "weight": 0.01849268468963178
+                }, 
+                "Issues:closed": {
+                    "hits": 2742, 
+                    "weight": 0.002767846147323709
+                }, 
+                "Issues:opened": {
+                    "hits": 16599, 
+                    "weight": 0.016755462508908185
+                }, 
+                "Issues:reopened": {
+                    "hits": 160, 
+                    "weight": 0.00016150816322822517
+                }, 
+                "Member:added": {
+                    "hits": 272328, 
+                    "weight": 0.27489496922260065
+                }, 
+                "Public": {
+                    "hits": 1936, 
+                    "weight": 0.0019542487750615245
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 5874, 
+                    "weight": 0.005929368442516216
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 914, 
+                    "weight": 0.0009226153824412362
+                }, 
+                "PullRequest:opened": {
+                    "hits": 4146, 
+                    "weight": 0.004185080279651384
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 26, 
+                    "weight": 2.624507652458659e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 908, 
+                    "weight": 0.0009165588263201778
+                }, 
+                "Push": {
+                    "hits": 369165, 
+                    "weight": 0.3726447567384234
+                }, 
+                "Release:published": {
+                    "hits": 278, 
+                    "weight": 0.00028062043360904123
+                }, 
+                "TeamAdd": {
+                    "hits": 249, 
+                    "weight": 0.00025134707902392544
+                }, 
+                "Watch:started": {
+                    "hits": 31338, 
+                    "weight": 0.031633392620288255
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Public": {
+                "CommitComment": {
+                    "hits": 368, 
+                    "weight": 0.0022144395903286756
+                }, 
+                "Create:branch": {
+                    "hits": 4353, 
+                    "weight": 0.026194172654078057
+                }, 
+                "Create:repository": {
+                    "hits": 16363, 
+                    "weight": 0.09846433428409816
+                }, 
+                "Create:tag": {
+                    "hits": 528, 
+                    "weight": 0.003177239412210709
+                }, 
+                "Delete:branch": {
+                    "hits": 346, 
+                    "weight": 0.0020820546148198962
+                }, 
+                "Delete:tag": {
+                    "hits": 46, 
+                    "weight": 0.00027680494879108445
+                }, 
+                "Download": {
+                    "hits": 55, 
+                    "weight": 0.0003309624387719488
+                }, 
+                "Follow": {
+                    "hits": 2375, 
+                    "weight": 0.014291559856061427
+                }, 
+                "Fork": {
+                    "hits": 16481, 
+                    "weight": 0.09917439915273615
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 483, 
+                    "weight": 0.002906451962306387
+                }, 
+                "Gist:fork": {
+                    "hits": 63, 
+                    "weight": 0.0003791024298660505
+                }, 
+                "Gist:update": {
+                    "hits": 60, 
+                    "weight": 0.00036104993320576235
+                }, 
+                "Gollum:created": {
+                    "hits": 1189, 
+                    "weight": 0.007154806176360857
+                }, 
+                "Gollum:edited": {
+                    "hits": 420, 
+                    "weight": 0.0025273495324403365
+                }, 
+                "IssueComment:created": {
+                    "hits": 3243, 
+                    "weight": 0.019514748889771456
+                }, 
+                "Issues:closed": {
+                    "hits": 563, 
+                    "weight": 0.0033878518732474035
+                }, 
+                "Issues:opened": {
+                    "hits": 2435, 
+                    "weight": 0.014652609789267189
+                }, 
+                "Issues:reopened": {
+                    "hits": 18, 
+                    "weight": 0.0001083149799617287
+                }, 
+                "Member:added": {
+                    "hits": 1708, 
+                    "weight": 0.010277888098590702
+                }, 
+                "Public": {
+                    "hits": 45282, 
+                    "weight": 0.2724843845903889
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 534, 
+                    "weight": 0.003213344405531285
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 116, 
+                    "weight": 0.0006980298708644739
+                }, 
+                "PullRequest:opened": {
+                    "hits": 608, 
+                    "weight": 0.0036586393231517254
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 8, 
+                    "weight": 4.8139991094101646e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 163, 
+                    "weight": 0.0009808523185423211
+                }, 
+                "Push": {
+                    "hits": 50105, 
+                    "weight": 0.3015067817212454
+                }, 
+                "Release:published": {
+                    "hits": 126, 
+                    "weight": 0.000758204859732101
+                }, 
+                "TeamAdd": {
+                    "hits": 4280, 
+                    "weight": 0.025754895235344383
+                }, 
+                "Watch:started": {
+                    "hits": 13863, 
+                    "weight": 0.0834205870671914
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "PullRequest:closed-merged": {
+                "CommitComment": {
+                    "hits": 6225, 
+                    "weight": 0.0022690573479184815
+                }, 
+                "Create:branch": {
+                    "hits": 29188, 
+                    "weight": 0.010639236284505164
+                }, 
+                "Create:repository": {
+                    "hits": 9991, 
+                    "weight": 0.0036417914800086024
+                }, 
+                "Create:tag": {
+                    "hits": 8377, 
+                    "weight": 0.0030534768519699792
+                }, 
+                "Delete:branch": {
+                    "hits": 132547, 
+                    "weight": 0.048314336432859595
+                }, 
+                "Delete:tag": {
+                    "hits": 283, 
+                    "weight": 0.00010315553886922576
+                }, 
+                "Download": {
+                    "hits": 88, 
+                    "weight": 3.2076633994670906e-05
+                }, 
+                "Follow": {
+                    "hits": 1585, 
+                    "weight": 0.0005777439191085612
+                }, 
+                "Fork": {
+                    "hits": 8928, 
+                    "weight": 0.003254320321641157
+                }, 
+                "ForkApply": {
+                    "hits": 3, 
+                    "weight": 1.09352161345469e-06
+                }, 
+                "Gist:create": {
+                    "hits": 489, 
+                    "weight": 0.00017824402299311445
+                }, 
+                "Gist:fork": {
+                    "hits": 56, 
+                    "weight": 2.0412403451154213e-05
+                }, 
+                "Gist:update": {
+                    "hits": 62, 
+                    "weight": 2.259944667806359e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 1169, 
+                    "weight": 0.00042610892204284417
+                }, 
+                "Gollum:edited": {
+                    "hits": 1512, 
+                    "weight": 0.0005511348931811637
+                }, 
+                "IssueComment:created": {
+                    "hits": 132540, 
+                    "weight": 0.0483117848824282
+                }, 
+                "Issues:closed": {
+                    "hits": 51686, 
+                    "weight": 0.018839919371006368
+                }, 
+                "Issues:opened": {
+                    "hits": 10433, 
+                    "weight": 0.0038029036643909267
+                }, 
+                "Issues:reopened": {
+                    "hits": 300, 
+                    "weight": 0.00010935216134546899
+                }, 
+                "Member:added": {
+                    "hits": 2804, 
+                    "weight": 0.0010220782013756501
+                }, 
+                "Public": {
+                    "hits": 233, 
+                    "weight": 8.493017864498092e-05
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 62993, 
+                    "weight": 0.022961402332117093
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 5999, 
+                    "weight": 0.002186678719704895
+                }, 
+                "PullRequest:opened": {
+                    "hits": 17470, 
+                    "weight": 0.006367940862351144
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 281, 
+                    "weight": 0.00010242652446025596
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 7556, 
+                    "weight": 0.002754216437087879
+                }, 
+                "Push": {
+                    "hits": 2234756, 
+                    "weight": 0.8145846622658497
+                }, 
+                "Release:published": {
+                    "hits": 1605, 
+                    "weight": 0.0005850340631982591
+                }, 
+                "TeamAdd": {
+                    "hits": 2, 
+                    "weight": 7.290144089697933e-07
+                }, 
+                "Watch:started": {
+                    "hits": 14269, 
+                    "weight": 0.0052011533007949905
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "PullRequest:closed-not-merged": {
+                "CommitComment": {
+                    "hits": 7959, 
+                    "weight": 0.009033611299334993
+                }, 
+                "Create:branch": {
+                    "hits": 47968, 
+                    "weight": 0.05444456172967721
+                }, 
+                "Create:repository": {
+                    "hits": 12094, 
+                    "weight": 0.013726912307344817
+                }, 
+                "Create:tag": {
+                    "hits": 2310, 
+                    "weight": 0.0026218924615484147
+                }, 
+                "Delete:branch": {
+                    "hits": 71811, 
+                    "weight": 0.08150680500270702
+                }, 
+                "Delete:tag": {
+                    "hits": 355, 
+                    "weight": 0.00040293152547605507
+                }, 
+                "Download": {
+                    "hits": 98, 
+                    "weight": 0.00011123180139902366
+                }, 
+                "Follow": {
+                    "hits": 1693, 
+                    "weight": 0.0019215861200872148
+                }, 
+                "Fork": {
+                    "hits": 15618, 
+                    "weight": 0.017726717084183177
+                }, 
+                "ForkApply": {
+                    "hits": 7, 
+                    "weight": 7.945128671358832e-06
+                }, 
+                "Gist:create": {
+                    "hits": 2107, 
+                    "weight": 0.0023914837300790088
+                }, 
+                "Gist:fork": {
+                    "hits": 62, 
+                    "weight": 7.03711396606068e-05
+                }, 
+                "Gist:update": {
+                    "hits": 114, 
+                    "weight": 0.00012939209550498672
+                }, 
+                "Gollum:created": {
+                    "hits": 809, 
+                    "weight": 0.0009182298707327565
+                }, 
+                "Gollum:edited": {
+                    "hits": 1327, 
+                    "weight": 0.00150616939241331
+                }, 
+                "IssueComment:created": {
+                    "hits": 299059, 
+                    "weight": 0.33943746218970017
+                }, 
+                "Issues:closed": {
+                    "hits": 19403, 
+                    "weight": 0.022022761658625063
+                }, 
+                "Issues:opened": {
+                    "hits": 9276, 
+                    "weight": 0.010528430507932077
+                }, 
+                "Issues:reopened": {
+                    "hits": 348, 
+                    "weight": 0.00039498639680469625
+                }, 
+                "Member:added": {
+                    "hits": 820, 
+                    "weight": 0.0009307150729306061
+                }, 
+                "Public": {
+                    "hits": 211, 
+                    "weight": 0.00023948887852238767
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 23172, 
+                    "weight": 0.026300645938960983
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 46549, 
+                    "weight": 0.05283397064615462
+                }, 
+                "PullRequest:opened": {
+                    "hits": 50848, 
+                    "weight": 0.05771341466875056
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 26000, 
+                    "weight": 0.02951047792218995
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 10548, 
+                    "weight": 0.011972173889356138
+                }, 
+                "Push": {
+                    "hits": 217185, 
+                    "weight": 0.246508967212724
+                }, 
+                "Release:published": {
+                    "hits": 307, 
+                    "weight": 0.0003484506431581659
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 1.1350183816226904e-06
+                }, 
+                "Watch:started": {
+                    "hits": 12984, 
+                    "weight": 0.014737078666989012
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "PullRequest:opened": {
+                "CommitComment": {
+                    "hits": 52290, 
+                    "weight": 0.01322126568144765
+                }, 
+                "Create:branch": {
+                    "hits": 312728, 
+                    "weight": 0.0790717149364651
+                }, 
+                "Create:repository": {
+                    "hits": 78935, 
+                    "weight": 0.01995832102820941
+                }, 
+                "Create:tag": {
+                    "hits": 7333, 
+                    "weight": 0.0018541124735524117
+                }, 
+                "Delete:branch": {
+                    "hits": 103934, 
+                    "weight": 0.02627919348509428
+                }, 
+                "Delete:tag": {
+                    "hits": 650, 
+                    "weight": 0.00016434925784932056
+                }, 
+                "Download": {
+                    "hits": 488, 
+                    "weight": 0.00012338836589302835
+                }, 
+                "Follow": {
+                    "hits": 23199, 
+                    "weight": 0.005865751435148289
+                }, 
+                "Fork": {
+                    "hits": 159116, 
+                    "weight": 0.04023168694146537
+                }, 
+                "ForkApply": {
+                    "hits": 36, 
+                    "weight": 9.1024204347316e-06
+                }, 
+                "Gist:create": {
+                    "hits": 6734, 
+                    "weight": 0.001702658311318961
+                }, 
+                "Gist:fork": {
+                    "hits": 697, 
+                    "weight": 0.0001762329734168868
+                }, 
+                "Gist:update": {
+                    "hits": 875, 
+                    "weight": 0.00022123938556639305
+                }, 
+                "Gollum:created": {
+                    "hits": 5623, 
+                    "weight": 0.0014217475029026608
+                }, 
+                "Gollum:edited": {
+                    "hits": 8053, 
+                    "weight": 0.0020361608822470436
+                }, 
+                "IssueComment:created": {
+                    "hits": 661705, 
+                    "weight": 0.1673088087156687
+                }, 
+                "Issues:closed": {
+                    "hits": 39128, 
+                    "weight": 0.009893319632504945
+                }, 
+                "Issues:opened": {
+                    "hits": 89745, 
+                    "weight": 0.02269157560874965
+                }, 
+                "Issues:reopened": {
+                    "hits": 820, 
+                    "weight": 0.00020733290990221977
+                }, 
+                "Member:added": {
+                    "hits": 4201, 
+                    "weight": 0.0010622018957307626
+                }, 
+                "Public": {
+                    "hits": 1758, 
+                    "weight": 0.00044450153122939314
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 441777, 
+                    "weight": 0.11170111089984505
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 133276, 
+                    "weight": 0.03369817182942469
+                }, 
+                "PullRequest:opened": {
+                    "hits": 118753, 
+                    "weight": 0.030026103719046713
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 1032, 
+                    "weight": 0.00026093605246230585
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 91308, 
+                    "weight": 0.02308677236262425
+                }, 
+                "Push": {
+                    "hits": 1447657, 
+                    "weight": 0.366032851646729
+                }, 
+                "Release:published": {
+                    "hits": 1182, 
+                    "weight": 0.0002988628042736875
+                }, 
+                "TeamAdd": {
+                    "hits": 10, 
+                    "weight": 2.528450120758778e-06
+                }, 
+                "Watch:started": {
+                    "hits": 161949, 
+                    "weight": 0.04094799686067633
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "PullRequest:reopened": {
+                "CommitComment": {
+                    "hits": 551, 
+                    "weight": 0.01043303732035673
+                }, 
+                "Create:branch": {
+                    "hits": 1872, 
+                    "weight": 0.035445818264442465
+                }, 
+                "Create:repository": {
+                    "hits": 572, 
+                    "weight": 0.010830666691912976
+                }, 
+                "Create:tag": {
+                    "hits": 50, 
+                    "weight": 0.0009467365989434419
+                }, 
+                "Delete:branch": {
+                    "hits": 636, 
+                    "weight": 0.012042489538560582
+                }, 
+                "Delete:tag": {
+                    "hits": 154, 
+                    "weight": 0.0029159487247458014
+                }, 
+                "Download": {
+                    "hits": 3, 
+                    "weight": 5.680419593660652e-05
+                }, 
+                "Follow": {
+                    "hits": 119, 
+                    "weight": 0.002253233105485392
+                }, 
+                "Fork": {
+                    "hits": 982, 
+                    "weight": 0.0185939068032492
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 36, 
+                    "weight": 0.0006816503512392782
+                }, 
+                "Gist:fork": {
+                    "hits": 5, 
+                    "weight": 9.46736598943442e-05
+                }, 
+                "Gist:update": {
+                    "hits": 8, 
+                    "weight": 0.00015147785583095072
+                }, 
+                "Gollum:created": {
+                    "hits": 53, 
+                    "weight": 0.0010035407948800485
+                }, 
+                "Gollum:edited": {
+                    "hits": 47, 
+                    "weight": 0.0008899324030068354
+                }, 
+                "IssueComment:created": {
+                    "hits": 15855, 
+                    "weight": 0.30021017552496543
+                }, 
+                "Issues:closed": {
+                    "hits": 432, 
+                    "weight": 0.008179804214871338
+                }, 
+                "Issues:opened": {
+                    "hits": 602, 
+                    "weight": 0.011398708651279042
+                }, 
+                "Issues:reopened": {
+                    "hits": 132, 
+                    "weight": 0.002499384621210687
+                }, 
+                "Member:added": {
+                    "hits": 60, 
+                    "weight": 0.0011360839187321303
+                }, 
+                "Public": {
+                    "hits": 15, 
+                    "weight": 0.00028402097968303257
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 6051, 
+                    "weight": 0.11457406320413535
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 7763, 
+                    "weight": 0.1469903243519588
+                }, 
+                "PullRequest:opened": {
+                    "hits": 653, 
+                    "weight": 0.012364379982201351
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 1017, 
+                    "weight": 0.019256622422509608
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 978, 
+                    "weight": 0.018518167875333724
+                }, 
+                "Push": {
+                    "hits": 13209, 
+                    "weight": 0.2501088747088785
+                }, 
+                "Release:published": {
+                    "hits": 8, 
+                    "weight": 0.00015147785583095072
+                }, 
+                "TeamAdd": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Watch:started": {
+                    "hits": 950, 
+                    "weight": 0.017987995379925396
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "PullRequestReviewComment": {
+                "CommitComment": {
+                    "hits": 21314, 
+                    "weight": 0.010504661400371809
+                }, 
+                "Create:branch": {
+                    "hits": 46684, 
+                    "weight": 0.023008333152620696
+                }, 
+                "Create:repository": {
+                    "hits": 6390, 
+                    "weight": 0.003149328438977942
+                }, 
+                "Create:tag": {
+                    "hits": 1226, 
+                    "weight": 0.0006042373499510104
+                }, 
+                "Delete:branch": {
+                    "hits": 8082, 
+                    "weight": 0.003983235124228439
+                }, 
+                "Delete:tag": {
+                    "hits": 100, 
+                    "weight": 4.928526508572679e-05
+                }, 
+                "Download": {
+                    "hits": 38, 
+                    "weight": 1.872840073257618e-05
+                }, 
+                "Follow": {
+                    "hits": 1679, 
+                    "weight": 0.0008274996007893528
+                }, 
+                "Fork": {
+                    "hits": 9783, 
+                    "weight": 0.004821577483336652
+                }, 
+                "ForkApply": {
+                    "hits": 1, 
+                    "weight": 4.928526508572679e-07
+                }, 
+                "Gist:create": {
+                    "hits": 998, 
+                    "weight": 0.0004918669455555533
+                }, 
+                "Gist:fork": {
+                    "hits": 65, 
+                    "weight": 3.2035422305722416e-05
+                }, 
+                "Gist:update": {
+                    "hits": 141, 
+                    "weight": 6.949222377087477e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 573, 
+                    "weight": 0.0002824045689412145
+                }, 
+                "Gollum:edited": {
+                    "hits": 2130, 
+                    "weight": 0.0010497761463259807
+                }, 
+                "IssueComment:created": {
+                    "hits": 353200, 
+                    "weight": 0.17407555628278704
+                }, 
+                "Issues:closed": {
+                    "hits": 7597, 
+                    "weight": 0.0037442015885626643
+                }, 
+                "Issues:opened": {
+                    "hits": 16799, 
+                    "weight": 0.008279431681751244
+                }, 
+                "Issues:reopened": {
+                    "hits": 401, 
+                    "weight": 0.00019763391299376442
+                }, 
+                "Member:added": {
+                    "hits": 546, 
+                    "weight": 0.0002690975473680683
+                }, 
+                "Public": {
+                    "hits": 221, 
+                    "weight": 0.00010892043583945621
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 55091, 
+                    "weight": 0.027151745388377745
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 10653, 
+                    "weight": 0.005250359289582475
+                }, 
+                "PullRequest:opened": {
+                    "hits": 4642, 
+                    "weight": 0.0022878220052794376
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 331, 
+                    "weight": 0.00016313422743375567
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 1207391, 
+                    "weight": 0.5950658549712076
+                }, 
+                "Push": {
+                    "hits": 256981, 
+                    "weight": 0.12665376706995157
+                }, 
+                "Release:published": {
+                    "hits": 171, 
+                    "weight": 8.427780329659281e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 2, 
+                    "weight": 9.857053017145358e-07
+                }, 
+                "Watch:started": {
+                    "hits": 15774, 
+                    "weight": 0.007774257714622544
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Push": {
+                "CommitComment": {
+                    "hits": 447552, 
+                    "weight": 0.004691948069157464
+                }, 
+                "Create:branch": {
+                    "hits": 2240341, 
+                    "weight": 0.023486798470801835
+                }, 
+                "Create:repository": {
+                    "hits": 2856602, 
+                    "weight": 0.02994742116726403
+                }, 
+                "Create:tag": {
+                    "hits": 1279095, 
+                    "weight": 0.013409497255109946
+                }, 
+                "Delete:branch": {
+                    "hits": 733496, 
+                    "weight": 0.007689665426441449
+                }, 
+                "Delete:tag": {
+                    "hits": 59666, 
+                    "weight": 0.0006255134006648373
+                }, 
+                "Download": {
+                    "hits": 42535, 
+                    "weight": 0.00044591915826901174
+                }, 
+                "Follow": {
+                    "hits": 344833, 
+                    "weight": 0.0036150850147732014
+                }, 
+                "Fork": {
+                    "hits": 1353187, 
+                    "weight": 0.014186246808994222
+                }, 
+                "ForkApply": {
+                    "hits": 1129, 
+                    "weight": 1.183596402223379e-05
+                }, 
+                "Gist:create": {
+                    "hits": 104008, 
+                    "weight": 0.0010903763915185935
+                }, 
+                "Gist:fork": {
+                    "hits": 10155, 
+                    "weight": 0.00010646077470840048
+                }, 
+                "Gist:update": {
+                    "hits": 18071, 
+                    "weight": 0.0001894488094293949
+                }, 
+                "Gollum:created": {
+                    "hits": 278660, 
+                    "weight": 0.0029213549463557734
+                }, 
+                "Gollum:edited": {
+                    "hits": 236383, 
+                    "weight": 0.0024781405522300176
+                }, 
+                "IssueComment:created": {
+                    "hits": 3217892, 
+                    "weight": 0.03373503449019835
+                }, 
+                "Issues:closed": {
+                    "hits": 847658, 
+                    "weight": 0.008886492109086493
+                }, 
+                "Issues:opened": {
+                    "hits": 1036908, 
+                    "weight": 0.010870509993238613
+                }, 
+                "Issues:reopened": {
+                    "hits": 17258, 
+                    "weight": 0.00018092565730355248
+                }, 
+                "Member:added": {
+                    "hits": 291980, 
+                    "weight": 0.0030609962579378406
+                }, 
+                "Public": {
+                    "hits": 44193, 
+                    "weight": 0.0004633009371431159
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 1311526, 
+                    "weight": 0.013749490301350038
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 190430, 
+                    "weight": 0.0019963885108538358
+                }, 
+                "PullRequest:opened": {
+                    "hits": 2236176, 
+                    "weight": 0.023443134351977563
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 7888, 
+                    "weight": 8.269449442637745e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 271099, 
+                    "weight": 0.002842088583227244
+                }, 
+                "Push": {
+                    "hits": 73537514, 
+                    "weight": 0.7709365544628111
+                }, 
+                "Release:published": {
+                    "hits": 91168, 
+                    "weight": 0.0009557671992728168
+                }, 
+                "TeamAdd": {
+                    "hits": 303, 
+                    "weight": 3.176525331033515e-06
+                }, 
+                "Watch:started": {
+                    "hits": 2279539, 
+                    "weight": 0.023897733916101675
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Release:published": {
+                "CommitComment": {
+                    "hits": 780, 
+                    "weight": 0.0028884395760659454
+                }, 
+                "Create:branch": {
+                    "hits": 5466, 
+                    "weight": 0.020241295798431355
+                }, 
+                "Create:repository": {
+                    "hits": 5234, 
+                    "weight": 0.019382170180934816
+                }, 
+                "Create:tag": {
+                    "hits": 121481, 
+                    "weight": 0.4498596514616245
+                }, 
+                "Delete:branch": {
+                    "hits": 1525, 
+                    "weight": 0.005647269683975086
+                }, 
+                "Delete:tag": {
+                    "hits": 6185, 
+                    "weight": 0.022903844587138296
+                }, 
+                "Download": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Follow": {
+                    "hits": 275, 
+                    "weight": 0.0010183601069463268
+                }, 
+                "Fork": {
+                    "hits": 2848, 
+                    "weight": 0.010546507580302324
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 53, 
+                    "weight": 0.00019626576606601937
+                }, 
+                "Gist:fork": {
+                    "hits": 12, 
+                    "weight": 4.4437531939476084e-05
+                }, 
+                "Gist:update": {
+                    "hits": 7, 
+                    "weight": 2.5921893631361046e-05
+                }, 
+                "Gollum:created": {
+                    "hits": 1041, 
+                    "weight": 0.0038549558957495502
+                }, 
+                "Gollum:edited": {
+                    "hits": 1627, 
+                    "weight": 0.006024988705460632
+                }, 
+                "IssueComment:created": {
+                    "hits": 12520, 
+                    "weight": 0.046363158323520046
+                }, 
+                "Issues:closed": {
+                    "hits": 3422, 
+                    "weight": 0.012672102858073929
+                }, 
+                "Issues:opened": {
+                    "hits": 5283, 
+                    "weight": 0.019563623436354344
+                }, 
+                "Issues:reopened": {
+                    "hits": 104, 
+                    "weight": 0.0003851252768087927
+                }, 
+                "Member:added": {
+                    "hits": 237, 
+                    "weight": 0.0008776412558046526
+                }, 
+                "Public": {
+                    "hits": 113, 
+                    "weight": 0.00041845342576339974
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 1319, 
+                    "weight": 0.0048844253856807456
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 319, 
+                    "weight": 0.001181297724057739
+                }, 
+                "PullRequest:opened": {
+                    "hits": 887, 
+                    "weight": 0.003284674235859607
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 6, 
+                    "weight": 2.2218765969738042e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 460, 
+                    "weight": 0.0017034387243465832
+                }, 
+                "Push": {
+                    "hits": 68833, 
+                    "weight": 0.2548973863324964
+                }, 
+                "Release:published": {
+                    "hits": 22653, 
+                    "weight": 0.08388695091874597
+                }, 
+                "TeamAdd": {
+                    "hits": 1, 
+                    "weight": 3.7031276616230067e-06
+                }, 
+                "Watch:started": {
+                    "hits": 7351, 
+                    "weight": 0.027221691440590723
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "TeamAdd": {
+                "CommitComment": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Create:branch": {
+                    "hits": 38, 
+                    "weight": 0.0004155003498950315
+                }, 
+                "Create:repository": {
+                    "hits": 11, 
+                    "weight": 0.00012027641707487754
+                }, 
+                "Create:tag": {
+                    "hits": 36, 
+                    "weight": 0.00039363191042687194
+                }, 
+                "Delete:branch": {
+                    "hits": 5, 
+                    "weight": 5.4671098670398883e-05
+                }, 
+                "Delete:tag": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Download": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Follow": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Fork": {
+                    "hits": 18097, 
+                    "weight": 0.1978765745276417
+                }, 
+                "ForkApply": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:create": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:fork": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gist:update": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gollum:created": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Gollum:edited": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "IssueComment:created": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Issues:closed": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Issues:opened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Issues:reopened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Member:added": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Public": {
+                    "hits": 3453, 
+                    "weight": 0.03775586074177747
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequest:opened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Push": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "Release:published": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "TeamAdd": {
+                    "hits": 69816, 
+                    "weight": 0.7633834849545137
+                }, 
+                "Watch:started": {
+                    "hits": 0, 
+                    "weight": 0
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "Watch:started": {
+                "CommitComment": {
+                    "hits": 45097, 
+                    "weight": 0.0025702999580004427
+                }, 
+                "Create:branch": {
+                    "hits": 160455, 
+                    "weight": 0.009145120069205512
+                }, 
+                "Create:repository": {
+                    "hits": 631105, 
+                    "weight": 0.035969779696961426
+                }, 
+                "Create:tag": {
+                    "hits": 14181, 
+                    "weight": 0.0008082449764819007
+                }, 
+                "Delete:branch": {
+                    "hits": 17491, 
+                    "weight": 0.0009968981654075823
+                }, 
+                "Delete:tag": {
+                    "hits": 926, 
+                    "weight": 5.277729696229039e-05
+                }, 
+                "Download": {
+                    "hits": 1516, 
+                    "weight": 8.64043004263847e-05
+                }, 
+                "Follow": {
+                    "hits": 510573, 
+                    "weight": 0.029100067863852584
+                }, 
+                "Fork": {
+                    "hits": 1278673, 
+                    "weight": 0.07287786678041333
+                }, 
+                "ForkApply": {
+                    "hits": 39, 
+                    "weight": 2.2228019238977596e-06
+                }, 
+                "Gist:create": {
+                    "hits": 59568, 
+                    "weight": 0.0033950734616087627
+                }, 
+                "Gist:fork": {
+                    "hits": 12391, 
+                    "weight": 0.0007062240676671062
+                }, 
+                "Gist:update": {
+                    "hits": 9348, 
+                    "weight": 0.0005327885226819553
+                }, 
+                "Gollum:created": {
+                    "hits": 32101, 
+                    "weight": 0.0018295939630523584
+                }, 
+                "Gollum:edited": {
+                    "hits": 24084, 
+                    "weight": 0.0013726656803885549
+                }, 
+                "IssueComment:created": {
+                    "hits": 552952, 
+                    "weight": 0.03151545562623369
+                }, 
+                "Issues:closed": {
+                    "hits": 40267, 
+                    "weight": 0.002295014488963874
+                }, 
+                "Issues:opened": {
+                    "hits": 345874, 
+                    "weight": 0.019713061349390094
+                }, 
+                "Issues:reopened": {
+                    "hits": 1642, 
+                    "weight": 9.358566048820824e-05
+                }, 
+                "Member:added": {
+                    "hits": 19954, 
+                    "weight": 0.0011372766561398948
+                }, 
+                "Public": {
+                    "hits": 20086, 
+                    "weight": 0.0011447999857284717
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 43857, 
+                    "weight": 0.002499626255804719
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 8799, 
+                    "weight": 0.0005014983109840099
+                }, 
+                "PullRequest:opened": {
+                    "hits": 16879, 
+                    "weight": 0.0009620172736787252
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 257, 
+                    "weight": 1.464769472927498e-05
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 17356, 
+                    "weight": 0.0009892038510556287
+                }, 
+                "Push": {
+                    "hits": 1792694, 
+                    "weight": 0.10217445313230693
+                }, 
+                "Release:published": {
+                    "hits": 2487, 
+                    "weight": 0.00014174636883932637
+                }, 
+                "TeamAdd": {
+                    "hits": 89, 
+                    "weight": 5.0725479801769385e-06
+                }, 
+                "Watch:started": {
+                    "hits": 11884682, 
+                    "weight": 0.6773665131926428
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }, 
+            "~": {
+                "CommitComment": {
+                    "hits": 10422, 
+                    "weight": 0.002744621429483744
+                }, 
+                "Create:branch": {
+                    "hits": 40043, 
+                    "weight": 0.010545276904703279
+                }, 
+                "Create:repository": {
+                    "hits": 1793814, 
+                    "weight": 0.47239880492304287
+                }, 
+                "Create:tag": {
+                    "hits": 918, 
+                    "weight": 0.00024175421917732462
+                }, 
+                "Delete:branch": {
+                    "hits": 685, 
+                    "weight": 0.00018039394350377708
+                }, 
+                "Delete:tag": {
+                    "hits": 38, 
+                    "weight": 1.0007255260063547e-05
+                }, 
+                "Download": {
+                    "hits": 603, 
+                    "weight": 0.00015879934004785047
+                }, 
+                "Follow": {
+                    "hits": 166946, 
+                    "weight": 0.043965032543330756
+                }, 
+                "Fork": {
+                    "hits": 689405, 
+                    "weight": 0.18155399506747655
+                }, 
+                "ForkApply": {
+                    "hits": 87, 
+                    "weight": 2.2911347569092856e-05
+                }, 
+                "Gist:create": {
+                    "hits": 73652, 
+                    "weight": 0.01939616748458422
+                }, 
+                "Gist:fork": {
+                    "hits": 6222, 
+                    "weight": 0.001638556374424089
+                }, 
+                "Gist:update": {
+                    "hits": 1809, 
+                    "weight": 0.00047639802014355143
+                }, 
+                "Gollum:created": {
+                    "hits": 10574, 
+                    "weight": 0.0027846504505239984
+                }, 
+                "Gollum:edited": {
+                    "hits": 7457, 
+                    "weight": 0.0019637921703761544
+                }, 
+                "IssueComment:created": {
+                    "hits": 109242, 
+                    "weight": 0.02876875208210163
+                }, 
+                "Issues:closed": {
+                    "hits": 2125, 
+                    "weight": 0.0005596162480956588
+                }, 
+                "Issues:opened": {
+                    "hits": 252643, 
+                    "weight": 0.06653323659653249
+                }, 
+                "Issues:reopened": {
+                    "hits": 108, 
+                    "weight": 2.8441672844391132e-05
+                }, 
+                "Member:added": {
+                    "hits": 24959, 
+                    "weight": 0.006572923264103317
+                }, 
+                "Public": {
+                    "hits": 9016, 
+                    "weight": 0.002374352984861393
+                }, 
+                "PullRequest:closed-merged": {
+                    "hits": 2111, 
+                    "weight": 0.0005559293645787933
+                }, 
+                "PullRequest:closed-not-merged": {
+                    "hits": 381, 
+                    "weight": 0.00010033590142326872
+                }, 
+                "PullRequest:opened": {
+                    "hits": 1779, 
+                    "weight": 0.0004684975554645539
+                }, 
+                "PullRequest:reopened": {
+                    "hits": 10, 
+                    "weight": 2.6334882263325122e-06
+                }, 
+                "PullRequestReviewComment": {
+                    "hits": 830, 
+                    "weight": 0.0002185795227855985
+                }, 
+                "Push": {
+                    "hits": 230781, 
+                    "weight": 0.060775904636124346
+                }, 
+                "Release:published": {
+                    "hits": 67, 
+                    "weight": 1.764437111642783e-05
+                }, 
+                "TeamAdd": {
+                    "hits": 10646, 
+                    "weight": 0.0028036115657535925
+                }, 
+                "Watch:started": {
+                    "hits": 349872, 
+                    "weight": 0.09213837927234086
+                }, 
+                "~": {
+                    "hits": 0, 
+                    "weight": 0
+                }
+            }
+        }, 
+        "node_degrees": {
+            "CommitComment": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "Create:branch": {
+                "indegree": 24, 
+                "outdegree": 23
+            }, 
+            "Create:repository": {
+                "indegree": 24, 
+                "outdegree": 23
+            }, 
+            "Create:tag": {
+                "indegree": 24, 
+                "outdegree": 23
+            }, 
+            "Delete:branch": {
+                "indegree": 24, 
+                "outdegree": 23
+            }, 
+            "Delete:tag": {
+                "indegree": 22, 
+                "outdegree": 22
+            }, 
+            "Download": {
+                "indegree": 21, 
+                "outdegree": 20
+            }, 
+            "Follow": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "Fork": {
+                "indegree": 24, 
+                "outdegree": 23
+            }, 
+            "ForkApply": {
+                "indegree": 19, 
+                "outdegree": 16
+            }, 
+            "Gist:create": {
+                "indegree": 3, 
+                "outdegree": 3
+            }, 
+            "Gist:fork": {
+                "indegree": 3, 
+                "outdegree": 3
+            }, 
+            "Gist:update": {
+                "indegree": 3, 
+                "outdegree": 3
+            }, 
+            "Gollum:created": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "Gollum:edited": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "IssueComment:created": {
+                "indegree": 4, 
+                "outdegree": 4
+            }, 
+            "Issues:closed": {
+                "indegree": 4, 
+                "outdegree": 4
+            }, 
+            "Issues:opened": {
+                "indegree": 4, 
+                "outdegree": 4
+            }, 
+            "Issues:reopened": {
+                "indegree": 4, 
+                "outdegree": 4
+            }, 
+            "Member:added": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "Public": {
+                "indegree": 23, 
+                "outdegree": 22
+            }, 
+            "PullRequest:closed-merged": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "PullRequest:closed-not-merged": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "PullRequest:opened": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "PullRequest:reopened": {
+                "indegree": 21, 
+                "outdegree": 21
+            }, 
+            "PullRequestReviewComment": {
+                "indegree": 22, 
+                "outdegree": 23
+            }, 
+            "Push": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "Release:published": {
+                "indegree": 21, 
+                "outdegree": 21
+            }, 
+            "TeamAdd": {
+                "indegree": 21, 
+                "outdegree": 7
+            }, 
+            "Watch:started": {
+                "indegree": 23, 
+                "outdegree": 23
+            }, 
+            "~": {
+                "indegree": 0, 
+                "outdegree": 23
+            }
+        }, 
+        "stationary_model": {
+            "CommitComment": 0.00910673805390753, 
+            "Create:branch": 0.05002042439991734, 
+            "Create:repository": 0.038217028777984, 
+            "Create:tag": 0.011949688058461621, 
+            "Delete:branch": 0.011250482389430765, 
+            "Delete:tag": 0.001671700962352195, 
+            "Download": 0.0008141404851025701, 
+            "Follow": 0.01159261179970747, 
+            "Fork": 0.03361809474841357, 
+            "ForkApply": 9.239940894193884e-06, 
+            "Gist:create": 0.00525532192354627, 
+            "Gist:fork": 0.0003088262533610307, 
+            "Gist:update": 0.002983387898806572, 
+            "Gollum:created": 0.005548682929068898, 
+            "Gollum:edited": 0.010536220670707386, 
+            "IssueComment:created": 0.09026696108069919, 
+            "Issues:closed": 0.0207333914300911, 
+            "Issues:opened": 0.03192445569548984, 
+            "Issues:reopened": 0.000906549990227766, 
+            "Member:added": 0.005115704184022004, 
+            "Public": 0.0009000436864837122, 
+            "PullRequest:closed-merged": 0.014667057599249305, 
+            "PullRequest:closed-not-merged": 0.0047271682153176816, 
+            "PullRequest:opened": 0.020913986633932777, 
+            "PullRequest:reopened": 0.000285729316669334, 
+            "PullRequestReviewComment": 0.010873693011198378, 
+            "Push": 0.5105161472416186, 
+            "Release:published": 0.0014524682647022457, 
+            "TeamAdd": 0.0006953514806262763, 
+            "Watch:started": 0.09313870287798537, 
+            "~": 0.0
+        }
+    }, 
+    "state": {
+        "CommitComment": {
+            "hits": 242857
+        }, 
+        "Create:branch": {
+            "hits": 1618641
+        }, 
+        "Create:repository": {
+            "hits": 2748790
+        }, 
+        "Create:tag": {
+            "hits": 245374
+        }, 
+        "Delete:branch": {
+            "hits": 298401
+        }, 
+        "Delete:tag": {
+            "hits": 46513
+        }, 
+        "Download": {
+            "hits": 41143
+        }, 
+        "Follow": {
+            "hits": 657704
+        }, 
+        "Fork": {
+            "hits": 1810668
+        }, 
+        "ForkApply": {
+            "hits": 2394
+        }, 
+        "Gist:create": {
+            "hits": 252890
+        }, 
+        "Gist:fork": {
+            "hits": 60682
+        }, 
+        "Gist:update": {
+            "hits": 106755
+        }, 
+        "Gollum:created": {
+            "hits": 602529
+        }, 
+        "Gollum:edited": {
+            "hits": 157982
+        }, 
+        "IssueComment:created": {
+            "hits": 905114
+        }, 
+        "Issues:closed": {
+            "hits": 533553
+        }, 
+        "Issues:opened": {
+            "hits": 809640
+        }, 
+        "Issues:reopened": {
+            "hits": 100788
+        }, 
+        "Member:added": {
+            "hits": 596966
+        }, 
+        "Public": {
+            "hits": 84076
+        }, 
+        "PullRequest:closed-merged": {
+            "hits": 404305
+        }, 
+        "PullRequest:closed-not-merged": {
+            "hits": 236871
+        }, 
+        "PullRequest:opened": {
+            "hits": 512460
+        }, 
+        "PullRequest:reopened": {
+            "hits": 37661
+        }, 
+        "PullRequestReviewComment": {
+            "hits": 84218
+        }, 
+        "Push": {
+            "hits": 2031012
+        }, 
+        "Release:published": {
+            "hits": 89831
+        }, 
+        "TeamAdd": {
+            "hits": 30242
+        }, 
+        "Watch:started": {
+            "hits": 1179560
+        }
+    }
+}
