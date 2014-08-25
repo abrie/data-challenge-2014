@@ -10,9 +10,11 @@ This application uses [MCL](http://micans.org/mcl/). An archived source distribu
 This application uses Google Bigquery. You'll need to supply authenticated credentials:
 
 - [ ] Log into [Google Developer Console](https://console.developers.google.com/)
-- [ ] Create a new project and enable the BigQuery API.
-- [ ] Generate a client_secrets file of type "Installed Application".
-- [ ] Download the generated file and save as `client_secrets.json` to the root of this project.
+- [ ] Navigate the [project list][https://console.developers.google.com/project)
+- [ ] Create a new project or select an existing one.
+- [ ] Enable the BigQuery API: Select Project -> APIs and Auth -> API's -> BigQuery
+- [ ] Generate a client_secrets JSON -> API's and Auth -> Credentials -> Create New Client ID
+- [ ] Download the generated JSON and save as `client_secrets.json` to the root of this project.
 - [ ] When you run the app a browser window will open and request authorization.
 - [ ] Authorize it.
 
