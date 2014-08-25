@@ -33,7 +33,7 @@ function generateSvgElement(id, viewBox) {
 }
 
 function main() {
-    get_and_display("/data/repo/results.json", "container");
+    get_and_display("data/repo/results.json", "container");
     //get_and_display("/data/actor/results.json", "second");
 }
 
