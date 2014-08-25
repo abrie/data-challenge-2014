@@ -1,3 +1,3 @@
-Release:published	Gollum:created	Public	Fork	Member:added	Watch:started	Delete:branch	PullRequest:reopened	PullRequest:closed-merged	TeamAdd	CommitComment	Delete:tag	PullRequest:opened	Push	PullRequest:closed-not-merged	Gollum:edited	Create:tag	PullRequestReviewComment	Follow	Create:branch	Create:repository	ForkApply	Download	~
-Issues:reopened	IssueComment:created	Issues:closed	Issues:opened
-Gist:fork	Gist:create	Gist:update
+Create:repository	Gollum:created	ForkApply	Public	Fork	Watch:started	Delete:branch	PullRequest:closed-merged	Member:added	CommitComment	Delete:tag	PullRequest:opened	Push	Gollum:edited	Create:tag	PullRequestReviewComment	Download	Follow	Create:branch	PullRequest:reopened	~
+Issues:reopened	IssueComment:created	Issues:closed	Issues:opened	PullRequest:closed-not-merged
+Gist:create	Gist:fork	Gist:update

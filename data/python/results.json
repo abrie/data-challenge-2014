@@ -3201,82 +3201,76 @@
     }, 
     "state": {
         "CommitComment": {
-            "hits": 35106
+            "hits": 1607
         }, 
         "Create:branch": {
-            "hits": 354159
+            "hits": 13960
         }, 
         "Create:repository": {
-            "hits": 2087
+            "hits": 77
         }, 
         "Create:tag": {
-            "hits": 58583
+            "hits": 2961
         }, 
         "Delete:branch": {
-            "hits": 53182
+            "hits": 1465
         }, 
         "Delete:tag": {
-            "hits": 6642
+            "hits": 215
         }, 
         "Download": {
-            "hits": 3837
+            "hits": 418
         }, 
         "Fork": {
-            "hits": 130217
+            "hits": 6910
         }, 
         "ForkApply": {
-            "hits": 399
+            "hits": 133
         }, 
         "Gollum:created": {
-            "hits": 41156
+            "hits": 1486
         }, 
         "Gollum:edited": {
-            "hits": 11151
+            "hits": 632
         }, 
         "IssueComment:created": {
-            "hits": 67616
+            "hits": 4239
         }, 
         "Issues:closed": {
-            "hits": 64367
+            "hits": 3485
         }, 
         "Issues:opened": {
-            "hits": 60178
+            "hits": 3250
         }, 
         "Issues:reopened": {
-            "hits": 8939
+            "hits": 272
         }, 
         "Member:added": {
-            "hits": 33367
+            "hits": 1016
         }, 
         "Public": {
-            "hits": 15092
+            "hits": 370
         }, 
         "PullRequest:closed-merged": {
-            "hits": 80960
+            "hits": 3353
         }, 
         "PullRequest:closed-not-merged": {
-            "hits": 28310
+            "hits": 1426
         }, 
         "PullRequest:opened": {
-            "hits": 63144
+            "hits": 3098
         }, 
         "PullRequest:reopened": {
-            "hits": 3629
+            "hits": 87
         }, 
         "PullRequestReviewComment": {
-            "hits": 8263
+            "hits": 332
         }, 
         "Push": {
-            "hits": 718668
-        }, 
-        "Release:published": {
-            "hits": 12028
-        }, 
-        "TeamAdd": {
-            "hits": 5594
+            "hits": 33240
         }, 
         "Watch:started": {
-            "hits": 174191
+            "hits": 13217
         }
     }
 }
