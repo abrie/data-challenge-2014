@@ -25,22 +25,24 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 `python main.py -i firstquery --model sql/repo-model.sql --state sql/repo-state.sql`
 
 - `-i [id]` is an optional parameter. Use it to manually set the ID for query results. Omit it and a random ID will be generated.
+- `-p [projectId]` this is the unique projectId number associated with the BigQuery project, (ex: 'spark-mark-911')
 - `--model [sql]` specifies the query used to generate the markov model.
 - `--state [sql]` specifies the query used to generate the population table.
 
 Emitted output is recorded in the data/[id] directory. Within it will be the raw queries, the query results, and a results.json file which contains all the munged data.
 
-#### Let the script collect it
 
-protip: Use the included `collect.sh` script to collect preset data sets. Or inspect the script to see how the utility works.
 
 ## Displaying data
 
 `main.js` exposes the gui functions. It uses ajax calls to retrieve the results.json file, so it must be served through a webserver of some description.
 
-#### Let the script collect it
+## Scripts
 
-protip: There is a script named 'deploy.sh' which will generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
+Two scripts are provided which automate the above processes. They must be run sequentially:
+
+- `collect.sh` runs queries and munges the data. You'll need to specify a projectId. For example: `./collect.sh gilded-toad-681`
+- `deploy.sh` will use collected data and generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
 
 ## Contact
 abrhie@gmail.com
