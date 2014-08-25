@@ -19,18 +19,12 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run
 
-# Enter your Google Developer Project number
-#PROJECT_ID = 'glass-guide-678'
-#PROJECT_ID = 'linear-quasar-662'
-#PROJECT_ID = 'directed-potion-651'
-PROJECT_ID = 'tough-pod-681'
-
 # These refer to datasets available on Google BigQuery
 DATASET_TEST = "[publicdata:samples.github_timeline]"
 DATASET_REAL = "[githubarchive:github.timeline]"
 
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
-def get_bigquery_service():
+def get_bigquery_service(projectId):
     if not os.path.isfile('client_secrets.json'):
         print "No client_secrets.json found."
         print "Please use the Coogle developer console to generate one of type 'Installed Applicaton'"
@@ -47,26 +41,33 @@ def get_bigquery_service():
         credentials = tools.run_flow(FLOW, storage, tools.argparser.parse_args([]))
 
     http = httplib2.Http()
-    return build('bigquery', 'v2', http=credentials.authorize(http))
+    service = build('bigquery', 'v2', http=credentials.authorize(http))
 
-def queue_async_query(bigquery_service, prefix, query_filename, dataset):
+    class BigQuery:
+        def __init__(self, service, projectId):
+            self.service = service
+            self.projectId = projectId
+
+    return BigQuery(service, projectId) 
+
+def queue_async_query(bigquery, prefix, query_filename, dataset):
     print "* async request:", dataset 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
 
     bql = bql_template.substitute(dataset=dataset)
     jobData = { 'configuration': { 'query':{ 'query':bql } } }
-    insertParameters = {'projectId':PROJECT_ID, 'body':jobData}
-    query = bigquery_service.jobs().insert( **insertParameters ).execute()
+    insertParameters = {'projectId':bigquery.projectId, 'body':jobData}
+    query = bigquery.service.jobs().insert( **insertParameters ).execute()
     save_query(prefix, query)
     return query
 
-def process_query_responses(bigquery_service, prefix, queries):
-    jobCollection = bigquery_service.jobs()
+def process_query_responses(bigquery, prefix, queries):
+    jobCollection = bigquery.service.jobs()
     for index, query in enumerate(queries):
         parameters = {
                 "jobId":query['jobReference']['jobId'],
-                "projectId":PROJECT_ID
+                "projectId":bigquery.projectId
                 }
         sys.stdout.write("Awaiting: %s [..." % parameters["jobId"])
         sys.stdout.flush()
@@ -107,12 +108,12 @@ def use_previous_query(id):
     results = {"state":state, "model":model}
     common.write_json(results, "results.json")
 
-def run_new_query(model_query, state_query, identifier):
-    bigquery_service = get_bigquery_service()
-    if bigquery_service is None:
+def run_new_query(projectId, model_query, state_query, identifier):
+    bigquery = get_bigquery_service(projectId)
+    if bigquery is None:
         return
 
-    print "Using project:", PROJECT_ID
+    print "Using project:", bigquery.projectId 
 
     if (identifier is None):
         common.new_set()
@@ -124,16 +125,16 @@ def run_new_query(model_query, state_query, identifier):
     model_queries = [];
     model = {}
     model_queries.append(
-            queue_async_query(bigquery_service, 'model', model_query, DATASET_TEST) )
-    process_query_responses(bigquery_service, 'model', model_queries)
+            queue_async_query(bigquery, 'model', model_query, DATASET_TEST) )
+    process_query_responses(bigquery, 'model', model_queries)
     model = munger.munge_model( common.read_all('model') )
 
     #run the state queries
     state = {}
     state_queries = [];
     state_queries.append(
-            queue_async_query(bigquery_service, 'state', state_query, DATASET_TEST) )
-    process_query_responses(bigquery_service, 'state', state_queries)
+            queue_async_query(bigquery, 'state', state_query, DATASET_TEST) )
+    process_query_responses(bigquery, 'state', state_queries)
     state = munger.munge_state( common.read_all('state') )
 
     results = {"state":state, "model":model}
@@ -142,6 +143,7 @@ def run_new_query(model_query, state_query, identifier):
 def get_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--id", help="identifier for this query")
+    parser.add_argument("-p", "--projectId", help="BigQuery projectId")
     group = parser.add_argument_group("query") 
     group.add_argument("--model")
     group.add_argument("--state")
@@ -156,8 +158,10 @@ if __name__ == '__main__':
                 parser.error("nothing to do.")
             else:
                 use_previous_query(args.id)
+        elif (args.projectId is None):
+            parser.error("please specify a Bigquery projectId to use.")
         else:
-            run_new_query(args.model, args.state, args.id)
+            run_new_query(args.projectId, args.model, args.state, args.id)
 
     except HttpError as err:
         err_json = json.loads(err.content)

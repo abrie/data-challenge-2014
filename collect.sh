@@ -1,6 +1,10 @@
 #!/bin/sh
+if [ $# -lt 1 ] ; then
+    echo "need projectId, please." ; exit 0
+fi
 
-python main.py -i actor --model sql/actor-model.sql --state sql/actor-state.sql
-python main.py -i repo --model sql/repo-model.sql --state sql/repo-state.sql
-python main.py -i python --model sql/python-repo-model.sql --state sql/python-repo-state.sql
-python main.py -i ruby --model sql/ruby-repo-model.sql --state sql/ruby-repo-state.sql
+PROJECTID=$1
+python main.py -p $PROJECTID -i actor --model sql/actor-model.sql --state sql/actor-state.sql
+python main.py -p $PROEJCTID -i repo --model sql/repo-model.sql --state sql/repo-state.sql
+python main.py -p $PROJECTID -i python --model sql/python-repo-model.sql --state sql/python-repo-state.sql
+python main.py -p $PROJECTID -i ruby --model sql/ruby-repo-model.sql --state sql/ruby-repo-state.sql
