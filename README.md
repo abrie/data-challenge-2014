@@ -18,7 +18,7 @@ MCL will then be installed to `external/mcl-14-137` which is where the applicati
 This application uses Google Bigquery. You'll need to supply authenticated credentials:
 
 - [ ] Log into [Google Developer Console](https://console.developers.google.com/)
-- [ ] Navigate to the (list of projects)(https://console.developers.google.com/project)
+- [ ] Navigate to the [project list](https://console.developers.google.com/project)
 - [ ] Create a new project. (Or use one you may have previously created :)
 - [ ] Enable the BigQuery API: Select Project -> APIs and Auth -> API's -> BigQuery
 - [ ] Generate a client_secrets JSON -> API's and Auth -> Credentials -> Create New Client ID
