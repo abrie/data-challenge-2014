@@ -224,7 +224,7 @@ function displayModel( data, state, selector ) {
     var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
-    $(selector+" input[type=range]").on("change", function() {
+    d3.select("input[type=range]").on("change", function() {
         line.tension(this.value / 100);
         drawnLink_a.attr("d", line );
         drawnLink_b.attr("d", line );
@@ -271,7 +271,7 @@ function displayModel( data, state, selector ) {
             }
             return offset;
         })
-        .style("font-size", font_size)
+        .style("font-size", function(d) { return d.name === '~' ? font_size*1.2 : font_size })
         .attr("alignment-baseline", function(d) {
             var alignment = "before-edge";
             if( d.x > 180 && d.x < 360 ) {
@@ -298,7 +298,7 @@ function displayModel( data, state, selector ) {
             return t();
         })
         .text(function(d) { 
-            return d.name; 
+            return d.name === '~' ? "start -->" : d.name; 
         });
 }
 
