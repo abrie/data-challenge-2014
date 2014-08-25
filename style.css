@@ -9,9 +9,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%; 
+    width: 90%; 
     height: 100%;
     margin: 0 auto;
+    margin-left: 10%;
     overflow: visible;
 }
 
