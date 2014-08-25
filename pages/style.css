@@ -22,6 +22,27 @@ body {
     text-align: justify;
     top: 0px;
     width: 20%;
+    background: rgba(200,200,200,0.10);
+    padding: 0.5em;
+}
+
+#links {
+    position: absolute;
+    left: 0.5em;
+    bottom: 0.5em;
+    height: 1em;
+    padding: 0.5em;
+    background: steelblue;
+}
+
+#links a {
+    color: white;
+    text-decoration: none;
+}
+
+#links a:hover {
+    color: steelblue;
+    background: white;
 }
 
 svg {

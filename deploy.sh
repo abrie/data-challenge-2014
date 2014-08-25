@@ -4,8 +4,8 @@ rm -rf $DEST
 mkdir -p $DEST/data
 
 cp -R lib $DEST
-cp main.js $DEST
-cp style.css $DEST
+cp pages/main.js $DEST
+cp pages/style.css $DEST
 
 python pages/make_page.py -t pages/page.template -d pages/descriptions/actor.html -i actor -o $DEST/actor.html
 cp -R data/actor $DEST/data/
