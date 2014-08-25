@@ -10,8 +10,6 @@ import time
 import common
 import munger
 
-import numpy
-
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 
@@ -33,6 +31,11 @@ DATASET_REAL = "[githubarchive:github.timeline]"
 
 #https://developers.google.com/bigquery/bigquery-api-quickstart#completecode
 def get_bigquery_service():
+    if not os.path.isfile('client_secrets.json'):
+        print "No client_secrets.json found."
+        print "Please use the Coogle developer console to generate one of type 'Installed Applicaton'"
+        return None
+
     FLOW = flow_from_clientsecrets('client_secrets.json', 
             scope='https://www.googleapis.com/auth/bigquery')
     storage = Storage('bigquery_credentials.dat')
@@ -105,19 +108,23 @@ def use_previous_query(id):
     common.write_json(results, "results.json")
 
 def run_new_query(model_query, state_query, identifier):
+    bigquery_service = get_bigquery_service()
+    if bigquery_service is None:
+        return
+
     print "Using project:", PROJECT_ID
+
     if (identifier is None):
         common.new_set()
     else:
         common.use_set(identifier)
 
-    bigquery_service = get_bigquery_service()
 
     #run the model query
     model_queries = [];
     model = {}
     model_queries.append(
-            queue_async_query(bigquery_service, 'model', model_query, DATASET_REAL) )
+            queue_async_query(bigquery_service, 'model', model_query, DATASET_TEST) )
     process_query_responses(bigquery_service, 'model', model_queries)
     model = munger.munge_model( common.read_all('model') )
 
@@ -125,7 +132,7 @@ def run_new_query(model_query, state_query, identifier):
     state = {}
     state_queries = [];
     state_queries.append(
-            queue_async_query(bigquery_service, 'state', state_query, DATASET_REAL) )
+            queue_async_query(bigquery_service, 'state', state_query, DATASET_TEST) )
     process_query_responses(bigquery_service, 'state', state_queries)
     state = munger.munge_state( common.read_all('state') )
 
