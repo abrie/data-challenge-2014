@@ -26,6 +26,10 @@ body {
     padding: 0.5em;
 }
 
+#description h3 {
+    text-align: center;
+}
+
 #links {
     position: absolute;
     right: 0.5em;
