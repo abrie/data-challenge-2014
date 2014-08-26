@@ -1,3 +1,6 @@
+function Main() {
+    'use strict';
+
 function go(url, id) {
     load_json( url, function(result) { 
         generateDisplay(result, id) 
@@ -45,9 +48,6 @@ function load_json(url, callback) {
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
     })
-}
-
-function get_and_display(url, id) {
 }
 
 function generateDisplay(data, id) {
@@ -330,4 +330,7 @@ function getNodesForCluster(data, cluster_id) {
     } 
 
     return result;
+}
+
+return {go:go}
 }

@@ -49,11 +49,6 @@ svg {
     overflow: visible;
 }
 
-.overlay {
-    fill: none;
-    pointer-events: all;
-}
-
 .link-a {
     fill: none;
 }
