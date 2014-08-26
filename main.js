@@ -61,7 +61,7 @@ function generateDisplay(data, id) {
 function displayModel( data, state, selector ) {
     var svg = d3.select(selector)
         .append("g")
-        .call( d3.behavior.zoom().scaleExtent([1,8]).on("zoom",zoom))
+        .call( d3.behavior.zoom().scaleExtent([0.5,8]).on("zoom",zoom))
         .append("g").attr("class","overlay");
 
     function zoom() {

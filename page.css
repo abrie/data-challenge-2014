@@ -30,6 +30,15 @@ body {
     text-align: center;
 }
 
+#description p {
+    font-size: small;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
 #links {
     position: absolute;
     right: 0.5em;

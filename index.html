@@ -7,8 +7,9 @@
     </head>
     <body>
         <div id="description"><h3>Bundled-Edge Views of the Github Event Graph</h3>
-<p><small>This plot represents a stochastic matrix constructed from the analysis of github events. A stochastic matrix describes the probability of future events given the current state. Events occur in patterns and sometimes cluster together. Clusters are indicated here by coloured groups. The groups were detected by using a markov clustering algorithm<sup><a href="micans.org/mcl/">1</a></sup>. Sequential events are connected by lines. Highly connected nodes are sorted in a clockwise direction, descending. Any event can lead to another but some events are more likely to follow others. Higher probabilities are indicated by heavier, more opaque lines. The probabilities of events depends on the perspective of the observer. In this case we see an aggregate of all Github repositories. </p><p><a href="actor.html">Here</a> is the same process applied as an aggregate of Actor perspectives.</small></p>
-<p><small>Zoom and pan the graph using your mouse. Adjust the bundling parameter with the slider:</small></p>
+<p>This plot represents a stochastic matrix constructed from the analysis of github events. A stochastic matrix describes the probability of future events given the current state. Events occur in patterns and sometimes cluster together. Clusters are indicated here by coloured groups. The groups were detected by using a markov clustering algorithm<sup><a href="micans.org/mcl/">1</a></sup>. Sequential events are connected by lines. Nodes in a cluster are sorted by the sum of their indegree and outdegree weights, then arranged in a clockwise-descending direction. Any event can lead to another but some events are more likely to follow others. Higher probabilities are indicated by heavier, more opaque lines.</p>
+    <p>This graph is an aggregate <em>repository</em> perspective.&nbsp;<a href="actor.html">Here</a> is an aggregate <em>actor</em> perspective.</p>
+<p>Zoom and pan the graph using your mouse. Adjust the bundling parameter with the slider:</p>
 <p><input type="range" min="0" max="100"></p>
 </div>
         <div id="illustration"></div>
