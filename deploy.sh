@@ -21,3 +21,9 @@ cp -R data/ruby $DEST/data/
 
 python pages/make_page.py -t pages/page.html -d pages/descriptions/dcpu16.html -i dcpu16 -o $DEST/dcpu16.html
 cp -R data/dcpu16 $DEST/data/
+
+python pages/make_page.py -t pages/page.html -d pages/descriptions/sunday-repo.html -i sunday -o $DEST/sunday-repo.html
+cp -R data/sunday $DEST/data/
+
+python pages/make_page.py -t pages/page.html -d pages/descriptions/friday-repo.html -i friday -o $DEST/friday-repo.html
+cp -R data/friday $DEST/data/
