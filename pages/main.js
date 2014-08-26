@@ -85,36 +85,16 @@ function displayModel( data, state, svgElement ) {
     var linkGroup_b = svg.append("g").attr("class","link-group");
 
     var radius = 350;
-
-    var clusters = [];
-    for( var cluster_id in data.cluster_degrees ) {
-        clusters.push({
-            "name": cluster_id,
-            "children": getNodesForCluster( data, cluster_id )
-        });
-    }
-
-    function sumIncidentEdgeWeights(name) {
-        var sum = 0;
-        for(var k in data.event_model) {
-            var event = data.event_model[k][name];
-            sum += event ? event.weight : 0;
-        }
-        return sum;
-    }
-
     var clusterLayout = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) {
-            var a = sumIncidentEdgeWeights(a.name);
-            var b = sumIncidentEdgeWeights(b.name);
+            var a = sumIncidentEdgeWeights(data.event_model, a.name);
+            var b = sumIncidentEdgeWeights(data.event_model, b.name);
             return d3.descending(a, b)
         })
 
-    var nodes = clusterLayout.nodes( {
-            "name":"root", 
-            children: clusters
-        });
+    var hierarchy = getClusterHierarchy(data);
+    var nodes = clusterLayout.nodes(hierarchy) ;
 
     var node_names = {}
     nodes.forEach( function(node) {
@@ -315,7 +295,31 @@ function displayModel( data, state, svgElement ) {
         });
 }
 
-function getNodesForCluster(data, cluster_id) {
+function sumIncidentEdgeWeights( model, node_name ) {
+    var sum = 0;
+    for(var k in model) {
+        var event = model[k][node_name];
+        sum += event ? event.weight : 0;
+    }
+    return sum;
+}
+
+function getClusterHierarchy(data) {
+    var hierarchy = [];
+    for( var cluster_id in data.cluster_degrees ) {
+        hierarchy.push({
+            "name": cluster_id,
+            "children": getClusterChildren( data, cluster_id )
+        });
+    }
+
+    return {
+        "name":"root", 
+        children: hierarchy
+    }
+}
+
+function getClusterChildren(data, cluster_id) {
     var setCollection = {};
     for( var key in data.event_model ) {
         if( data.clusters[key] === cluster_id ) {
