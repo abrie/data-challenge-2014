@@ -30,6 +30,10 @@ body {
     text-align: center;
 }
 
+#description p {
+    font-size: small;
+}
+
 .overlay {
     fill: none;
     pointer-events: all;
