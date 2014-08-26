@@ -116,12 +116,7 @@ function displayModel( data, state, svgElement ) {
             result.push(state[k].hits)
         }
 
-        var sorted = result.sort(function(a,b) { 
-            if(a<b) return -1;
-            if(a>b) return 1;
-            return 0
-        });
-
+        var sorted = result.sort( d3.ascending );
         return [sorted[0], sorted[sorted.length-1]];
     }
 
