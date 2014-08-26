@@ -34,7 +34,7 @@ body {
     font-size: small;
 }
 
-.overlay {
+.zoom-group {
     fill: none;
     pointer-events: all;
 }

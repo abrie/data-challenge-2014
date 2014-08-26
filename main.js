@@ -1,9 +1,9 @@
 function Main() {
     'use strict';
 
-function go(url, id) {
+function go(url, container_selector) {
     load_json( url, function(result) { 
-        generateDisplay(result, id) 
+        generateDisplay(result, container_selector) 
     });
 }
 
@@ -13,8 +13,10 @@ function ViewBox(width, height, aspect) {
         "min_y":-height/2,
         "width":width,
         "height":height,
-        "aspect":aspect,
-        "attr": function() {
+        "preserveAspectRatio": function() {
+            return aspect;
+        },
+        "viewBox": function() {
             return [
                 this.min_x,
                 this.min_y,
@@ -24,17 +26,16 @@ function ViewBox(width, height, aspect) {
     }
 }
 
-function generateSvgElement(id, viewBox) {
+function generateSvgElement(viewBox) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute('id', id);
-    svg.setAttribute('preserveAspectRatio',viewBox.aspect);
-    svg.setAttribute('viewBox',viewBox.attr());
+    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
+    svg.setAttribute('viewBox',viewBox.viewBox());
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
         "http://www.w3.org/1999/xlink");
 
-    return $(svg);
+    return svg;
 }
 
 function load_json(url, callback) {
@@ -50,88 +51,51 @@ function load_json(url, callback) {
     })
 }
 
-function generateDisplay(data, id) {
-    var svgElement = generateSvgElement( "svg-"+id,
-        new ViewBox(2000,2000, "xMidYMid meet"));
-    $("#"+id).append( svgElement );
-    var selector = "#svg-"+id;
-    displayModel( data.model, data.state, selector );
+function generateDisplay(data, container_selector) {
+    var viewBox = new ViewBox(2000,2000, "xMidYMid meet");
+    var svgElement = generateSvgElement(viewBox);
+    $(container_selector).append( svgElement );
+    displayModel( data.model, data.state, svgElement );
 }
 
-function displayModel( data, state, selector ) {
-    var svg = d3.select(selector)
-        .append("g")
-        .call( d3.behavior.zoom().scaleExtent([0.5,8]).on("zoom",zoom))
-        .append("g").attr("class","overlay");
+function makeZoomPan( svg ) {
+     var zoomGroup = svg.append("g")
+        .attr("class","zoom-group")
+
+    var zoomBehaviour = d3.behavior.zoom()
+        .scaleExtent([0.5,8])
+        .on("zoom",zoom)
 
     function zoom() {
-        svg.attr("transform", 
-                 "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+        var translate = "translate(" + d3.event.translate + ")"; 
+        var scale = "scale(" + d3.event.scale + ")";
+        zoomGroup.attr("transform", translate + " " + scale); 
     }
+
+    return zoomGroup.call( zoomBehaviour );
+}
+
+function displayModel( data, state, svgElement ) {
+    var svg = d3.select(svgElement);
+
+    svg = makeZoomPan(svg);
 
     var nodeGroup = svg.append("g").attr("class","node-group");
     var linkGroup_a = svg.append("g").attr("class","link-group");
     var linkGroup_b = svg.append("g").attr("class","link-group");
 
     var radius = 350;
-
-    var clusters = [];
-    for( var cluster_id in data.cluster_degrees ) {
-        var indegree = data.cluster_degrees[cluster_id].indegree;
-        var outdegree = data.cluster_degrees[cluster_id].outdegree;
-        clusters.push({
-            "name": cluster_id,
-            "degree": indegree - outdegree,
-            "children": getNodesForCluster( data, cluster_id )
-        });
-    }
-
-    function sumIncidentEdgeWeights(name) {
-        var sum = 0;
-        for(var k in data.event_model) {
-            var event = data.event_model[k][name];
-            sum += event ? event.weight : 0;
-        }
-        return sum;
-    }
-
     var clusterLayout = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) {
-            var a = sumIncidentEdgeWeights(a.name);
-            var b = sumIncidentEdgeWeights(b.name);
+            var a = sumIncidentEdgeWeights(data.event_model, a.name);
+            var b = sumIncidentEdgeWeights(data.event_model, b.name);
             return d3.descending(a, b)
         })
 
-    var nodes = clusterLayout.nodes( {
-            "name":"root", 
-            "degree":0,
-            children: clusters
-        });
-
-    var node_names = {}
-    nodes.forEach( function(node) {
-        node_names[node.name] = node;
-    });
-
-    function getLinks(minWeight,maxWeight) {
-        var result = [];
-        for(var k in data.event_model) {
-            for(var k2 in data.event_model[k] ) {
-                var weight = data.event_model[k][k2].weight;
-                if( weight >= minWeight && weight < maxWeight ) {
-                    var source = node_names[k];
-                    var target = node_names[k2];
-                    result.push({
-                        source:source,
-                        target:target,
-                    });
-                }
-            } 
-        }
-        return result;
-    }
-
+    var hierarchy = getClusterHierarchy(data);
+    var nodes = clusterLayout.nodes(hierarchy) ;
+    var nameNodeMap = new NodeNameLookupFunction(nodes);
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
@@ -173,22 +137,6 @@ function displayModel( data, state, selector ) {
         }
     }
 
-    function weightsList() {
-        var set = {};
-        for(var k in data.event_model) {
-            for(var k2 in data.event_model[k]) {
-                var weight = data.event_model[k][k2].weight;
-                set[weight] = true;
-            }
-        }
-        var result = [];
-        for(var k in set) {
-            result.push(parseFloat(k));
-        }
-
-        return result;
-    }
-
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
         return linkGroup.selectAll(".link")
             .data( bundle(linkCollection) )
@@ -215,14 +163,47 @@ function displayModel( data, state, selector ) {
             .attr("d", line);
     }
 
-    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,7]);
+    function getWeightDomain(min,max) {
+        var set = {};
+        for(var k in data.event_model) {
+            for(var k2 in data.event_model[k]) {
+                var weight = data.event_model[k][k2].weight;
+                if( min !== undefined && max !== undefined ) {
+                    if( weight >= min && weight < max ) {
+                        set[weight] = true;
+                    }
+                }
+                else {
+                    set[weight] = true;
+                }
+            }
+        }
 
-    var links_a = getLinks(0,0.30);
-    var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.3,0.5]);
+        var result = [];
+        for(var k in set) {
+            result.push(parseFloat(k));
+        }
+
+        return result;
+    }
+
+    var linkWidthScale = d3.scale.linear()
+        .domain(getWeightDomain()).range([1,7]);
+
+    var opacityScale_a = d3.scale.linear()
+        .domain(getWeightDomain(0,0.30))
+        .range([0.3,0.5]);
+
+    var opacityScale_b = d3.scale.linear()
+        .domain(getWeightDomain(0.3,1.0))
+        .range([0.5,0.9]);
+
+    // Links are grouped into "high probability" and "low probability" in order to
+    // control their SVG layering.
+    var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.20);
     var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
 
-    var links_b = getLinks(0.30,1.0);
-    var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
+    var links_b = getLinks(data.event_model, nameNodeMap, 0.20, 1.0);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
     d3.select("input[type=range]").on("change", function() {
@@ -308,19 +289,64 @@ function displayModel( data, state, selector ) {
         });
 }
 
-function getNodesForCluster(data, cluster_id) {
+function getLinks( model, nameNodeMap, minWeight, maxWeight ) {
+    var result = [];
+    for(var k in model) {
+        for(var k2 in model[k] ) {
+            var weight = model[k][k2].weight;
+            if( weight >= minWeight && weight < maxWeight ) {
+                var source = nameNodeMap(k);
+                var target = nameNodeMap(k2);
+                result.push({
+                    source:source,
+                    target:target,
+                });
+            }
+        } 
+    }
+    return result;
+}
+
+function sumIncidentEdgeWeights( model, node_name ) {
+    var sum = 0;
+    for(var k in model) {
+        var event = model[k][node_name];
+        sum += event ? event.weight : 0;
+    }
+    return sum;
+}
+
+function NodeNameLookupFunction(nodes) {
+    var node_names = {}
+    nodes.forEach( function(node) {
+        node_names[node.name] = node;
+    });
+
+    return function(node) {
+        return node_names[node];
+    }
+}
+
+function getClusterHierarchy(data) {
+    var hierarchy = [];
+    for( var cluster_id in data.cluster_degrees ) {
+        hierarchy.push({
+            "name": cluster_id,
+            "children": getClusterChildren( data, cluster_id )
+        });
+    }
+
+    return {
+        "name":"root", 
+        children: hierarchy
+    }
+}
+
+function getClusterChildren(data, cluster_id) {
     var setCollection = {};
     for( var key in data.event_model ) {
-        if( data.clusters[key] !== cluster_id ) {
-           continue;
-        }
-        else {
-            var indegree = data.node_degrees[key].indegree;
-            var outdegree = data.node_degrees[key].outdegree;
-            setCollection[key] = { 
-                "name": key,
-                "degree": indegree - outdegree
-            } 
+        if( data.clusters[key] === cluster_id ) {
+            setCollection[key] = { "name": key, } 
         }
     }
 
