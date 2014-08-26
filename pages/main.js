@@ -55,7 +55,7 @@ function generateDisplay(data, container_selector) {
     var viewBox = new ViewBox(2000,2000, "xMidYMid meet");
     var svgElement = generateSvgElement(viewBox);
     $(container_selector).append( svgElement );
-    displayModel( data.model, data.state, svgElement );
+    generateIllustration( data.model, data.state, svgElement );
 }
 
 function makeZoomPan( svg ) {
@@ -75,7 +75,7 @@ function makeZoomPan( svg ) {
     return zoomGroup.call( zoomBehaviour );
 }
 
-function displayModel( data, population, svgElement ) {
+function generateIllustration( data, population, svgElement ) {
     var svg = d3.select(svgElement);
 
     svg = makeZoomPan(svg);
