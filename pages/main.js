@@ -75,7 +75,7 @@ function makeZoomPan( svg ) {
     return zoomGroup.call( zoomBehaviour );
 }
 
-function displayModel( data, state, svgElement ) {
+function displayModel( data, population, svgElement ) {
     var svg = d3.select(svgElement);
 
     svg = makeZoomPan(svg);
@@ -112,8 +112,8 @@ function displayModel( data, state, svgElement ) {
 
     function populationDomain() {
         var result = [];
-        for(var k in state) {
-            result.push(state[k].hits)
+        for(var k in population) {
+            result.push(population[k].hits)
         }
 
         var sorted = result.sort( d3.ascending );
@@ -123,7 +123,7 @@ function displayModel( data, state, svgElement ) {
     var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
 
     function getScaledPopulation(name) {
-        var event = state[name];
+        var event = population[name];
         if(event) {
             return populationScale(event.hits);
         }
