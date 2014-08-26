@@ -86,7 +86,7 @@ function displayModel( data, state, selector ) {
         });
     }
 
-    function sumInWeight(name) {
+    function sumIncidentEdgeWeights(name) {
         var sum = 0;
         for(var k in data.event_model) {
             var event = data.event_model[k][name];
@@ -98,8 +98,8 @@ function displayModel( data, state, selector ) {
     var clusterLayout = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) {
-            var a = sumInWeight(a.name);
-            var b = sumInWeight(b.name);
+            var a = sumIncidentEdgeWeights(a.name);
+            var b = sumIncidentEdgeWeights(b.name);
             return d3.descending(a, b)
         })
 
