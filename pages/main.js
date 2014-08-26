@@ -132,6 +132,14 @@ function displayModel( data, state, svgElement ) {
         }
     }
 
+    function getWeight(source, target) {
+        return data.event_model[source][target].weight;
+    }
+
+    function getCluster(nodeName) {
+        return data.clusters[nodeName]; 
+    }
+
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
         return linkGroup.selectAll(".link")
             .data( bundle(linkCollection) )
@@ -141,18 +149,17 @@ function displayModel( data, state, svgElement ) {
             .style("opacity", function(d) {
                 var source = d[0].name
                 var target = d[d.length-1].name
-                var weight = data.event_model[source][target].weight;
+                var weight = getWeight(source,target);
                 return opacityScale(weight);  
             })
             .style("stroke", function(d) {
                 var source = d[0].name
-                var source_cluster = data.clusters[source]; 
-                return linkColorScale(source_cluster);
+                return linkColorScale( getCluster(source) );
             })
             .style("stroke-width", function(d) {
                 var source = d[0].name
                 var target = d[d.length-1].name
-                var weight = data.event_model[source][target].weight;
+                var weight = getWeight(source,target);
                 return linkWidthScale(weight);  
             })
             .attr("d", line);
@@ -162,7 +169,7 @@ function displayModel( data, state, svgElement ) {
         var set = {};
         for(var k in data.event_model) {
             for(var k2 in data.event_model[k]) {
-                var weight = data.event_model[k][k2].weight;
+                var weight = getWeight(k,k2);
                 if( min !== undefined && max !== undefined ) {
                     if( weight >= min && weight < max ) {
                         set[weight] = true;
