@@ -7,75 +7,14 @@ function go(url, container_selector) {
     });
 }
 
-function ViewBox(width, height, aspect) {
-    return { 
-        "min_x":-width/2,
-        "min_y":-height/2,
-        "width":width,
-        "height":height,
-        "preserveAspectRatio": function() {
-            return aspect;
-        },
-        "viewBox": function() {
-            return [
-                this.min_x,
-                this.min_y,
-                this.width,
-                this.height
-            ].join(" ")},
-    }
-}
-
-function generateSvgElement(viewBox) {
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
-    svg.setAttribute('viewBox',viewBox.viewBox());
-    svg.setAttributeNS(
-        "http://www.w3.org/2000/xmlns/",
-        "xmlns:xlink",
-        "http://www.w3.org/1999/xlink");
-
-    return svg;
-}
-
-function load_json(url, callback) {
-    $.ajax({
-        url: url,
-        dataType: "json",
-    })
-    .done(function( d ) {
-        callback(d);
-    })
-    .error(function(jqXHR, textStatus, errorThrown) { 
-        console.log('error retrieving data:', errorThrown); 
-    })
-}
-
 function generateDisplay(data, container_selector) {
     var viewBox = new ViewBox(2000,2000, "xMidYMid meet");
     var svgElement = generateSvgElement(viewBox);
     $(container_selector).append( svgElement );
-    displayModel( data.model, data.state, svgElement );
+    generateIllustration( data.model, data.state, svgElement );
 }
 
-function makeZoomPan( svg ) {
-     var zoomGroup = svg.append("g")
-        .attr("class","zoom-group")
-
-    var zoomBehaviour = d3.behavior.zoom()
-        .scaleExtent([0.5,8])
-        .on("zoom",zoom)
-
-    function zoom() {
-        var translate = "translate(" + d3.event.translate + ")"; 
-        var scale = "scale(" + d3.event.scale + ")";
-        zoomGroup.attr("transform", translate + " " + scale); 
-    }
-
-    return zoomGroup.call( zoomBehaviour );
-}
-
-function displayModel( data, state, svgElement ) {
+function generateIllustration( data, population, svgElement ) {
     var svg = d3.select(svgElement);
 
     svg = makeZoomPan(svg);
@@ -112,29 +51,34 @@ function displayModel( data, state, svgElement ) {
 
     function populationDomain() {
         var result = [];
-        for(var k in state) {
-            result.push(state[k].hits)
+        for(var k in population) {
+            result.push(population[k].hits)
         }
 
-        var sorted = result.sort(function(a,b) { 
-            if(a<b) return -1;
-            if(a>b) return 1;
-            return 0
-        });
-
+        var sorted = result.sort( d3.ascending );
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
+    var populationScale = d3.scale.log()
+        .domain( populationDomain() )
+        .range([1,220]);
 
     function getScaledPopulation(name) {
-        var event = state[name];
+        var event = population[name];
         if(event) {
             return populationScale(event.hits);
         }
         else {
             return 1;
         }
+    }
+
+    function getWeight(source, target) {
+        return data.event_model[source][target].weight;
+    }
+
+    function getCluster(nodeName) {
+        return data.clusters[nodeName]; 
     }
 
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
@@ -144,20 +88,19 @@ function displayModel( data, state, svgElement ) {
             .attr("class", linkClass)  
             .style("stroke-linecap","rounded")
             .style("opacity", function(d) {
-                var source_state = d[0].name
-                var target_state = d[d.length-1].name
-                var weight = data.event_model[source_state][target_state].weight;
+                var source = d[0].name
+                var target = d[d.length-1].name
+                var weight = getWeight(source,target);
                 return opacityScale(weight);  
             })
             .style("stroke", function(d) {
-                var source_state = d[0].name
-                var source_cluster = data.clusters[source_state]; 
-                return linkColorScale(source_cluster);
+                var source = d[0].name
+                return linkColorScale( getCluster(source) );
             })
             .style("stroke-width", function(d) {
-                var source_state = d[0].name
-                var target_state = d[d.length-1].name
-                var weight = data.event_model[source_state][target_state].weight;
+                var source = d[0].name
+                var target = d[d.length-1].name
+                var weight = getWeight(source,target);
                 return linkWidthScale(weight);  
             })
             .attr("d", line);
@@ -167,7 +110,7 @@ function displayModel( data, state, svgElement ) {
         var set = {};
         for(var k in data.event_model) {
             for(var k2 in data.event_model[k]) {
-                var weight = data.event_model[k][k2].weight;
+                var weight = getWeight(k,k2);
                 if( min !== undefined && max !== undefined ) {
                     if( weight >= min && weight < max ) {
                         set[weight] = true;
@@ -238,8 +181,8 @@ function displayModel( data, state, svgElement ) {
             return t();
         })
         .style("fill", function(d) {
-            var source_state = d.name
-            var source_cluster = data.clusters[source_state]; 
+            var source = d.name
+            var source_cluster = data.clusters[source]; 
             return linkColorScale(source_cluster);
         })
         .style("opacity", "0.80")
@@ -356,6 +299,67 @@ function getClusterChildren(data, cluster_id) {
     } 
 
     return result;
+}
+
+function ViewBox(width, height, aspect) {
+    return { 
+        "min_x":-width/2,
+        "min_y":-height/2,
+        "width":width,
+        "height":height,
+        "preserveAspectRatio": function() {
+            return aspect;
+        },
+        "viewBox": function() {
+            return [
+                this.min_x,
+                this.min_y,
+                this.width,
+                this.height
+            ].join(" ")},
+    }
+}
+
+function generateSvgElement(viewBox) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
+    svg.setAttribute('viewBox',viewBox.viewBox());
+    svg.setAttributeNS(
+        "http://www.w3.org/2000/xmlns/",
+        "xmlns:xlink",
+        "http://www.w3.org/1999/xlink");
+
+    return svg;
+}
+
+function makeZoomPan( svg ) {
+     var zoomGroup = svg.append("g")
+        .attr("class","zoom-group")
+
+    var zoomBehaviour = d3.behavior.zoom()
+        .scaleExtent([0.5,8])
+        .on("zoom",zoom)
+
+    function zoom() {
+        var translate = "translate(" + d3.event.translate + ")"; 
+        var scale = "scale(" + d3.event.scale + ")";
+        zoomGroup.attr("transform", translate + " " + scale); 
+    }
+
+    return zoomGroup.call( zoomBehaviour );
+}
+
+function load_json(url, callback) {
+    $.ajax({
+        url: url,
+        dataType: "json",
+    })
+    .done(function( d ) {
+        callback(d);
+    })
+    .error(function(jqXHR, textStatus, errorThrown) { 
+        console.log('error retrieving data:', errorThrown); 
+    })
 }
 
 return {go:go}
