@@ -137,21 +137,6 @@ function displayModel( data, state, svgElement ) {
         }
     }
 
-    function weightsList() {
-        var set = {};
-        for(var k in data.event_model) {
-            for(var k2 in data.event_model[k]) {
-                var weight = data.event_model[k][k2].weight;
-                set[weight] = true;
-            }
-        }
-        var result = [];
-        for(var k in set) {
-            result.push(parseFloat(k));
-        }
-
-        return result;
-    }
 
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
         return linkGroup.selectAll(".link")
@@ -179,14 +164,44 @@ function displayModel( data, state, svgElement ) {
             .attr("d", line);
     }
 
-    var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,7]);
+    function getWeightDomain(min,max) {
+        var set = {};
+        for(var k in data.event_model) {
+            for(var k2 in data.event_model[k]) {
+                var weight = data.event_model[k][k2].weight;
+                if( min !== undefined && max !== undefined ) {
+                    if( weight >= min && weight < max ) {
+                        set[weight] = true;
+                    }
+                }
+                else {
+                    set[weight] = true;
+                }
+            }
+        }
+        var result = [];
+        for(var k in set) {
+            result.push(parseFloat(k));
+        }
+
+        return result;
+    }
+
+    var linkWidthScale = d3.scale.linear()
+        .domain(getWeightDomain()).range([1,7]);
+
+    var opacityScale_a = d3.scale.linear()
+        .domain(getWeightDomain(0,0.30))
+        .range([0.3,0.5]);
+
+    var opacityScale_b = d3.scale.linear()
+        .domain(getWeightDomain(0.3,1.0))
+        .range([0.5,0.9]);
 
     var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.30);
-    var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.3,0.5]);
     var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
 
-    var links_b = getLinks(data.event_model, nameNodeMap, 0.30,1.0);
-    var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
+    var links_b = getLinks(data.event_model, nameNodeMap, 0.30, 1.0);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
     d3.select("input[type=range]").on("change", function() {
