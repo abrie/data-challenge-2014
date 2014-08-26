@@ -95,11 +95,7 @@ function displayModel( data, state, svgElement ) {
 
     var hierarchy = getClusterHierarchy(data);
     var nodes = clusterLayout.nodes(hierarchy) ;
-
-    var node_names = {}
-    nodes.forEach( function(node) {
-        node_names[node.name] = node;
-    });
+    var getNodeName = new NodeNameLookupFunction(nodes);
 
     function getLinks(minWeight,maxWeight) {
         var result = [];
@@ -107,8 +103,8 @@ function displayModel( data, state, svgElement ) {
             for(var k2 in data.event_model[k] ) {
                 var weight = data.event_model[k][k2].weight;
                 if( weight >= minWeight && weight < maxWeight ) {
-                    var source = node_names[k];
-                    var target = node_names[k2];
+                    var source = getNodeName(k);
+                    var target = getNodeName(k2);
                     result.push({
                         source:source,
                         target:target,
@@ -302,6 +298,17 @@ function sumIncidentEdgeWeights( model, node_name ) {
         sum += event ? event.weight : 0;
     }
     return sum;
+}
+
+function NodeNameLookupFunction(nodes) {
+    var node_names = {}
+    nodes.forEach( function(node) {
+        node_names[node.name] = node;
+    });
+
+    return function(node) {
+        return node_names[node];
+    }
 }
 
 function getClusterHierarchy(data) {
