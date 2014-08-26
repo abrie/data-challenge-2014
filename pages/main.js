@@ -7,72 +7,11 @@ function go(url, container_selector) {
     });
 }
 
-function ViewBox(width, height, aspect) {
-    return { 
-        "min_x":-width/2,
-        "min_y":-height/2,
-        "width":width,
-        "height":height,
-        "preserveAspectRatio": function() {
-            return aspect;
-        },
-        "viewBox": function() {
-            return [
-                this.min_x,
-                this.min_y,
-                this.width,
-                this.height
-            ].join(" ")},
-    }
-}
-
-function generateSvgElement(viewBox) {
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
-    svg.setAttribute('viewBox',viewBox.viewBox());
-    svg.setAttributeNS(
-        "http://www.w3.org/2000/xmlns/",
-        "xmlns:xlink",
-        "http://www.w3.org/1999/xlink");
-
-    return svg;
-}
-
-function load_json(url, callback) {
-    $.ajax({
-        url: url,
-        dataType: "json",
-    })
-    .done(function( d ) {
-        callback(d);
-    })
-    .error(function(jqXHR, textStatus, errorThrown) { 
-        console.log('error retrieving data:', errorThrown); 
-    })
-}
-
 function generateDisplay(data, container_selector) {
     var viewBox = new ViewBox(2000,2000, "xMidYMid meet");
     var svgElement = generateSvgElement(viewBox);
     $(container_selector).append( svgElement );
     generateIllustration( data.model, data.state, svgElement );
-}
-
-function makeZoomPan( svg ) {
-     var zoomGroup = svg.append("g")
-        .attr("class","zoom-group")
-
-    var zoomBehaviour = d3.behavior.zoom()
-        .scaleExtent([0.5,8])
-        .on("zoom",zoom)
-
-    function zoom() {
-        var translate = "translate(" + d3.event.translate + ")"; 
-        var scale = "scale(" + d3.event.scale + ")";
-        zoomGroup.attr("transform", translate + " " + scale); 
-    }
-
-    return zoomGroup.call( zoomBehaviour );
 }
 
 function generateIllustration( data, population, svgElement ) {
@@ -120,7 +59,9 @@ function generateIllustration( data, population, svgElement ) {
         return [sorted[0], sorted[sorted.length-1]];
     }
 
-    var populationScale = d3.scale.log().domain(populationDomain()).range([1,180]);
+    var populationScale = d3.scale.log()
+        .domain( populationDomain() )
+        .range([1,220]);
 
     function getScaledPopulation(name) {
         var event = population[name];
@@ -358,6 +299,67 @@ function getClusterChildren(data, cluster_id) {
     } 
 
     return result;
+}
+
+function ViewBox(width, height, aspect) {
+    return { 
+        "min_x":-width/2,
+        "min_y":-height/2,
+        "width":width,
+        "height":height,
+        "preserveAspectRatio": function() {
+            return aspect;
+        },
+        "viewBox": function() {
+            return [
+                this.min_x,
+                this.min_y,
+                this.width,
+                this.height
+            ].join(" ")},
+    }
+}
+
+function generateSvgElement(viewBox) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
+    svg.setAttribute('viewBox',viewBox.viewBox());
+    svg.setAttributeNS(
+        "http://www.w3.org/2000/xmlns/",
+        "xmlns:xlink",
+        "http://www.w3.org/1999/xlink");
+
+    return svg;
+}
+
+function makeZoomPan( svg ) {
+     var zoomGroup = svg.append("g")
+        .attr("class","zoom-group")
+
+    var zoomBehaviour = d3.behavior.zoom()
+        .scaleExtent([0.5,8])
+        .on("zoom",zoom)
+
+    function zoom() {
+        var translate = "translate(" + d3.event.translate + ")"; 
+        var scale = "scale(" + d3.event.scale + ")";
+        zoomGroup.attr("transform", translate + " " + scale); 
+    }
+
+    return zoomGroup.call( zoomBehaviour );
+}
+
+function load_json(url, callback) {
+    $.ajax({
+        url: url,
+        dataType: "json",
+    })
+    .done(function( d ) {
+        callback(d);
+    })
+    .error(function(jqXHR, textStatus, errorThrown) { 
+        console.log('error retrieving data:', errorThrown); 
+    })
 }
 
 return {go:go}
