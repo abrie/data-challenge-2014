@@ -38,7 +38,7 @@ function generateIllustration( data, population, svgElement ) {
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
-        .tension(0.35)
+        .tension( getTensionSliderValue() )
         .radius(function(d) { 
             return d.y; 
         })
@@ -81,6 +81,9 @@ function generateIllustration( data, population, svgElement ) {
         return data.clusters[nodeName]; 
     }
 
+    var linkWidthScale = d3.scale.linear()
+        .domain(getWeightDomain()).range([1,7]);
+
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
         return linkGroup.selectAll(".link")
             .data( bundle(linkCollection) )
@@ -106,13 +109,13 @@ function generateIllustration( data, population, svgElement ) {
             .attr("d", line);
     }
 
-    function getWeightDomain(min,max) {
+    function getWeightDomain(range) {
         var set = {};
         for(var k in data.event_model) {
             for(var k2 in data.event_model[k]) {
                 var weight = getWeight(k,k2);
-                if( min !== undefined && max !== undefined ) {
-                    if( weight >= min && weight < max ) {
+                if( range ) {
+                    if( weight >= range.min && weight < range.max ) {
                         set[weight] = true;
                     }
                 }
@@ -130,29 +133,28 @@ function generateIllustration( data, population, svgElement ) {
         return result;
     }
 
-    var linkWidthScale = d3.scale.linear()
-        .domain(getWeightDomain()).range([1,7]);
+    function drawEdges( weightRange, linkGroup, linkClass, opacityRange ) {
+        var opacityScale = d3.scale.linear()
+            .domain(getWeightDomain(weightRange))
+            .range(opacityRange);
+        var links = getLinks(data.event_model, nameNodeMap, weightRange);
+        return drawLinks(linkGroup, links, linkClass, opacityScale);
+    }
 
-    var opacityScale_a = d3.scale.linear()
-        .domain(getWeightDomain(0,0.30))
-        .range([0.3,0.5]);
-
-    var opacityScale_b = d3.scale.linear()
-        .domain(getWeightDomain(0.3,1.0))
-        .range([0.5,0.9]);
-
-    // Links are grouped into "high probability" and "low probability" in order to
+    // Edges are grouped into "high probability" and "low probability" in order to
     // control their SVG layering.
-    var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.20);
-    var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
+    var lowEdges = drawEdges({min:0, max:0.30}, linkGroup_a, "link-a", [0.2,0.3]);
+    var highEdges = drawEdges({min:0.30, max:1.0}, linkGroup_b, "link-b", [0.7,0.9]); 
 
-    var links_b = getLinks(data.event_model, nameNodeMap, 0.20, 1.0);
-    var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
+    function getTensionSliderValue() {
+        var slider = d3.select("input[name='tension']")[0][0];
+        return slider.value;
+    }
 
-    d3.select("input[type=range]").on("change", function() {
-        line.tension(this.value / 100);
-        drawnLink_a.attr("d", line );
-        drawnLink_b.attr("d", line );
+    d3.select("input[name='tension']").on("change", function() {
+        line.tension(this.value);
+        lowEdges.attr("d", line );
+        highEdges.attr("d", line );
     });
 
     var node = nodeGroup.selectAll(".node")
@@ -232,12 +234,12 @@ function generateIllustration( data, population, svgElement ) {
         });
 }
 
-function getLinks( model, nameNodeMap, minWeight, maxWeight ) {
+function getLinks( model, nameNodeMap, weightRange ) {
     var result = [];
     for(var k in model) {
         for(var k2 in model[k] ) {
             var weight = model[k][k2].weight;
-            if( weight >= minWeight && weight < maxWeight ) {
+            if( weight >= weightRange.min && weight < weightRange.max ) {
                 var source = nameNodeMap(k);
                 var target = nameNodeMap(k2);
                 result.push({
