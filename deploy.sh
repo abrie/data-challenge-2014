@@ -1,6 +1,5 @@
 #!/bin/sh
-DEST="ghpages"
-rm -rf $DEST
+DEST="gh-pages"
 mkdir -p $DEST/data
 
 cp -R pages/lib $DEST

@@ -2,6 +2,6 @@ bigquery_credentials.dat
 client_secrets.json
 data/*
 external/*/
-ghpages/
+gh-pages/
 *.swp
 *.pyc
