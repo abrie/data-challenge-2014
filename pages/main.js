@@ -77,11 +77,8 @@ function displayModel( data, state, selector ) {
 
     var clusters = [];
     for( var cluster_id in data.cluster_degrees ) {
-        var indegree = data.cluster_degrees[cluster_id].indegree;
-        var outdegree = data.cluster_degrees[cluster_id].outdegree;
         clusters.push({
             "name": cluster_id,
-            "degree": indegree - outdegree,
             "children": getNodesForCluster( data, cluster_id )
         });
     }
@@ -105,7 +102,6 @@ function displayModel( data, state, selector ) {
 
     var nodes = clusterLayout.nodes( {
             "name":"root", 
-            "degree":0,
             children: clusters
         });
 
@@ -311,16 +307,8 @@ function displayModel( data, state, selector ) {
 function getNodesForCluster(data, cluster_id) {
     var setCollection = {};
     for( var key in data.event_model ) {
-        if( data.clusters[key] !== cluster_id ) {
-           continue;
-        }
-        else {
-            var indegree = data.node_degrees[key].indegree;
-            var outdegree = data.node_degrees[key].outdegree;
-            setCollection[key] = { 
-                "name": key,
-                "degree": indegree - outdegree
-            } 
+        if( data.clusters[key] === cluster_id ) {
+            setCollection[key] = { "name": key, } 
         }
     }
 
