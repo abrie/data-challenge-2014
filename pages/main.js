@@ -95,26 +95,7 @@ function displayModel( data, state, svgElement ) {
 
     var hierarchy = getClusterHierarchy(data);
     var nodes = clusterLayout.nodes(hierarchy) ;
-    var getNodeName = new NodeNameLookupFunction(nodes);
-
-    function getLinks(minWeight,maxWeight) {
-        var result = [];
-        for(var k in data.event_model) {
-            for(var k2 in data.event_model[k] ) {
-                var weight = data.event_model[k][k2].weight;
-                if( weight >= minWeight && weight < maxWeight ) {
-                    var source = getNodeName(k);
-                    var target = getNodeName(k2);
-                    result.push({
-                        source:source,
-                        target:target,
-                    });
-                }
-            } 
-        }
-        return result;
-    }
-
+    var nameNodeMap = new NodeNameLookupFunction(nodes);
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
@@ -200,11 +181,11 @@ function displayModel( data, state, svgElement ) {
 
     var linkWidthScale = d3.scale.linear().domain(weightsList()).range([1,7]);
 
-    var links_a = getLinks(0,0.30);
+    var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.30);
     var opacityScale_a = d3.scale.linear().domain(weightsList()).range([0.3,0.5]);
     var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
 
-    var links_b = getLinks(0.30,1.0);
+    var links_b = getLinks(data.event_model, nameNodeMap, 0.30,1.0);
     var opacityScale_b = d3.scale.linear().domain(weightsList()).range([0.5,0.9]);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
@@ -289,6 +270,24 @@ function displayModel( data, state, svgElement ) {
                 return d.name; 
             }
         });
+}
+
+function getLinks( model, nameNodeMap, minWeight, maxWeight ) {
+    var result = [];
+    for(var k in model) {
+        for(var k2 in model[k] ) {
+            var weight = model[k][k2].weight;
+            if( weight >= minWeight && weight < maxWeight ) {
+                var source = nameNodeMap(k);
+                var target = nameNodeMap(k2);
+                result.push({
+                    source:source,
+                    target:target,
+                });
+            }
+        } 
+    }
+    return result;
 }
 
 function sumIncidentEdgeWeights( model, node_name ) {
