@@ -58,16 +58,27 @@ function generateDisplay(data, container_selector) {
     displayModel( data.model, data.state, svgElement );
 }
 
-function displayModel( data, state, svgElement ) {
-    var svg = d3.select(svgElement)
-        .append("g")
-        .call( d3.behavior.zoom().scaleExtent([0.5,8]).on("zoom",zoom))
-        .append("g").attr("class","overlay");
+function makeZoomPan( svg ) {
+     var zoomGroup = svg.append("g")
+        .attr("class","zoom-group")
+
+    var zoomBehaviour = d3.behavior.zoom()
+        .scaleExtent([0.5,8])
+        .on("zoom",zoom)
 
     function zoom() {
-        svg.attr("transform", 
-                 "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+        var translate = "translate(" + d3.event.translate + ")"; 
+        var scale = "scale(" + d3.event.scale + ")";
+        zoomGroup.attr("transform", translate + " " + scale); 
     }
+
+    return zoomGroup.call( zoomBehaviour );
+}
+
+function displayModel( data, state, svgElement ) {
+    var svg = d3.select(svgElement);
+
+    svg = makeZoomPan(svg);
 
     var nodeGroup = svg.append("g").attr("class","node-group");
     var linkGroup_a = svg.append("g").attr("class","link-group");
