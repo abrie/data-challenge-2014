@@ -1,3 +1,6 @@
+function Main() {
+    'use strict';
+
 function go(url, id) {
     load_json( url, function(result) { 
         generateDisplay(result, id) 
@@ -47,12 +50,9 @@ function load_json(url, callback) {
     })
 }
 
-function get_and_display(url, id) {
-}
-
 function generateDisplay(data, id) {
     var svgElement = generateSvgElement( "svg-"+id,
-        new ViewBox(3000,3000, "xMidYMid meet"));
+        new ViewBox(2000,2000, "xMidYMid meet"));
     $("#"+id).append( svgElement );
     var selector = "#svg-"+id;
     displayModel( data.model, data.state, selector );
@@ -330,4 +330,7 @@ function getNodesForCluster(data, cluster_id) {
     } 
 
     return result;
+}
+
+return {go:go}
 }
