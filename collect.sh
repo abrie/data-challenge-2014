@@ -8,3 +8,4 @@ python main.py -p $PROJECTID -i actor --model sql/actor-model.sql --state sql/ac
 python main.py -p $PROEJCTID -i repo --model sql/repo-model.sql --state sql/repo-state.sql
 python main.py -p $PROJECTID -i python --model sql/python-repo-model.sql --state sql/python-repo-state.sql
 python main.py -p $PROJECTID -i ruby --model sql/ruby-repo-model.sql --state sql/ruby-repo-state.sql
+python main.py -p $PROJECTID -i dcpu16 --model sql/dcpu16-repo-model.sql --state sql/dcpu16-repo-state.sql

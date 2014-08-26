@@ -18,3 +18,6 @@ cp -R data/python $DEST/data/
 
 python pages/make_page.py -t pages/page.html -d pages/descriptions/ruby.html -i ruby -o $DEST/ruby.html
 cp -R data/ruby $DEST/data/
+
+python pages/make_page.py -t pages/page.html -d pages/descriptions/dcpu16.html -i dcpu16 -o $DEST/dcpu16.html
+cp -R data/dcpu16 $DEST/data/
