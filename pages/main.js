@@ -137,7 +137,6 @@ function displayModel( data, state, svgElement ) {
         }
     }
 
-
     function drawLinks(linkGroup, linkCollection, linkClass, opacityScale) { 
         return linkGroup.selectAll(".link")
             .data( bundle(linkCollection) )
@@ -179,6 +178,7 @@ function displayModel( data, state, svgElement ) {
                 }
             }
         }
+
         var result = [];
         for(var k in set) {
             result.push(parseFloat(k));
@@ -198,10 +198,12 @@ function displayModel( data, state, svgElement ) {
         .domain(getWeightDomain(0.3,1.0))
         .range([0.5,0.9]);
 
-    var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.30);
+    // Links are grouped into "high probability" and "low probability" in order to
+    // control their SVG layering.
+    var links_a = getLinks(data.event_model, nameNodeMap, 0, 0.20);
     var drawnLink_a = drawLinks(linkGroup_a, links_a, "link-a", opacityScale_a);
 
-    var links_b = getLinks(data.event_model, nameNodeMap, 0.30, 1.0);
+    var links_b = getLinks(data.event_model, nameNodeMap, 0.20, 1.0);
     var drawnLink_b = drawLinks(linkGroup_b, links_b, "link-b", opacityScale_b);
 
     d3.select("input[type=range]").on("change", function() {
