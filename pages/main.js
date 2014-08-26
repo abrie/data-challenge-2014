@@ -1,9 +1,9 @@
 function Main() {
     'use strict';
 
-function go(url, id) {
+function go(url, container_selector) {
     load_json( url, function(result) { 
-        generateDisplay(result, id) 
+        generateDisplay(result, container_selector) 
     });
 }
 
@@ -13,8 +13,10 @@ function ViewBox(width, height, aspect) {
         "min_y":-height/2,
         "width":width,
         "height":height,
-        "aspect":aspect,
-        "attr": function() {
+        "preserveAspectRatio": function() {
+            return aspect;
+        },
+        "viewBox": function() {
             return [
                 this.min_x,
                 this.min_y,
@@ -24,17 +26,16 @@ function ViewBox(width, height, aspect) {
     }
 }
 
-function generateSvgElement(id, viewBox) {
+function generateSvgElement(viewBox) {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute('id', id);
-    svg.setAttribute('preserveAspectRatio',viewBox.aspect);
-    svg.setAttribute('viewBox',viewBox.attr());
+    svg.setAttribute('preserveAspectRatio', viewBox.preserveAspectRatio());
+    svg.setAttribute('viewBox',viewBox.viewBox());
     svg.setAttributeNS(
         "http://www.w3.org/2000/xmlns/",
         "xmlns:xlink",
         "http://www.w3.org/1999/xlink");
 
-    return $(svg);
+    return svg;
 }
 
 function load_json(url, callback) {
@@ -50,16 +51,15 @@ function load_json(url, callback) {
     })
 }
 
-function generateDisplay(data, id) {
-    var svgElement = generateSvgElement( "svg-"+id,
-        new ViewBox(2000,2000, "xMidYMid meet"));
-    $("#"+id).append( svgElement );
-    var selector = "#svg-"+id;
-    displayModel( data.model, data.state, selector );
+function generateDisplay(data, container_selector) {
+    var viewBox = new ViewBox(2000,2000, "xMidYMid meet");
+    var svgElement = generateSvgElement(viewBox);
+    $(container_selector).append( svgElement );
+    displayModel( data.model, data.state, svgElement );
 }
 
-function displayModel( data, state, selector ) {
-    var svg = d3.select(selector)
+function displayModel( data, state, svgElement ) {
+    var svg = d3.select(svgElement)
         .append("g")
         .call( d3.behavior.zoom().scaleExtent([0.5,8]).on("zoom",zoom))
         .append("g").attr("class","overlay");
