@@ -38,7 +38,7 @@ function generateIllustration( data, population, svgElement ) {
 
     var line = d3.svg.line.radial()
         .interpolate("bundle")
-        .tension(0.35)
+        .tension( getTensionSliderValue() )
         .radius(function(d) { 
             return d.y; 
         })
@@ -146,8 +146,13 @@ function generateIllustration( data, population, svgElement ) {
     var lowEdges = drawEdges({min:0, max:0.30}, linkGroup_a, "link-a", [0.2,0.3]);
     var highEdges = drawEdges({min:0.30, max:1.0}, linkGroup_b, "link-b", [0.7,0.9]); 
 
-    d3.select("input[type=range]").on("change", function() {
-        line.tension(this.value / 100);
+    function getTensionSliderValue() {
+        var slider = d3.select("input[name='tension']")[0][0];
+        return slider.value;
+    }
+
+    d3.select("input[name='tension']").on("change", function() {
+        line.tension(this.value);
         lowEdges.attr("d", line );
         highEdges.attr("d", line );
     });
