@@ -226,7 +226,12 @@ function generateIllustration( data, population, svgElement ) {
         })
         .text(function(d) { 
             if( d.name === '~' ) {
-                return "start -->";
+                if( d.x > 180 && d.x < 360 ) {
+                    return "start -->";
+                }
+                else {
+                    return "<-- start";
+                }
             }
             else {
                 return d.name; 
