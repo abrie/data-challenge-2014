@@ -1,5 +1,5 @@
 <h3>Bundled-Edge Views of the Github Event Graph</h3>
 <p>All of the graphs have a node labled <b>start</b>. This node has an indegree<sup><a href="http://en.wikipedia.org/wiki/Directed_graph#Indegree_and_outdegree">2</a></sup> of 0. It is usually strongly connected to repository or branch creation. The Github event graph is intersting in that almost every node is connected to every other. It is essentially a complete digraph.</p><p>The distribution of present-time events is indicated by the length of the label line, which is the <code>Log(population)</code>. The length could be interpreted in several ways. A longer line would result if the event is not followed by any subsequent events. Or it could mean a spike in the event at the moment of data capture. A stubby population line means either an unpopular event or one which is immediately followed by another action. Note the 0 population of the <b>start</b> event.</p>
-<p><a href="ruby.html">Here</a> is a view of Ruby centric repositories.</p>
+<p><a href="ruby-repo.html">Here</a> is a view of Ruby centric repositories.</p>
 <p><small>Zoom and pan the graph using your mouse. Adjust the bundling parameter with the slider:</small></p>
 <p><input name="tension" type="range" min="0" max="1" value=0.15 step=0.05></p>
