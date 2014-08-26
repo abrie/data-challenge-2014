@@ -7,8 +7,8 @@
     </head>
     <body>
         <div id="description"><h3>Bundled-Edge Views of the Github Event Graph</h3>
-<p>This for DCPU-16 repositories. The interesting thing here is the absence of an outdegree on the Public event.</p>
-<p><a href="sunday-repo.html">Here</a> you'll see the what a speculative Sunday repository</p>
+<p>Repositories created on a Friday.</p>
+<p><a href="index.html">Return</a> to the beginning.</p>
 <p><small>Zoom and pan the graph using your mouse. Adjust the bundling parameter with the slider:</small></p>
 <p><input name="tension" type="range" min="0" max="1" value=0.15 step=0.05></p>
 </div>
@@ -22,7 +22,7 @@
         <script type="application/javascript" src="main.js"></script>
         <script type="application/javascript">
             $( document ).ready( function() {
-                Main().go("data/dcpu16/results.json","#illustration");
+                Main().go("data/friday/results.json","#illustration");
             });
 
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

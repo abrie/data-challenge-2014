@@ -1,0 +1,29 @@
+{
+    "configuration": {
+        "query": {
+            "createDisposition": "CREATE_IF_NEEDED", 
+            "destinationTable": {
+                "datasetId": "_9344790a8c4348fd3810dceaea23756db475ffd7", 
+                "projectId": "directed-potion-651", 
+                "tableId": "anon8c9cb610ca0c5f8636462c2203c01708484570c6"
+            }, 
+            "query": "SELECT\n  previous_state, present_state,\n  COUNT(*) hits\nFROM(\n  SELECT\n    state as present_state,\n    LAG(present_state, 1, '~') OVER (PARTITION BY repository_url ORDER BY created_at) as previous_state\n  FROM(\n    SELECT\n    repository_url,\n    created_at,\n    CASE\n      WHEN type = \"CreateEvent\" THEN CONCAT(\"CreateEvent:\",\n        IF(payload_ref_type is null, \"repository\", payload_ref_type))\n      WHEN type = \"DeleteEvent\" THEN CONCAT(\"DeleteEvent:\", payload_ref_type)\n      WHEN type = \"PullRequestEvent\" THEN CONCAT(\"PullRequestEvent:\",\n        CASE\n            WHEN payload_action = \"closed\" THEN\n              IF(payload_pull_request_merged == \"false\", \"closed-not-merged\",\"closed-merged\")\n            ELSE payload_action\n        END)\n      WHEN type = \"IssuesEvent\" THEN CONCAT(\"IssuesEvent:\", payload_action)\n      WHEN type = \"GistEvent\" THEN CONCAT(\"GistEvent:\", payload_action)\n      WHEN type = \"IssueCommentEvent\" THEN CONCAT(\"IssueCommentEvent:\",\n        IF(payload_action is null, \"created\", payload_action))\n      WHEN type = \"ReleaseEvent\" THEN CONCAT(\"ReleaseEvent:\", payload_action)\n      WHEN type = \"WatchEvent\" THEN CONCAT(\"WatchEvent:\", payload_action)\n      WHEN type = \"MemberEvent\" THEN CONCAT(\"MemberEvent:\", payload_action)\n      WHEN type = \"GollumEvent\" Then CONCAT(\"GollumEvent:\", payload_page_action)\n      ELSE type\n    END as state,\n    FROM\n        [publicdata:samples.github_timeline]\n    WHERE\n      type IS NOT NULL  \n      AND repository_url IS NOT NULL\n      AND NOT (type = \"PullRequestEvent\" AND payload_action = \"merged\")\n      AND created_at >= \"2011-2-12\" // the offical start date of the archive. \n      AND DAYOFWEEK(TIMESTAMP(repository_created_at)) = 6 // Friday\n    GROUP EACH BY repository_url, created_at, state\n  ) GROUP EACH BY repository_url, created_at, present_state\n) GROUP EACH BY previous_state, present_state\n", 
+            "writeDisposition": "WRITE_TRUNCATE"
+        }
+    }, 
+    "etag": "\"qer-y8WLkZI323PjwBL5LfNzqMk/MbnZvlq652jqv5Y7nKKUvAgXjdU\"", 
+    "id": "directed-potion-651:job_Q8rKJ_qaJ3rcBqYKeX4TQmG0ISw", 
+    "jobReference": {
+        "jobId": "job_Q8rKJ_qaJ3rcBqYKeX4TQmG0ISw", 
+        "projectId": "directed-potion-651"
+    }, 
+    "kind": "bigquery#job", 
+    "selfLink": "https://www.googleapis.com/bigquery/v2/projects/directed-potion-651/jobs/job_Q8rKJ_qaJ3rcBqYKeX4TQmG0ISw", 
+    "statistics": {
+        "creationTime": "1409079605670", 
+        "startTime": "1409079606314"
+    }, 
+    "status": {
+        "state": "RUNNING"
+    }
+}
