@@ -289,7 +289,7 @@ function getClusterHierarchy(data) {
 
 function getClusterChildren(data, cluster_id) {
     var setCollection = {};
-    for( var key in data.event_model ) {
+    for( var key in data.node_degrees ) {
         if( data.clusters[key] === cluster_id ) {
             setCollection[key] = { "name": key, } 
         }
