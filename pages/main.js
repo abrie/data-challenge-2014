@@ -52,7 +52,7 @@ function load_json(url, callback) {
 
 function generateDisplay(data, id) {
     var svgElement = generateSvgElement( "svg-"+id,
-        new ViewBox(3000,3000, "xMidYMid meet"));
+        new ViewBox(2000,2000, "xMidYMid meet"));
     $("#"+id).append( svgElement );
     var selector = "#svg-"+id;
     displayModel( data.model, data.state, selector );

@@ -5,14 +5,14 @@ body {
 }
 
 
-#container {
+#illustration {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 90%; 
+    width: 80%; 
     height: 100%;
     margin: 0 auto;
-    margin-left: 10%;
+    margin-left: 20%;
     overflow: visible;
 }
 
