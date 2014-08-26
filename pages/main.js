@@ -144,20 +144,20 @@ function displayModel( data, state, svgElement ) {
             .attr("class", linkClass)  
             .style("stroke-linecap","rounded")
             .style("opacity", function(d) {
-                var source_state = d[0].name
-                var target_state = d[d.length-1].name
-                var weight = data.event_model[source_state][target_state].weight;
+                var source = d[0].name
+                var target = d[d.length-1].name
+                var weight = data.event_model[source][target].weight;
                 return opacityScale(weight);  
             })
             .style("stroke", function(d) {
-                var source_state = d[0].name
-                var source_cluster = data.clusters[source_state]; 
+                var source = d[0].name
+                var source_cluster = data.clusters[source]; 
                 return linkColorScale(source_cluster);
             })
             .style("stroke-width", function(d) {
-                var source_state = d[0].name
-                var target_state = d[d.length-1].name
-                var weight = data.event_model[source_state][target_state].weight;
+                var source = d[0].name
+                var target = d[d.length-1].name
+                var weight = data.event_model[source][target].weight;
                 return linkWidthScale(weight);  
             })
             .attr("d", line);
@@ -238,8 +238,8 @@ function displayModel( data, state, svgElement ) {
             return t();
         })
         .style("fill", function(d) {
-            var source_state = d.name
-            var source_cluster = data.clusters[source_state]; 
+            var source = d.name
+            var source_cluster = data.clusters[source]; 
             return linkColorScale(source_cluster);
         })
         .style("opacity", "0.80")
