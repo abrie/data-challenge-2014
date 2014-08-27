@@ -139,18 +139,25 @@ def run_queries(setId, projectId, templates):
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--id", required=True, help="identifier for this set")
+    parser.add_argument(
+            "-i", "--id", 
+            required=True,
+            help="identifier for this set")
     group = parser.add_argument_group("new query") 
-    group.add_argument("-p", "--projectId", help="run a new query")
-    group.add_argument("queries", nargs="?")
+    group.add_argument(
+            "-q", "--query",
+            help="use bigquery",
+            dest="query",
+            nargs="+")
     return parser
 
 if __name__ == '__main__':
     try:
         parser = get_arguments()
         args = parser.parse_args()
-        if (args.projectId is not None):
-            run_queries(args.id, args.projectId, args.queries)
+        if (args.query is not None):
+            projectId = args.query.pop(0)
+            run_queries(args.id, projectId, args.query)
         munge_queries(args.id)
 
     except HttpError as err:
