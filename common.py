@@ -27,7 +27,7 @@ def use_set(id):
 
 def read_most_recent(prefix):
     result = []
-    path = datadir(os.path.join(prefix,'query-responses'))
+    path = datadir(os.path.join(prefix,'query-rows'))
     cwd = os.getcwd()
     os.chdir(path)
     most_recent_file = max(os.listdir('.'), key=os.path.getctime)
@@ -36,16 +36,6 @@ def read_most_recent(prefix):
     if os.path.isfile(dir_entry_path):
         with open(dir_entry_path, 'r') as my_file:
             result.append( json.load(my_file) )
-    return result
-
-def read_all(prefix):
-    path = datadir(os.path.join(prefix,'query-responses'))
-    result = []
-    for dir_entry in os.listdir(path):
-        dir_entry_path = os.path.join(path, dir_entry)
-        if os.path.isfile(dir_entry_path):
-            with open(dir_entry_path, 'r') as my_file:
-                result.append( json.load(my_file) )
     return result
 
 def datadir(path):

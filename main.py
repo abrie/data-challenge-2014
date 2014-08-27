@@ -62,42 +62,68 @@ def queue_async_query(bigquery, prefix, query_filename, dataset):
     save_query(prefix, query)
     return query
 
-def process_query_responses(bigquery, prefix, queries):
+def await_reply( bigquery, parameters ):
     jobCollection = bigquery.service.jobs()
-    for index, query in enumerate(queries):
-        parameters = {
-                "jobId":query['jobReference']['jobId'],
-                "projectId":bigquery.projectId
-                }
-        sys.stdout.write("Awaiting: %s [..." % parameters["jobId"])
-        sys.stdout.flush()
-        resultsRequest = jobCollection.getQueryResults(**parameters)
-        while True:
-            reply = resultsRequest.execute()
-            if reply['jobComplete']:
-                break
-            else:
-                sys.stdout.write('...')
-                sys.stdout.flush()
-        sys.stdout.write("done]\n")
-        sys.stdout.flush()
+    ids = parameters['ids']
+    sys.stdout.write("Awaiting: %s [..." % ids["jobId"])
+    sys.stdout.flush()
 
-        rows = [];
-        while( ('rows' in reply) and len(rows) < reply['totalRows']):
-            rows.extend(reply['rows'])
-            parameters["startIndex"] = len(rows);
-            print "\tread %i/%s rows." % (len(rows), reply['totalRows'])
-            reply = jobCollection.getQueryResults(**parameters).execute()
+    resultsRequest = jobCollection.getQueryResults(**ids)
 
-        save_query_result( prefix, query, {"rows":rows} )
+    while True:
+        reply = resultsRequest.execute()
+        if reply['jobComplete']: break
+        else:
+            sys.stdout.write('...')
+            sys.stdout.flush()
+
+    sys.stdout.write("done]\n")
+    sys.stdout.flush()
+
+    parameters["reply"] = [reply];
+    return parameters 
+
+def extract_rows_from_reply(bigquery, parameters ):
+    jobCollection = bigquery.service.jobs()
+    ids = parameters["ids"]
+    rows = [];
+    reply = parameters['reply'][0]
+    totalRows = reply['totalRows']
+    while( ('rows' in reply) and len(rows) < totalRows):
+        rows.extend(reply['rows'])
+        print "\textracted %i of %s rows." % (len(rows), totalRows)
+        reply = jobCollection.getQueryResults(
+                projectId=ids["projectId"],
+                jobId=ids["jobId"],
+                startIndex=len(rows)).execute()
+        parameters['reply'].append(reply)
+    return rows
+
+def process_pending_query(bigquery, prefix, pendingQuery):
+    parameters = {
+            "ids": {
+                "jobId":pendingQuery['jobReference']['jobId'],
+                "projectId":bigquery.projectId}
+            }
+
+    reply = await_reply( bigquery, parameters )
+    rows = extract_rows_from_reply( bigquery, reply )
+
+    save_query_result( prefix, parameters, {"rows":rows} )
 
 def save_query(prefix, query):
     query_jobId = query['jobReference']['jobId']
     common.write_json(query, "%s/queries/%s.json" % (prefix, query_jobId))
 
-def save_query_result(prefix, query, result):
-    query_jobId = query['jobReference']['jobId']
-    common.write_json(result, "%s/query-responses/%s.json" % (prefix, query_jobId))
+def save_query_result(prefix, parameters, rows):
+    jobId = parameters['ids']['jobId']
+    projectId = parameters['ids']['projectId']
+
+    path = "%s/query-responses/%s-%s.json" % (prefix, projectId, jobId)
+    common.write_json(parameters, path)
+
+    path = "%s/query-rows/%s-%s.json" % (prefix, projectId, jobId)
+    common.write_json(rows, path)
 
 def use_previous_query(id):
     print "Using most recent query results from:", id
@@ -120,22 +146,17 @@ def run_new_query(projectId, model_query, state_query, identifier):
     else:
         common.use_set(identifier)
 
-
-    #run the model query
-    model_queries = [];
+    #the model query
     model = {}
-    model_queries.append(
-            queue_async_query(bigquery, 'model', model_query, DATASET_TEST) )
-    process_query_responses(bigquery, 'model', model_queries)
-    model = munger.munge_model( common.read_all('model') )
+    pendingQuery = queue_async_query(bigquery, 'model', model_query, DATASET_TEST)
+    process_pending_query(bigquery, 'model', pendingQuery)
+    model = munger.munge_model( common.read_most_recent('model') )
 
-    #run the state queries
+    #the state query
     state = {}
-    state_queries = [];
-    state_queries.append(
-            queue_async_query(bigquery, 'state', state_query, DATASET_TEST) )
-    process_query_responses(bigquery, 'state', state_queries)
-    state = munger.munge_state( common.read_all('state') )
+    pendingQuery = queue_async_query(bigquery, 'state', state_query, DATASET_TEST)
+    process_pending_query(bigquery, 'state', pendingQuery)
+    state = munger.munge_state( common.read_most_recent('state') )
 
     results = {"state":state, "model":model}
     common.write_json(results, "results.json")
