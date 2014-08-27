@@ -6,7 +6,7 @@ fi
 PROJECTID=$1
 
 function collect {
-    python main.py -p $PROJECTID -i $1 --model sql/$1-model.sql --state sql/$1-state.sql
+    python main.py -i $1 -q $PROJECTID model:sql/$1-model.sql state:sql/$1-state.sql
 }
 
 collect actor
