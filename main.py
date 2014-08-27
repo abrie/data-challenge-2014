@@ -142,7 +142,7 @@ def get_arguments():
     parser.add_argument("-i", "--id", required=True, help="identifier for this set")
     group = parser.add_argument_group("new query") 
     group.add_argument("-p", "--projectId", help="run a new query")
-    group.add_argument("queries", nargs="+")
+    group.add_argument("queries", nargs="?")
     return parser
 
 if __name__ == '__main__':
