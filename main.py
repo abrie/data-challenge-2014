@@ -2,10 +2,8 @@ import argparse
 import httplib2
 import json
 import os
-import pprint
 import string
 import sys
-import time
 
 import common
 import munger
@@ -27,7 +25,7 @@ DATASET_REAL = "[githubarchive:github.timeline]"
 def get_bigquery_service(projectId):
     if not os.path.isfile('client_secrets.json'):
         print "No client_secrets.json found."
-        print "Please use the Coogle developer console to generate one of type 'Installed Applicaton'"
+        print "Please generate one of type 'Installed Applicaton'"
         return None
 
     FLOW = flow_from_clientsecrets('client_secrets.json', 
@@ -50,7 +48,7 @@ def get_bigquery_service(projectId):
 
     return BigQuery(service, projectId) 
 
-def queue_async_query(bigquery, prefix, query_filename, dataset):
+def insert_query(bigquery, prefix, query_filename, dataset):
     print "* async request:", dataset 
     with open (query_filename, "r") as query_file:
         bql_template = string.Template(query_file.read()) 
@@ -58,9 +56,16 @@ def queue_async_query(bigquery, prefix, query_filename, dataset):
     bql = bql_template.substitute(dataset=dataset)
     jobData = { 'configuration': { 'query':{ 'query':bql } } }
     insertParameters = {'projectId':bigquery.projectId, 'body':jobData}
-    query = bigquery.service.jobs().insert( **insertParameters ).execute()
-    save_query(prefix, query)
-    return query
+    insertRequest = bigquery.service.jobs().insert( **insertParameters )
+    insertedQuery = insertRequest.execute()
+
+    parameters = {
+            "ids": {
+                "jobId":insertedQuery['jobReference']['jobId'],
+                "projectId":bigquery.projectId}
+            }
+
+    return parameters
 
 def await_reply( bigquery, parameters ):
     jobCollection = bigquery.service.jobs()
@@ -83,50 +88,32 @@ def await_reply( bigquery, parameters ):
     parameters["reply"] = [reply];
     return parameters 
 
-def extract_rows_from_reply(bigquery, parameters ):
+def read_reply(bigquery, parameters):
     jobCollection = bigquery.service.jobs()
     ids = parameters["ids"]
-    rows = [];
     reply = parameters['reply'][0]
-    totalRows = reply['totalRows']
-    while( ('rows' in reply) and len(rows) < totalRows):
-        rows.extend(reply['rows'])
-        print "\textracted %i of %s rows." % (len(rows), totalRows)
-        reply = jobCollection.getQueryResults(
-                projectId=ids["projectId"],
-                jobId=ids["jobId"],
-                startIndex=len(rows)).execute()
+    totalRows = int(reply['totalRows'])
+    rowsRead = len(reply["rows"])
+    requestParams = {"projectId":ids["projectId"], "jobId":ids["jobId"]}
+    while True: 
+        print "\tread %i of %s rows." % (rowsRead, totalRows)
+        if rowsRead >= totalRows:
+            break
+        requestParams["startIndex"] = rowsRead 
+        request = jobCollection.getQueryResults( **requestParams )
+        reply = request.execute()
         parameters['reply'].append(reply)
-    return rows
+        rowsRead += len(reply["rows"])
+    return parameters
 
-def process_pending_query(bigquery, prefix, pendingQuery):
-    parameters = {
-            "ids": {
-                "jobId":pendingQuery['jobReference']['jobId'],
-                "projectId":bigquery.projectId}
-            }
-
-    reply = await_reply( bigquery, parameters )
-    rows = extract_rows_from_reply( bigquery, reply )
-
-    save_query_result( prefix, parameters, {"rows":rows} )
-
-def save_query(prefix, query):
-    query_jobId = query['jobReference']['jobId']
-    common.write_json(query, "%s/queries/%s.json" % (prefix, query_jobId))
-
-def save_query_result(prefix, parameters, rows):
+def save_reply(prefix, parameters):
     jobId = parameters['ids']['jobId']
     projectId = parameters['ids']['projectId']
+    filename = "%s-%s.json" % (projectId, jobId)
+    common.write_json(parameters, "%s/%s" % (prefix, filename))
 
-    path = "%s/query-responses/%s-%s.json" % (prefix, projectId, jobId)
-    common.write_json(parameters, path)
-
-    path = "%s/query-rows/%s-%s.json" % (prefix, projectId, jobId)
-    common.write_json(rows, path)
-
-def use_previous_query(id):
-    print "Using most recent query results from:", id
+def munge_queries(id):
+    print "Munging:", id
     common.use_set(id)
     model = munger.munge_model( common.read_most_recent('model') )
     state = munger.munge_state( common.read_most_recent('state') )
@@ -134,55 +121,37 @@ def use_previous_query(id):
     results = {"state":state, "model":model}
     common.write_json(results, "results.json")
 
-def run_new_query(projectId, model_query, state_query, identifier):
+def run_queries(setId, projectId, templates):
     bigquery = get_bigquery_service(projectId)
-    if bigquery is None:
-        return
+    print "Using projectId:", bigquery.projectId 
+    print "Local Id:", setId
 
-    print "Using project:", bigquery.projectId 
+    common.use_set(setId)
 
-    if (identifier is None):
-        common.new_set()
-    else:
-        common.use_set(identifier)
+    split_args = [arg.split(':') for arg in templates]
+    named_args = {arg[0]:arg[1] for arg in split_args}
 
-    #the model query
-    model = {}
-    pendingQuery = queue_async_query(bigquery, 'model', model_query, DATASET_TEST)
-    process_pending_query(bigquery, 'model', pendingQuery)
-    model = munger.munge_model( common.read_most_recent('model') )
-
-    #the state query
-    state = {}
-    pendingQuery = queue_async_query(bigquery, 'state', state_query, DATASET_TEST)
-    process_pending_query(bigquery, 'state', pendingQuery)
-    state = munger.munge_state( common.read_most_recent('state') )
-
-    results = {"state":state, "model":model}
-    common.write_json(results, "results.json")
+    for name, filename in named_args.iteritems():
+        query = insert_query(bigquery, name, filename, DATASET_TEST)
+        reply = await_reply( bigquery, query )
+        reply = read_reply( bigquery, query )
+        save_reply( name, reply )
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--id", help="identifier for this query")
-    parser.add_argument("-p", "--projectId", help="BigQuery projectId")
-    group = parser.add_argument_group("query") 
-    group.add_argument("--model")
-    group.add_argument("--state")
+    parser.add_argument("-i", "--id", required=True, help="identifier for this set")
+    group = parser.add_argument_group("new query") 
+    group.add_argument("-p", "--projectId", help="run a new query")
+    group.add_argument("queries", nargs="+")
     return parser
 
 if __name__ == '__main__':
     try:
         parser = get_arguments()
         args = parser.parse_args()
-        if (args.model is None and args.state is None):
-            if (args.id is None):
-                parser.error("nothing to do.")
-            else:
-                use_previous_query(args.id)
-        elif (args.projectId is None):
-            parser.error("please specify a Bigquery projectId to use.")
-        else:
-            run_new_query(args.projectId, args.model, args.state, args.id)
+        if (args.projectId is not None):
+            run_queries(args.id, args.projectId, args.queries)
+        munge_queries(args.id)
 
     except HttpError as err:
         err_json = json.loads(err.content)

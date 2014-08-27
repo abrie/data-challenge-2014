@@ -9,24 +9,10 @@ def trim_type_name(type_name):
     trimmed = type_name.replace("Event","")
     return trimmed
 
-def convert_query_response_to_eventtimes( query_response ):
-    result = EventTimes()
-
-    for row in query_response['rows']:
-        fields = row['f']
-        event = trim_type_name(fields[0]['v'])
-        first = long(fields[1]['v'])
-        last = long(fields[2]['v'])
-
-        result[event]["first"] = first 
-        result[event]["last"] = last 
-
-    return result
-
-def convert_query_response_to_markovmodel( query_response ):
+def convert_rows_to_markovmodel( rows ):
     result = MarkovModel() 
 
-    for row in query_response['rows']:
+    for row in rows:
         fields = row['f']
         first = trim_type_name(fields[0]['v'])
         second = trim_type_name(fields[1]['v'])
@@ -43,10 +29,10 @@ def convert_query_response_to_markovmodel( query_response ):
 
     return result;
 
-def convert_query_response_to_markovstate( query_response ):
+def convert_rows_to_markovstate( rows ):
     result = MarkovState() 
 
-    for row in query_response['rows']:
+    for row in rows:
         fields = row['f'];
         state = trim_type_name(fields[0]['v']);
         hits = int(fields[1]['v']);
@@ -130,8 +116,9 @@ def munge_times(query_responses):
     print "lifetimes measured."
     return result
 
-def munge_state(query_responses):
-    result = convert_query_response_to_markovstate(query_responses[0])
+def munge_state(query):
+    rows = aggregate_rows(query["reply"])
+    result = convert_rows_to_markovstate(rows)
     print "population counted."
     return result
     
@@ -167,8 +154,15 @@ def compute_stationary_model(model):
 
     return result
 
-def munge_model(query_responses):
-    model = convert_query_response_to_markovmodel(query_responses[0])
+def aggregate_rows(replies):
+    aggregate = []
+    for reply in replies:
+        aggregate.extend(reply['rows'])
+    return aggregate
+    
+def munge_model(query):
+    rows = aggregate_rows(query["reply"])
+    model = convert_rows_to_markovmodel(rows)
     clusters = mclinterface.get_clusters(model)
     node_degrees = compute_node_degrees(model, clusters)
     cluster_model = build_cluster_model(model, clusters)
