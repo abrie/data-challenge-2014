@@ -1,6 +1,8 @@
 #!/bin/sh
 if [ $# -lt 1 ] ; then
-    echo "need projectId, please." ; exit 0
+    echo "need projectId, please."
+    echo usage: $0 [projectId]
+    exit
 fi
 
 PROJECTID=$1
