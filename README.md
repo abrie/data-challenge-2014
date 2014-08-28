@@ -16,7 +16,8 @@ This application uses [MCL](http://micans.org/mcl/). The source is contained in 
 - `make install`
 
 MCL will then be installed to `external/mcl-14-137` which is where the application will assume it to be. If you install to a different path, then change the `MCL_BIN` string found in `mclinterface.py`.
- 
+
+Numpy/Scipy are also required. If you're using Mavericks, use this: [ScipySuperpack](https://github.com/fonnesbeck/ScipySuperpack). 
 ## Authorization of APIs
 
 This application uses Google Bigquery. You'll need to supply authenticated credentials:
