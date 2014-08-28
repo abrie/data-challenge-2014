@@ -1,4 +1,12 @@
 #!/bin/sh
+set -ue
+
+function ctrl_c {
+    exit $?
+}
+
+trap ctrl_c SIGINT
+
 if [ $# -lt 1 ] ; then
     echo "need projectId, please."
     echo usage: $0 [projectId]

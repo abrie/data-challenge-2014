@@ -58,3 +58,9 @@ def main():
         project_id = args.query.pop(0)
         run_queries(args.id, project_id, args.query)
     munge_queries(args.id)
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print "You aborted but queries may have been sent anyway."
