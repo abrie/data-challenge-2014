@@ -340,9 +340,10 @@ function generateSvgElement(viewBox) {
 }
 
 function makeZoomPan( svg ) {
-     var zoomGroup = svg.append("g")
+    var zoomGroup = svg.append("g")
         .attr("class","zoom-group")
-
+    var zoomTarget = zoomGroup.append("g")
+        .attr("class","zoom-target")
     var zoomBehaviour = d3.behavior.zoom()
         .scaleExtent([0.5,8])
         .on("zoom",zoom)
@@ -350,10 +351,11 @@ function makeZoomPan( svg ) {
     function zoom() {
         var translate = "translate(" + d3.event.translate + ")"; 
         var scale = "scale(" + d3.event.scale + ")";
-        zoomGroup.attr("transform", translate + " " + scale); 
+        zoomTarget.attr("transform", translate + " " + scale); 
     }
 
-    return zoomGroup.call( zoomBehaviour );
+    zoomGroup.call( zoomBehaviour );
+    return zoomTarget
 }
 
 function load_json(url, callback) {

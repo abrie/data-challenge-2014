@@ -1,0 +1,275 @@
+{
+    "ids": {
+        "jobId": "job_Nae_m6kbIWDekQ3PaAVC7lI-Fkk", 
+        "projectId": "directed-potion-651"
+    }, 
+    "reply": [
+        {
+            "cacheHit": true, 
+            "etag": "\"qer-y8WLkZI323PjwBL5LfNzqMk/HsW8pnE_5Xc5divOMtRryLjuawE\"", 
+            "jobComplete": true, 
+            "jobReference": {
+                "jobId": "job_Nae_m6kbIWDekQ3PaAVC7lI-Fkk", 
+                "projectId": "directed-potion-651"
+            }, 
+            "kind": "bigquery#getQueryResultsResponse", 
+            "rows": [
+                {
+                    "f": [
+                        {
+                            "v": "CreateEvent:branch"
+                        }, 
+                        {
+                            "v": "209209"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssuesEvent:reopened"
+                        }, 
+                        {
+                            "v": "2219"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "WatchEvent:started"
+                        }, 
+                        {
+                            "v": "123613"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "ForkApplyEvent"
+                        }, 
+                        {
+                            "v": "993"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestReviewCommentEvent"
+                        }, 
+                        {
+                            "v": "2087"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PushEvent"
+                        }, 
+                        {
+                            "v": "335165"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "ForkEvent"
+                        }, 
+                        {
+                            "v": "65554"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:closed-merged"
+                        }, 
+                        {
+                            "v": "25693"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "DeleteEvent:tag"
+                        }, 
+                        {
+                            "v": "1787"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CommitCommentEvent"
+                        }, 
+                        {
+                            "v": "13428"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssuesEvent:closed"
+                        }, 
+                        {
+                            "v": "28912"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssueCommentEvent:created"
+                        }, 
+                        {
+                            "v": "34902"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "DownloadEvent"
+                        }, 
+                        {
+                            "v": "5926"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssuesEvent:opened"
+                        }, 
+                        {
+                            "v": "28323"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "DeleteEvent:branch"
+                        }, 
+                        {
+                            "v": "13617"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "MemberEvent:added"
+                        }, 
+                        {
+                            "v": "17168"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "GollumEvent:edited"
+                        }, 
+                        {
+                            "v": "7800"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:closed-not-merged"
+                        }, 
+                        {
+                            "v": "11245"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CreateEvent:repository"
+                        }, 
+                        {
+                            "v": "219994"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:opened"
+                        }, 
+                        {
+                            "v": "24197"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CreateEvent:tag"
+                        }, 
+                        {
+                            "v": "28506"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "GollumEvent:created"
+                        }, 
+                        {
+                            "v": "23382"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PublicEvent"
+                        }, 
+                        {
+                            "v": "5143"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:reopened"
+                        }, 
+                        {
+                            "v": "791"
+                        }
+                    ]
+                }
+            ], 
+            "schema": {
+                "fields": [
+                    {
+                        "mode": "NULLABLE", 
+                        "name": "event", 
+                        "type": "STRING"
+                    }, 
+                    {
+                        "mode": "NULLABLE", 
+                        "name": "population", 
+                        "type": "INTEGER"
+                    }
+                ]
+            }, 
+            "totalRows": "24"
+        }
+    ]
+}

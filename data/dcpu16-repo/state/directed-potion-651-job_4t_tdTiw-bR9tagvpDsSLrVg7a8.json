@@ -1,0 +1,215 @@
+{
+    "ids": {
+        "jobId": "job_4t_tdTiw-bR9tagvpDsSLrVg7a8", 
+        "projectId": "directed-potion-651"
+    }, 
+    "reply": [
+        {
+            "cacheHit": true, 
+            "etag": "\"qer-y8WLkZI323PjwBL5LfNzqMk/1G6E_BQJd9hCeW8Up13zB8hCCJo\"", 
+            "jobComplete": true, 
+            "jobReference": {
+                "jobId": "job_4t_tdTiw-bR9tagvpDsSLrVg7a8", 
+                "projectId": "directed-potion-651"
+            }, 
+            "kind": "bigquery#getQueryResultsResponse", 
+            "rows": [
+                {
+                    "f": [
+                        {
+                            "v": "PushEvent"
+                        }, 
+                        {
+                            "v": "62"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssuesEvent:closed"
+                        }, 
+                        {
+                            "v": "10"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "DeleteEvent:branch"
+                        }, 
+                        {
+                            "v": "3"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "MemberEvent:added"
+                        }, 
+                        {
+                            "v": "1"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CreateEvent:tag"
+                        }, 
+                        {
+                            "v": "2"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:opened"
+                        }, 
+                        {
+                            "v": "6"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssueCommentEvent:created"
+                        }, 
+                        {
+                            "v": "8"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "WatchEvent:started"
+                        }, 
+                        {
+                            "v": "28"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CreateEvent:branch"
+                        }, 
+                        {
+                            "v": "27"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "ForkEvent"
+                        }, 
+                        {
+                            "v": "13"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:closed-merged"
+                        }, 
+                        {
+                            "v": "7"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "CommitCommentEvent"
+                        }, 
+                        {
+                            "v": "2"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PublicEvent"
+                        }, 
+                        {
+                            "v": "1"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "DownloadEvent"
+                        }, 
+                        {
+                            "v": "1"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "IssuesEvent:opened"
+                        }, 
+                        {
+                            "v": "8"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "GollumEvent:edited"
+                        }, 
+                        {
+                            "v": "1"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "PullRequestEvent:closed-not-merged"
+                        }, 
+                        {
+                            "v": "4"
+                        }
+                    ]
+                }, 
+                {
+                    "f": [
+                        {
+                            "v": "GollumEvent:created"
+                        }, 
+                        {
+                            "v": "1"
+                        }
+                    ]
+                }
+            ], 
+            "schema": {
+                "fields": [
+                    {
+                        "mode": "NULLABLE", 
+                        "name": "event", 
+                        "type": "STRING"
+                    }, 
+                    {
+                        "mode": "NULLABLE", 
+                        "name": "population", 
+                        "type": "INTEGER"
+                    }
+                ]
+            }, 
+            "totalRows": "18"
+        }
+    ]
+}
