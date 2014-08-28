@@ -73,6 +73,21 @@ function generateIllustration( data, population, svgElement ) {
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    function getScaledStationaryPopulation(name) {
+        var event = data.stationary_model[name];
+        if(event) {
+            var stationary = data.stationary_model[name]*totalPopulation;
+            var scaled =  populationScale(stationary);
+            return scaled;
+        }
+        else {
+            return 1;
+        }
+    }
+
+>>>>>>> Stashed changes
     function getWeight(source, target) {
         return data.event_model[source][target].weight;
     }
