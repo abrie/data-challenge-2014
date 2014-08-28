@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import argparse
+import sys
 
 import common
 import munger
@@ -36,9 +37,14 @@ def run_queries(set_id, project_id, templates):
 
     for name, filename in named_args.iteritems():
         query = bqi.insert_query(project, filename, DATASET_TEST)
-        reply = bqi.await_reply(project, query)
-        reply = bqi.read_reply(project, query)
-        save_reply(name, reply)
+        if "error" in query:
+            print query["error"]["message"]
+            return False
+        else:
+            reply = bqi.await_reply(project, query)
+            reply = bqi.read_reply(project, query)
+            save_reply(name, reply)
+    return True
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -54,13 +60,23 @@ def get_arguments():
 
 def main():
     args = get_arguments()
+
     if args.query is not None:
         project_id = args.query.pop(0)
-        run_queries(args.id, project_id, args.query)
+        if not run_queries(args.id, project_id, args.query):
+            print "Refusing to munge because because queries failed."
+            return False
+
     munge_queries(args.id)
+    print "Done."
+    return True
 
 if __name__ == '__main__':
     try:
-        main()
+        if main():
+            sys.exit(0)
+        else:
+            sys.exit(-1)
+
     except KeyboardInterrupt:
-        print "You aborted but queries may have been sent anyway."
+        print "Aborted - but queries may have been sent anyway."

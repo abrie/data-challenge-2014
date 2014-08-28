@@ -53,14 +53,11 @@ def insert_query(bigquery, query_filename, dataset):
 
     try:
         inserted_query = insert_request.execute()
+        parameters["ids"]["jobId"] = inserted_query['jobReference']['jobId']
     except HttpError as err:
         err_json = json.loads(err.content)
-        print '- HttpError Exception -'
-        print "code:", err_json["error"]["code"]
-        print "message:", err_json["error"]["message"]
-        parameters["error"] = err_json
+        parameters["error"] = err_json["error"]
 
-    parameters["ids"]["jobId"] = inserted_query['jobReference']['jobId']
     return parameters
 
 def await_reply(bigquery, parameters):
