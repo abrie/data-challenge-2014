@@ -44,11 +44,12 @@ def compute_node_degrees(model, clusters):
 
     for event_a, transitions in model.iteritems():
         cluster_a = get_cluster(event_a, clusters)
-        for event_b in transitions.iterkeys():
-            cluster_b = get_cluster(event_b, clusters)
-            if cluster_a == cluster_b:
-                degrees[event_a]["out"].add(event_b)
-                degrees[event_b]["in"].add(event_a)
+        for event_b, transition in transitions.iteritems():
+            if transition["hits"] > 0:
+                cluster_b = get_cluster(event_b, clusters)
+                if cluster_a == cluster_b:
+                    degrees[event_a]["out"].add(event_b)
+                    degrees[event_b]["in"].add(event_a)
 
     result = {}
     for event, events in degrees.iteritems():
@@ -99,10 +100,11 @@ def compute_cluster_degrees(event_model, event_clusters):
 
     for event, transitions in event_model.iteritems():
         cluster_a = get_cluster(event, event_clusters)
-        for event_b in transitions.iterkeys():
-            cluster_b = get_cluster(event_b, event_clusters)
-            degrees[cluster_a]["out"].add(cluster_b)
-            degrees[cluster_b]["in"].add(cluster_a)
+        for event_b, transition in transitions.iteritems():
+            if transition["hits"] > 0:
+                cluster_b = get_cluster(event_b, event_clusters)
+                degrees[cluster_a]["out"].add(cluster_b)
+                degrees[cluster_b]["in"].add(cluster_a)
 
     result = {}
     for cluster, clusters in degrees.iteritems():
@@ -123,7 +125,6 @@ def compute_stationary_model(model):
         row_names.add(k)
         for k2,v2 in v.iteritems():
             col_names.add(k)
-
     row_names = sorted(row_names)
     col_names = sorted(col_names)
 
@@ -133,6 +134,7 @@ def compute_stationary_model(model):
         for col_name in col_names:
             row.append(model[row_name][col_name]["weight"])
         rows_cols.append(row)
+    return
 
     # based on: http://stackoverflow.com/q/10504158
     matrix = numpy.array(rows_cols)
