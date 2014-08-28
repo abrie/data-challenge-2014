@@ -30,21 +30,18 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 [`main.py`](https://github.com/abrie/data-challenge-2014/blob/master/main.py) contains the data collection logic. Here is an example:
 
-`python main.py -i firstquery --model sql/repo-model.sql --state sql/repo-state.sql`
+`python main.py -i identifier -q bigquery-id model:model.sql state:state.sql`
 
-- `-i [id]` is an optional parameter. Use it to manually set the ID for query results. Omit it and a random ID will be generated.
-- `-p [projectId]` this is the unique projectId number associated with the BigQuery project, (ex: 'spark-mark-911')
-- `--model [sql]` specifies the query used to generate the markov model.
-- `--state [sql]` specifies the query used to generate the population table.
-
-Emitted output is recorded in the data/[id] directory. Within it will be the raw queries, the query results, and a results.json file which contains all the munged data.
+- `-i [setId]` This identifies the set. The query results will be stored in a folder named data/[setId]. If no query is specified using -q, then the most recent queries in this folder will be (re)munged. 
+- `-q [projectId] [name:sql name2:sql2] ...` projectId is a BigQuery project number (ex: 'spark-mark-911'). The [name:sql] entries specify sql files and the id to use when storing the results. Each of the sql files will be sent to BigQuery, and the results stored under `data/[setId]/[name]`. The munger will subsequently process them to produce `results.json`. 
 
 ## Scripts
 
-Two scripts are provided which automate the collection and generator processes. They must be run sequentially:
+collect.sh demonstrates the use of `main.py`. It is the same script used to generate the results used by [this page](http://abrie.github.io/data-challenge-2014). If you wish watch it operate:
 
-- `collect.sh` runs queries and munges the data. You'll need to specify a projectId. For example: `./collect.sh gilded-toad-681`
-- `deploy.sh` will use collected data and generate presentable html. This is what is used to make the [gh-pages content](http://abrie.github.io/data-challenge-2014).
+`./collect.sh [projectId]` You'll need to specify a projectId obtained from your google developer console. 
+
+Another script named [deploy.sh]() is available, but may be of less interest since it is specificly used generate the presentation pages. 
 
 ## Citations
 - Stijn van Dongen, Graph Clustering by Flow Simulation. PhD thesis, University of Utrecht, May 2000. [link](http://micans.org/mcl/lit/svdthesis.pdf.gz)
