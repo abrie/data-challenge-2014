@@ -119,22 +119,21 @@ def munge_state(query):
     return result
     
 def compute_stationary_model(model):
-    row_names = set() 
-    col_names = set()
-    for k,v in model.iteritems():
-        row_names.add(k)
-        for k2,v2 in v.iteritems():
-            col_names.add(k)
-    row_names = sorted(row_names)
-    col_names = sorted(col_names)
+    events = set()
 
-    rows_cols = [];
-    for row_name in row_names:
+    # build a list of events used to construct the square matrix 
+    for event_a, transitions in model.iteritems():
+        events.add(event_a)
+        for event_b in transitions.iterkeys():
+            events.add(event_b)
+
+    rows_cols = []
+    event_list = sorted(list(events))
+    for i in event_list:
         row = []
-        for col_name in col_names:
-            row.append(model[row_name][col_name]["weight"])
+        for j in event_list:
+            row.append(model[i][j]["weight"])
         rows_cols.append(row)
-    return
 
     # based on: http://stackoverflow.com/q/10504158
     matrix = numpy.array(rows_cols)
@@ -145,8 +144,8 @@ def compute_stationary_model(model):
     print matrix[0]
 
     result = {}
-    for name, value in zip(row_names, matrix[0].tolist()):
-        result[name] = value
+    for event, ratio in zip(event_list, matrix[0].tolist()):
+        result[event] = ratio
 
     return result
 

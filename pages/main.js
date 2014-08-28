@@ -110,7 +110,7 @@ function generateIllustration( data, population, svgElement ) {
     }
 
     function getWeightDomain(range) {
-        var set = {};
+        var set = {"0":true};
         for(var k in data.event_model) {
             for(var k2 in data.event_model[k]) {
                 var weight = getWeight(k,k2);
