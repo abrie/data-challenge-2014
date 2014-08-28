@@ -14,7 +14,7 @@ function generateDisplay(data, container_selector) {
     generateIllustration( data.model, data.state, svgElement );
 }
 
-function generateIllustration( data, population, svgElement ) {
+function generateIllustration( data, populations, svgElement ) {
     var svg = d3.select(svgElement);
 
     svg = makeZoomPan(svg);
@@ -49,14 +49,16 @@ function generateIllustration( data, population, svgElement ) {
     var bundle = d3.layout.bundle();
     var linkColorScale = d3.scale.category10();
 
+    var totalPopulation = 0;
     function populationDomain() {
-        var result = [];
-        for(var k in population) {
-            result.push(population[k].hits)
+        var max = 1;
+        for(var k in populations) {
+            var population = populations[k].hits;
+            totalPopulation  += population
+            max = population > max ? population : max
         }
 
-        var sorted = result.sort( d3.ascending );
-        return [sorted[0], sorted[sorted.length-1]];
+        return [1, max];
     }
 
     var populationScale = d3.scale.log()
@@ -64,9 +66,22 @@ function generateIllustration( data, population, svgElement ) {
         .range([1,220]);
 
     function getScaledPopulation(name) {
-        var event = population[name];
+        var event = populations[name];
         if(event) {
             return populationScale(event.hits);
+        }
+        else {
+            return 1;
+        }
+    }
+
+    function getScaledStationaryPopulation(name) {
+        var event = data.stationary_model[name];
+        if(event) {
+            var stationary = data.stationary_model[name]*totalPopulation;
+            var scaled =  populationScale(stationary);
+            console.log(stationary, scaled);
+            return scaled;
         }
         else {
             return 1;
@@ -171,6 +186,24 @@ function generateIllustration( data, population, svgElement ) {
                 .translate(d.y, 0);
             return t();
         });
+
+    var sbox = label.append("rect")
+        .attr("height",8 )
+        .attr("width", function(d) { 
+
+            return getScaledStationaryPopulation(d.name);
+        })
+        .attr("transform", function(d) {
+            var t = d3.svg.transform()
+                .translate(0,font_size/4);
+            return t();
+        })
+        .style("fill", function(d) {
+            var source = d.name
+            var source_cluster = data.clusters[source]; 
+            return "black";// linkColorScale(source_cluster);
+        })
+        .style("opacity", "0.80")
 
     var box = label.append("rect")
         .attr("height",8 )
