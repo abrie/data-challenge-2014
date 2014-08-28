@@ -6,59 +6,59 @@ import mclinterface
 import common
 
 def trim_type_name(type_name):
-    trimmed = type_name.replace("Event","")
+    trimmed = type_name.replace("Event", "")
     return trimmed
 
-def convert_rows_to_markovmodel( rows ):
-    result = MarkovModel() 
+def convert_rows_to_markovmodel(rows):
+    model = MarkovModel()
 
     for row in rows:
         fields = row['f']
-        first = trim_type_name(fields[0]['v'])
-        second = trim_type_name(fields[1]['v'])
+        event_a = trim_type_name(fields[0]['v'])
+        event_b = trim_type_name(fields[1]['v'])
         hits = int(fields[2]['v'])
 
-        result[first][second]["hits"] = hits
+        model[event_a][event_b]["hits"] = hits
 
-    for k1,v1 in result.iteritems():
+    for event_a, transitions in model.iteritems():
         total = 0
-        for k2,v2 in v1.iteritems():
-            total += v2['hits']
-        for k2,v2 in v1.iteritems():
-            v2['weight'] = v2['hits'] / float(total)
+        for transition in transitions.itervalues():
+            total += transition['hits']
+        for transition in transitions.itervalues():
+            transition['weight'] = transition['hits'] / float(total)
 
-    return result;
+    return model
 
-def convert_rows_to_markovstate( rows ):
-    result = MarkovState() 
+def convert_rows_to_markovstate(rows):
+    result = MarkovState()
 
     for row in rows:
-        fields = row['f'];
-        state = trim_type_name(fields[0]['v']);
-        hits = int(fields[1]['v']);
-        result[state]["hits"] = hits
-    return result;
+        fields = row['f']
+        event = trim_type_name(fields[0]['v'])
+        hits = int(fields[1]['v'])
+        result[event]["hits"] = hits
+    return result
 
 def compute_node_degrees(model, clusters):
-    degrees = GraphDegree() 
+    degrees = GraphDegree()
 
-    for k,v in model.iteritems():
-        cluster_a = get_cluster(k, clusters)
-        for k2,v2 in model[k].iteritems():
-            cluster_b = get_cluster(k2, clusters)
+    for event_a, transitions in model.iteritems():
+        cluster_a = get_cluster(event_a, clusters)
+        for event_b in transitions.iterkeys():
+            cluster_b = get_cluster(event_b, clusters)
             if cluster_a == cluster_b:
-                degrees[k]["out"].add(k2)
-                degrees[k2]["in"].add(k)
+                degrees[event_a]["out"].add(event_b)
+                degrees[event_b]["in"].add(event_a)
 
     result = {}
-    for k,v in degrees.iteritems():
-        result[k] = { "indegree": len(v["in"]), "outdegree": len(v["out"]) }
-
-    return result 
+    for event, events in degrees.iteritems():
+        result[event] = {"indegree": len(events["in"]),
+                         "outdegree": len(events["out"])}
+    return result
 
 def EventTimes():
     return collections.defaultdict(
-            lambda: {"first":0,"last":0})
+            lambda: {"first":0, "last":0})
 
 def MarkovState():
     return collections.defaultdict(
@@ -67,53 +67,47 @@ def MarkovState():
 def MarkovModel():
     return collections.defaultdict(
             lambda: collections.defaultdict(
-                lambda: {"hits":0, "weight":0})) 
+                lambda: {"hits":0, "weight":0}))
     
 def GraphDegree():
     return collections.defaultdict(
-            lambda: {"in":set(), "out":set()}) 
+            lambda: {"in":set(), "out":set()})
 
 def get_cluster(event, event_cluster_map):
     return event_cluster_map[event]
 
 def build_cluster_model(event_model, event_clusters):
     model = MarkovModel()
-    totals = collections.defaultdict(lambda:0)
+    totals = collections.defaultdict(lambda: 0)
 
-    for k,v in event_model.iteritems():
-        cluster_a = get_cluster(k, event_clusters)
-        for k2,v2 in v.iteritems():
-            cluster_b = get_cluster(k2, event_clusters)
+    for event_a, transitions in event_model.iteritems():
+        cluster_a = get_cluster(event_a, event_clusters)
+        for event_b in transitions.iterkeys():
+            cluster_b = get_cluster(event_b, event_clusters)
             model[cluster_a][cluster_b]["hits"] += 1
             totals[cluster_a] += 1
-        for k2,v2 in v.iteritems():
+        for event_b in transitions.iterkeys():
             total = totals[cluster_a]
-            cluster_b = get_cluster(k2, event_clusters)
+            cluster_b = get_cluster(event_b, event_clusters)
             weight = model[cluster_a][cluster_b]["hits"] / float(total)
-            model[cluster_a][cluster_b]["weight"] = weight 
+            model[cluster_a][cluster_b]["weight"] = weight
 
     return model
 
 def compute_cluster_degrees(event_model, event_clusters):
-    nodes = GraphDegree() 
+    degrees = GraphDegree()
 
-    for k,v in event_model.iteritems():
-        cluster_a = get_cluster(k, event_clusters)
-        for k2,v2 in v.iteritems():
-            cluster_b = get_cluster(k2, event_clusters)
-            nodes[cluster_a]["out"].add( cluster_b  )
-            nodes[cluster_b]["in"].add( cluster_a )
+    for event, transitions in event_model.iteritems():
+        cluster_a = get_cluster(event, event_clusters)
+        for event_b in transitions.iterkeys():
+            cluster_b = get_cluster(event_b, event_clusters)
+            degrees[cluster_a]["out"].add(cluster_b)
+            degrees[cluster_b]["in"].add(cluster_a)
 
-    return { 
-            cluster_id: { 
-                "indegree": len(events["in"]),
-                "outdegree": len(events["out"])
-            } for cluster_id, events in nodes.iteritems()
-        }
-
-def munge_times(query_responses):
-    result = convert_query_response_to_eventtimes(query_responses[0])
-    print "lifetimes measured."
+    result = {}
+    for cluster, clusters in degrees.iteritems():
+        result[cluster] = {"indegree": len(clusters["in"]),
+                           "outdegree": len(clusters["out"])}
     return result
 
 def munge_state(query):
@@ -159,7 +153,7 @@ def aggregate_rows(replies):
     for reply in replies:
         aggregate.extend(reply['rows'])
     return aggregate
-    
+
 def munge_model(query):
     rows = aggregate_rows(query["reply"])
     model = convert_rows_to_markovmodel(rows)
@@ -172,7 +166,7 @@ def munge_model(query):
     results = {
         'stationary_model' : stationary_model,
         'cluster_model' : cluster_model,
-        'event_model' : model, 
+        'event_model' : model,
         'node_degrees' : node_degrees,
         'clusters' : clusters,
         'cluster_degrees' : cluster_degrees,
