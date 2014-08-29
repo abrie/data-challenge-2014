@@ -46,7 +46,7 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 `./collect.sh [projectId]` You'll need to specify a projectId obtained from your google developer console. 
 
-Another script named [deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) is of less interest. It is the utility used generate the presentation pages. 
+[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the gh-pages directory. The contents of the deployed directory should be served using a local webserver. [node http-server](https://github.com/nodeapps/http-server) is easy recommended. 
 
 ## Citations
 - Stijn van Dongen, Graph Clustering by Flow Simulation. PhD thesis, University of Utrecht, May 2000. [link](http://micans.org/mcl/lit/svdthesis.pdf.gz)
