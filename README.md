@@ -16,7 +16,8 @@ This application uses [MCL](http://micans.org/mcl/). The source is contained in 
 - `make install`
 
 MCL will then be installed to `external/mcl-14-137` which is where the application will assume it to be. If you install to a different path, then change the `MCL_BIN` string found in `mclinterface.py`.
- 
+
+Numpy/Scipy are also required. If you're using Mavericks, use this: [ScipySuperpack](https://github.com/fonnesbeck/ScipySuperpack). 
 ## Authorization of APIs
 
 This application uses Google Bigquery. You'll need to supply authenticated credentials:
@@ -45,7 +46,11 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 `./collect.sh [projectId]` You'll need to specify a projectId obtained from your google developer console. 
 
-Another script named [deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) is of less interest. It is the utility used generate the presentation pages. 
+[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the specified directory. It assumes that the collect.sh script has been sucessfully run. Once generated, the site should be served through a webserver. This is because the `results.json` file is loaded through Ajax. [node http-server](https://github.com/nodeapps/http-server) is easy and recommended. Example of use:
+
+- `./deploy.sh path/to/dir`
+- `http-server -c-1 path/to/dir`
+- Navigate to http://localhost:8080
 
 ## Citations
 - Stijn van Dongen, Graph Clustering by Flow Simulation. PhD thesis, University of Utrecht, May 2000. [link](http://micans.org/mcl/lit/svdthesis.pdf.gz)

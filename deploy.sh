@@ -1,6 +1,13 @@
 #!/bin/sh
 
-DEST="gh-pages"
+if [ $# -lt 1 ] ; then
+    echo "need a destination directory, please."
+    echo usage: $0 [path/to/dir]
+    exit -1
+fi
+
+DEST=$1
+
 mkdir -p $DEST/data
 
 cp -R pages/lib $DEST
