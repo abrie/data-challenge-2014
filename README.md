@@ -55,8 +55,14 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 ## Citations
 - Stijn van Dongen, Graph Clustering by Flow Simulation. PhD thesis, University of Utrecht, May 2000. [link](http://micans.org/mcl/lit/svdthesis.pdf.gz)
 
-## History
-
-These are images which show the submitted illustration's evolution: 
 ## Contact
 abrhie@gmail.com
+
+## Addendum
+## History
+
+These are images which show the final illustrations evolution from very hairball to less hairball.
+
+![first](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/2.png)
+![second](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/3.png)
+![third](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/1.png)
