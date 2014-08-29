@@ -60,7 +60,7 @@ abrhie@gmail.com
 
 ## Addendum
 
-These are images show the evolution from very hairball, to less hairball, to combed hairball.
+These images show the evolution from very hairball, to less hairball, to combed hairball.
 
 ![first](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/2.png)
 ![second](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/3.png)
