@@ -87,8 +87,8 @@ function generateIllustration( data, populations, svgElement ) {
         }
     }
 
-    function getWeight(source, target) {
-        return data.event_model[source][target].weight;
+    function getTransition(source, target) {
+        return data.event_model[source][target];
     }
 
     function getCluster(nodeName) {
@@ -107,7 +107,7 @@ function generateIllustration( data, populations, svgElement ) {
             .style("opacity", function(d) {
                 var source = d[0].name;
                 var target = d[d.length-1].name;
-                var weight = getWeight(source, target);
+                var weight = getTransition(source, target).weight;
                 return opacityScale(weight);  
             })
             .style("stroke", function(d) {
@@ -117,7 +117,7 @@ function generateIllustration( data, populations, svgElement ) {
             .style("stroke-width", function(d) {
                 var source = d[0].name;
                 var target = d[d.length-1].name;
-                var weight = getWeight(source, target);
+                var weight = getTransition(source, target).weight;
                 return linkWidthScale(weight);  
             })
             .attr("d", line);
@@ -127,7 +127,7 @@ function generateIllustration( data, populations, svgElement ) {
         var set = {"0":true};
         for(var event_a in data.event_model) {
             for(var event_b in data.event_model[event_a]) {
-                var weight = getWeight(event_a, event_b);
+                var weight = getTransition(event_a, event_b).weight;
                 if( range ) {
                     if( weight >= range.min && weight < range.max ) {
                         set[weight] = true;
