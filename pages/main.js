@@ -3,7 +3,7 @@ function Main() {
 
 function go(url, container_selector) {
     load_json( url, function(result) { 
-        generateDisplay(result, container_selector) 
+        generateDisplay(result, container_selector);
     });
 }
 
@@ -27,10 +27,10 @@ function generateIllustration( data, populations, svgElement ) {
     var clusterLayout = d3.layout.cluster()
         .size([360, radius])
         .sort( function(a,b) {
-            var a = sumIncidentEdgeWeights(data.event_model, a.name);
-            var b = sumIncidentEdgeWeights(data.event_model, b.name);
-            return d3.descending(a, b)
-        })
+            var a_sum = sumIncidentEdgeWeights(data.event_model, a.name);
+            var b_sum = sumIncidentEdgeWeights(data.event_model, b.name);
+            return d3.descending(a_sum, b_sum);
+        });
 
     var hierarchy = getClusterHierarchy(data);
     var nodes = clusterLayout.nodes(hierarchy) ;
@@ -54,8 +54,8 @@ function generateIllustration( data, populations, svgElement ) {
         var max = 1;
         for(var k in populations) {
             var population = populations[k].hits;
-            totalPopulation  += population
-            max = population > max ? population : max
+            totalPopulation  += population;
+            max = population > max ? population : max;
         }
 
         return [1, max];
@@ -105,19 +105,19 @@ function generateIllustration( data, populations, svgElement ) {
             .attr("class", linkClass)  
             .style("stroke-linecap","rounded")
             .style("opacity", function(d) {
-                var source = d[0].name
-                var target = d[d.length-1].name
-                var weight = getWeight(source,target);
+                var source = d[0].name;
+                var target = d[d.length-1].name;
+                var weight = getWeight(source, target);
                 return opacityScale(weight);  
             })
             .style("stroke", function(d) {
-                var source = d[0].name
+                var source = d[0].name;
                 return linkColorScale( getCluster(source) );
             })
             .style("stroke-width", function(d) {
-                var source = d[0].name
-                var target = d[d.length-1].name
-                var weight = getWeight(source,target);
+                var source = d[0].name;
+                var target = d[d.length-1].name;
+                var weight = getWeight(source, target);
                 return linkWidthScale(weight);  
             })
             .attr("d", line);
@@ -125,9 +125,9 @@ function generateIllustration( data, populations, svgElement ) {
 
     function getWeightDomain(range) {
         var set = {"0":true};
-        for(var k in data.event_model) {
-            for(var k2 in data.event_model[k]) {
-                var weight = getWeight(k,k2);
+        for(var event_a in data.event_model) {
+            for(var event_b in data.event_model[event_a]) {
+                var weight = getWeight(event_a, event_b);
                 if( range ) {
                     if( weight >= range.min && weight < range.max ) {
                         set[weight] = true;
@@ -140,8 +140,8 @@ function generateIllustration( data, populations, svgElement ) {
         }
 
         var result = [];
-        for(var k in set) {
-            result.push(parseFloat(k));
+        for(var weightString in set) {
+            result.push( parseFloat(weightString) );
         }
 
         return result;
@@ -177,7 +177,7 @@ function generateIllustration( data, populations, svgElement ) {
         .attr("class", "node");
 
     var font_size = 30;
-    var label = node.filter( function(d) { return d.depth > 1})
+    var label = node.filter( function(d) { return d.depth > 1;})
         .append("g")
         .attr("transform", function(d) { 
             var t = d3.svg.transform()
@@ -198,11 +198,11 @@ function generateIllustration( data, populations, svgElement ) {
             return t();
         })
         .style("fill", function(d) {
-            var source = d.name
+            var source = d.name;
             var source_cluster = data.clusters[source]; 
             return "black";// linkColorScale(source_cluster);
         })
-        .style("opacity", "0.80")
+        .style("opacity", "0.80");
 
     var box = label.append("rect")
         .attr("height",8 )
@@ -215,11 +215,11 @@ function generateIllustration( data, populations, svgElement ) {
             return t();
         })
         .style("fill", function(d) {
-            var source = d.name
+            var source = d.name;
             var source_cluster = data.clusters[source]; 
             return linkColorScale(source_cluster);
         })
-        .style("opacity", "0.80")
+        .style("opacity", "0.80");
 
     var text = label.append("text")
         .attr("class","node-text")
@@ -249,7 +249,7 @@ function generateIllustration( data, populations, svgElement ) {
         .attr("transform", function(d) {
             var angle = 0;
             if( d.x > 180 && d.x < 360 ) {
-               angle = 180 
+               angle = 180; 
             }
             var t = d3.svg.transform()
                 .translate(getScaledPopulation(d.name),0)
@@ -299,14 +299,14 @@ function sumIncidentEdgeWeights( model, node_name ) {
 }
 
 function NodeNameLookupFunction(nodes) {
-    var node_names = {}
+    var node_names = {};
     nodes.forEach( function(node) {
         node_names[node.name] = node;
     });
 
     return function(node) {
         return node_names[node];
-    }
+    };
 }
 
 function getClusterHierarchy(data) {
@@ -321,20 +321,20 @@ function getClusterHierarchy(data) {
     return {
         "name":"root", 
         children: hierarchy
-    }
+    };
 }
 
 function getClusterChildren(data, cluster_id) {
     var setCollection = {};
     for( var key in data.node_degrees ) {
         if( data.clusters[key] === cluster_id ) {
-            setCollection[key] = { "name": key, } 
+            setCollection[key] = { "name": key };
         }
     }
 
     var result = [];
-    for( var key in setCollection ) {
-        result.push(setCollection[key]);
+    for( var uniqueKey in setCollection ) {
+        result.push(setCollection[uniqueKey]);
     } 
 
     return result;
@@ -355,8 +355,8 @@ function ViewBox(width, height, aspect) {
                 this.min_y,
                 this.width,
                 this.height
-            ].join(" ")},
-    }
+            ].join(" ");},
+    };
 }
 
 function generateSvgElement(viewBox) {
@@ -373,12 +373,12 @@ function generateSvgElement(viewBox) {
 
 function makeZoomPan( svg ) {
     var zoomGroup = svg.append("g")
-        .attr("class","zoom-group")
+        .attr("class","zoom-group");
     var zoomTarget = zoomGroup.append("g")
-        .attr("class","zoom-target")
+        .attr("class","zoom-target");
     var zoomBehaviour = d3.behavior.zoom()
         .scaleExtent([0.5,8])
-        .on("zoom",zoom)
+        .on("zoom",zoom);
 
     function zoom() {
         var translate = "translate(" + d3.event.translate + ")"; 
@@ -387,7 +387,7 @@ function makeZoomPan( svg ) {
     }
 
     zoomGroup.call( zoomBehaviour );
-    return zoomTarget
+    return zoomTarget;
 }
 
 function load_json(url, callback) {
@@ -400,8 +400,8 @@ function load_json(url, callback) {
     })
     .error(function(jqXHR, textStatus, errorThrown) { 
         console.log('error retrieving data:', errorThrown); 
-    })
+    });
 }
 
-return {go:go}
+return {go:go};
 }
