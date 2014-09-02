@@ -1,6 +1,6 @@
 ## Results
 
-See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014
+See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
 
 ## Methodology and Source
 
