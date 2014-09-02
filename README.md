@@ -1,6 +1,9 @@
 ## Results
 
-See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
+See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014
+
+NOTE: September 2nd, 2014: Recent updates to Chrome have broken the illustration. It results in no illustration being generated. Please use Firefox or Safari in the meantime.
+
 
 ## Methodology and Source
 
