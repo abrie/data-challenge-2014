@@ -1,9 +1,24 @@
 function Main() {
     'use strict';
 
+function isBadChromeVersion() {
+    var version; 
+    try {
+        version = window.navigator.appVersion.match(/Chrome\/(.*?) /)[1];
+    } catch(e) 
+    { 
+        // Empty handler, because if we get here then it's not Chrome.
+    }
+    return version === "37.0.2062.94";
+}
+
 function go(url, container_selector) {
+    if( isBadChromeVersion() ) {
+        $(container_selector).append("<div><p>Your version of Chrome (37.0.2062.94) may be incompatible.</p><p>Please use Firefox or Safari.</p></div>");
+    }
+
     load_json( url, function(result) { 
-        generateDisplay(result, container_selector) 
+        generateDisplay(result, container_selector);
     });
 }
 
@@ -67,6 +82,18 @@ function generateIllustration( data, population, svgElement ) {
         var event = population[name];
         if(event) {
             return populationScale(event.hits);
+        }
+        else {
+            return 1;
+        }
+    }
+
+    function getScaledStationaryPopulation(name) {
+        var event = data.stationary_model[name];
+        if(event) {
+            var stationary = data.stationary_model[name]*totalPopulation;
+            var scaled =  populationScale(stationary);
+            return scaled;
         }
         else {
             return 1;
