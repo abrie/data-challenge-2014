@@ -1,6 +1,6 @@
 ## Results
 
-See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
+See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014
 
 ## Methodology and Source
 
@@ -57,3 +57,11 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 ## Contact
 abrhie@gmail.com
+
+## Addendum
+
+These images show the evolution from very hairball, to less hairball, to combed hairball.
+
+![first](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/2.png)
+![second](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/3.png)
+![third](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/1.png)
