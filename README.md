@@ -2,7 +2,7 @@
 
 This branch contains significant features not completed before the contest submission deadline.
 
-- A display of the computed "stationary" probability. This is indicated by small cross bars along the population line. They are interesting because they show the directions in which populations are expected to change over time. The author's (abrie) understanding of these mathematics are a bit clumsy, so interpret them with a critical eye.
+- A display of the computed "stationary" population with small cross bars along the population line. They represent the Markov Equilibrium population, and could be interpreted as a clue to which direction the populations are expected to move. This makes some naive assumptions, and the author's (abrie) understanding of these mathematics are a bit clumsy. Interpret them with accordingly...  ![stationary populations](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/new_1.png)
 
 ## Results
 
