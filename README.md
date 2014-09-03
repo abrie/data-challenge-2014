@@ -58,6 +58,10 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 ## Contact
 abrhie@gmail.com
 
+## More Features
+
+Please visit the dev branch: [README.md](https://github.com/abrie/data-challenge-2014/tree/new_features) for additional features which were not completed before the submission deadline. The conclusion of this competition shared poetic cohomology with a certain video of a polar bear and a can of condensed milk (video no longer available).
+
 ## Addendum
 
 These images show the evolution from very hairball, to less hairball, to combed hairball.
