@@ -189,25 +189,22 @@ function generateIllustration( data, populations, svgElement ) {
             return t();
         });
 
-    var sbox = label.append("rect")
-        .attr("height",8 )
-        .attr("width", function(d) { 
-
-            return getScaledStationaryPopulation(d.name);
-        })
+    var stationaryPopulationIndicator = label.append("rect")
+        .attr("height",30 )
+        .attr("width", 5 )
         .attr("transform", function(d) {
             var t = d3.svg.transform()
-                .translate(0,font_size/4);
+                .translate(getScaledStationaryPopulation(d.name),-18);
             return t();
         })
         .style("fill", function(d) {
             var source = d.name;
             var source_cluster = data.clusters[source]; 
-            return "black";// linkColorScale(source_cluster);
+            return linkColorScale(source_cluster);
         })
         .style("opacity", "0.80");
 
-    var box = label.append("rect")
+    var scaledPopulationIndicator = label.append("rect")
         .attr("height",8 )
         .attr("width", function(d) { 
             return getScaledPopulation(d.name);
@@ -254,8 +251,11 @@ function generateIllustration( data, populations, svgElement ) {
             if( d.x > 180 && d.x < 360 ) {
                angle = 180; 
             }
+            var presentPopulation = getScaledPopulation(d.name);
+            var stationaryPopulation = getScaledStationaryPopulation(d.name);
+            var translation = Math.max(presentPopulation, stationaryPopulation);
             var t = d3.svg.transform()
-                .translate(getScaledPopulation(d.name),0)
+                .translate(translation, 0)
                 .rotate(angle);
             return t();
         })
