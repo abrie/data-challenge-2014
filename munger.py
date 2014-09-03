@@ -118,25 +118,28 @@ def munge_state(query):
     print "population counted."
     return result
     
-def compute_stationary_model(model):
+def model_to_matrix(model):
     events = set()
 
-    # build a list of events used to construct the square matrix 
     for event_a, transitions in model.iteritems():
         events.add(event_a)
         for event_b in transitions.iterkeys():
             events.add(event_b)
 
     rows_cols = []
-    event_list = sorted(list(events))
-    for i in event_list:
+    labels = sorted(list(events))
+    for i in labels:
         row = []
-        for j in event_list:
+        for j in labels:
             row.append(model[i][j]["weight"])
         rows_cols.append(row)
 
+    return (labels, numpy.array(rows_cols))
+
+def compute_stationary_model(model):
+    event_list, matrix = model_to_matrix(model)
+
     # based on: http://stackoverflow.com/q/10504158
-    matrix = numpy.array(rows_cols)
     for i in xrange(10):
         matrix = numpy.dot(matrix, matrix)
 
