@@ -1,6 +1,12 @@
+## Extended Feature Branch
+
+This branch contains significant features not completed before the contest submission deadline.
+
+- A display of the computed "stationary" probability. This is indicated by small cross bars along the population line. They are interesting because they show the directions in which populations are expected to change over time. The author's (abrie) understanding of these mathematics are a bit clumsy, so interpret them with a critical eye.
+
 ## Results
 
-See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014
+See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
 
 ## Methodology and Source
 
