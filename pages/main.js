@@ -1,9 +1,6 @@
 function Main() {
     'use strict';
 
-function isBadChromeVersion() {
-}
-
 function go(url, container_selector) {
     load_json( url, function(result) { 
         generateDisplay(result, container_selector);
