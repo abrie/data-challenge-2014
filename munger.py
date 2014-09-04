@@ -8,7 +8,7 @@ def trim_type_name(type_name):
     return trimmed
 
 def convert_rows_to_markovmodel(rows):
-    model = MarkovModel()
+    model = markov_model()
 
     for row in rows:
         fields = row['f']
@@ -28,7 +28,7 @@ def convert_rows_to_markovmodel(rows):
     return model
 
 def convert_rows_to_markovstate(rows):
-    result = MarkovState()
+    result = markov_state()
 
     for row in rows:
         fields = row['f']
@@ -38,7 +38,7 @@ def convert_rows_to_markovstate(rows):
     return result
 
 def compute_node_degrees(model, clusters):
-    degrees = GraphDegree()
+    degrees = node_degree()
 
     for event_a, transitions in model.iteritems():
         cluster_a = get_cluster(event_a, clusters)
@@ -55,16 +55,16 @@ def compute_node_degrees(model, clusters):
                          "outdegree": len(events["out"])}
     return result
 
-def MarkovState():
+def markov_state():
     return collections.defaultdict(
         lambda: {"hits":0})
 
-def MarkovModel():
+def markov_model():
     return collections.defaultdict(
         lambda: collections.defaultdict(
             lambda: {"hits":0, "weight":0}))
 
-def GraphDegree():
+def node_degree():
     return collections.defaultdict(
         lambda: {"in":set(), "out":set()})
 
@@ -72,7 +72,7 @@ def get_cluster(event, event_cluster_map):
     return event_cluster_map[event]
 
 def build_cluster_model(event_model, event_clusters):
-    model = MarkovModel()
+    model = markov_model()
     totals = collections.defaultdict(lambda: 0)
 
     for event_a, transitions in event_model.iteritems():
@@ -90,7 +90,7 @@ def build_cluster_model(event_model, event_clusters):
     return model
 
 def compute_cluster_degrees(event_model, event_clusters):
-    degrees = GraphDegree()
+    degrees = node_degree()
 
     for event, transitions in event_model.iteritems():
         cluster_a = get_cluster(event, event_clusters)
