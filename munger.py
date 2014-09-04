@@ -8,7 +8,7 @@ def trim_type_name(type_name):
     return trimmed
 
 def convert_rows_to_markovmodel(rows):
-    model = markov_model()
+    event_transitions = markov_model()
 
     for row in rows:
         fields = row['f']
@@ -16,16 +16,16 @@ def convert_rows_to_markovmodel(rows):
         event_b = trim_type_name(fields[1]['v'])
         hits = int(fields[2]['v'])
 
-        model[event_a][event_b]["hits"] = hits
+        event_transitions[event_a][event_b]["hits"] = hits
 
-    for transitions in model.itervalues():
+    for transitions in event_transitions.itervalues():
         total = 0
         for transition in transitions.itervalues():
             total += transition['hits']
         for transition in transitions.itervalues():
             transition['weight'] = transition['hits'] / float(total)
 
-    return model
+    return event_transitions
 
 def convert_rows_to_markovstate(rows):
     result = markov_state()
@@ -37,10 +37,10 @@ def convert_rows_to_markovstate(rows):
         result[event]["hits"] = hits
     return result
 
-def compute_node_degrees(model, clusters):
+def compute_node_degrees(event_transitions, clusters):
     degrees = node_degree()
 
-    for event_a, transitions in model.iteritems():
+    for event_a, transitions in event_transitions.iteritems():
         cluster_a = get_cluster(event_a, clusters)
         for event_b, transition in transitions.iteritems():
             if transition["hits"] > 0:
@@ -71,28 +71,28 @@ def node_degree():
 def get_cluster(event, event_cluster_map):
     return event_cluster_map[event]
 
-def build_cluster_model(event_model, event_clusters):
-    model = markov_model()
+def build_cluster_model(event_transitions, event_clusters):
+    cluster_transitions = markov_model()
     totals = collections.defaultdict(lambda: 0)
 
-    for event_a, transitions in event_model.iteritems():
+    for event_a, transitions in event_transitions.iteritems():
         cluster_a = get_cluster(event_a, event_clusters)
         for event_b in transitions.iterkeys():
             cluster_b = get_cluster(event_b, event_clusters)
-            model[cluster_a][cluster_b]["hits"] += 1
+            cluster_transitions[cluster_a][cluster_b]["hits"] += 1
             totals[cluster_a] += 1
         for event_b in transitions.iterkeys():
-            total = totals[cluster_a]
+            total = float(totals[cluster_a])
             cluster_b = get_cluster(event_b, event_clusters)
-            weight = model[cluster_a][cluster_b]["hits"] / float(total)
-            model[cluster_a][cluster_b]["weight"] = weight
+            weight = cluster_transitions[cluster_a][cluster_b]["hits"] / total
+            cluster_transitions[cluster_a][cluster_b]["weight"] = weight
 
-    return model
+    return cluster_transitions
 
-def compute_cluster_degrees(event_model, event_clusters):
+def compute_cluster_degrees(event_transitions, event_clusters):
     degrees = node_degree()
 
-    for event, transitions in event_model.iteritems():
+    for event, transitions in event_transitions.iteritems():
         cluster_a = get_cluster(event, event_clusters)
         for event_b, transition in transitions.iteritems():
             if transition["hits"] > 0:
@@ -112,10 +112,10 @@ def munge_state(query):
     print "population counted."
     return result
 
-def model_to_matrix(model):
+def model_to_matrix(event_transitions):
     events = set()
 
-    for event_a, transitions in model.iteritems():
+    for event_a, transitions in event_transitions.iteritems():
         events.add(event_a)
         for event_b in transitions.iterkeys():
             events.add(event_b)
@@ -125,13 +125,13 @@ def model_to_matrix(model):
     for i in labels:
         row = []
         for j in labels:
-            row.append(model[i][j]["weight"])
+            row.append(event_transitions[i][j]["weight"])
         rows_cols.append(row)
 
     return (labels, numpy.array(rows_cols))
 
-def compute_stationary_model(model):
-    event_list, matrix = model_to_matrix(model)
+def compute_stationary_model(event_transitions):
+    event_list, matrix = model_to_matrix(event_transitions)
 
     # based on: http://stackoverflow.com/q/10504158
     for i in xrange(10):
@@ -154,17 +154,17 @@ def aggregate_rows(replies):
 
 def munge_model(query):
     rows = aggregate_rows(query["reply"])
-    model = convert_rows_to_markovmodel(rows)
-    clusters = mclinterface.get_clusters(model)
-    node_degrees = compute_node_degrees(model, clusters)
-    cluster_model = build_cluster_model(model, clusters)
-    cluster_degrees = compute_cluster_degrees(model, clusters)
-    stationary_model = compute_stationary_model(model)
+    event_transitions = convert_rows_to_markovmodel(rows)
+    clusters = mclinterface.get_clusters(event_transitions)
+    node_degrees = compute_node_degrees(event_transitions, clusters)
+    cluster_model = build_cluster_model(event_transitions, clusters)
+    cluster_degrees = compute_cluster_degrees(event_transitions, clusters)
+    stationary_model = compute_stationary_model(event_transitions)
 
     results = {
         'stationary_model' : stationary_model,
         'cluster_model' : cluster_model,
-        'event_model' : model,
+        'event_model' : event_transitions,
         'node_degrees' : node_degrees,
         'clusters' : clusters,
         'cluster_degrees' : cluster_degrees,
