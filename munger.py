@@ -20,7 +20,7 @@ def convert_rows_to_markovmodel(rows):
 
         model[event_a][event_b]["hits"] = hits
 
-    for event_a, transitions in model.iteritems():
+    for transitions in model.itervalues():
         total = 0
         for transition in transitions.itervalues():
             total += transition['hits']
