@@ -256,13 +256,13 @@ function generateIllustration( data, populations, svgElement ) {
                 .rotate(angle);
             return t();
         })
-        .text(function(d) { 
+        .html(function(d) { 
             if( d.name === '~' ) {
                 if( d.x > 180 && d.x < 360 ) {
-                    return "start -->";
+                    return "start &rarr;";
                 }
                 else {
-                    return "<-- start";
+                    return "&larr; start";
                 }
             }
             else {
