@@ -1,21 +1,26 @@
+## Motivation
+
+[Github Data Challenge 2014](https://github.com/blog/1864-third-annual-github-data-challenge)
+
 ## Results
 
-See here: [Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
+[Bundled-Edged Views of the Github Event Graph](http://abrie.github.io/data-challenge-2014)
 
-## Methodology and Source
+## Methodology and Source Code
 
-At the heart of this plot are the SQL (or rather, BQL) queries sent to Google Bigquery. The query files are found in [`sql/`](https://github.com/abrie/data-challenge-2014/tree/master/sql). The queries consist of two types: a [model query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-model.sql) and [state query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-state.sql). The model query builds the raw markov matrix by measuring transition ratios between adjacent events. The state query computes a census of the most-recent events. These two sets of data are then ["munged"](http://en.wikipedia.org/wiki/Data_wrangling) by [`munge.py`](https://github.com/abrie/data-challenge-2014/blob/master/munger.py). The munged data is passed through a [cluster detection algorithm](http://micans.org/mcl/). The results are gathered into a single JSON structure (example:[results.json](https://github.com/abrie/data-challenge-2014/blob/gh-pages/data/repo/results.json)), which is used by the [front end](https://github.com/abrie/data-challenge-2014/blob/master/pages/main.js). The frontend employs SVG via  [D3js](http://d3js.org).
+At the heart of this plot are the SQL (or rather, BQL) queries sent to Google Bigquery. The queries consist of two types: a [model query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-model.sql) and [state query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-state.sql). The model query collects data to build a [markov matrix](http://en.wikipedia.org/wiki/Stochastic_matrix) by counting transitions between sequential events. The state query computes a census of the most recent events (i.e. events not followed by another event). These two sets of data are then ["munged"](http://en.wikipedia.org/wiki/Data_wrangling) by [`munger.py`](https://github.com/abrie/data-challenge-2014/blob/master/munger.py). A [cluster detection algorithm](http://micans.org/mcl/) is used to group events. The results are gathered into a single JSON structure (example:[results.json](https://github.com/abrie/data-challenge-2014/blob/gh-pages/data/repo/results.json)). The [front end](https://github.com/abrie/data-challenge-2014/blob/master/pages/main.js) retrieves the data structure via [AJAX](http://en.wikipedia.org/wiki/Ajax_(programming)) and generates an illustration using [D3js](http://d3js.org).
 
-## Installation of dependencies
+## Dependencies
 
 This application uses [MCL](http://micans.org/mcl/). The source is contained in the `external/` directory. Install as follows:
 
 - `tar xfz mcl-latest.tar.gz`
+- `cd mcl-14-137`
 - ``configure --prefix=`pwd```
 - `make`
 - `make install`
 
-MCL will then be installed to `external/mcl-14-137` which is where the application will assume it to be. If you install to a different path, then change the `MCL_BIN` string found in `mclinterface.py`.
+MCL will then be installed to `external/mcl-14-137` which is where this application assumes it to be. If you install to a different path, then change the [`MCL_BIN`](https://github.com/abrie/data-challenge-2014/blob/master/mclinterface.py#L7) string found in `mclinterface.py`.
 
 Numpy/Scipy are also required. If you're using Mavericks, use this: [ScipySuperpack](https://github.com/fonnesbeck/ScipySuperpack). 
 ## Authorization of APIs
@@ -31,25 +36,25 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 - [ ] When you run the app a browser window will open and request authorization.
 - [ ] Authorize it.
 
-## Collecting and munging data
+## Data Collection and Munging
 
-[`main.py`](https://github.com/abrie/data-challenge-2014/blob/master/main.py) contains the data collection logic. Here is an example:
+[`main.py`](https://github.com/abrie/data-challenge-2014/blob/master/main.py) is where interested readers should begin. It is invoked as follows:
 
 `python main.py -i identifier -q bigquery-id model:model.sql state:state.sql`
 
-- `-i [setId]` This identifies the set. The query results will be stored in a folder named data/[setId]. If no query is specified using -q, then the most recent queries in this folder will be (re)munged. 
-- `-q [projectId] [name:sql name2:sql2] ...` projectId is a BigQuery project number (ex: 'spark-mark-911'). The [name:sql] entries specify sql files and the id to use when storing the results. Each of the sql files will be sent to BigQuery, and the results stored under `data/[setId]/[name]`. The munger will subsequently process them to produce `results.json`. 
+- `-i [setId]` This identifies the set. The query results will be stored in a folder named data/[setId]. If no query is specified using `-q`, then the most recent queries in the [setId] folder will be (re)munged. 
+- `-q [projectId] [name:sql name2:sql2] ...` projectId is a BigQuery project number (ex: 'spark-mark-911'). The [name:sql] entries specify sql files and the id to use when storing the results. Each of the sql files will be sent to BigQuery, and the responses stored under `data/[setId]/[name]`. The munger will subsequently process them to produce `results.json`.
 
-## Scripts
+## Use the Scripts
 
 [collect.sh](https://github.com/abrie/data-challenge-2014/blob/master/collect.sh) demonstrates the use of `main.py`. It is the same script used to generate the results used by [this page](http://abrie.github.io/data-challenge-2014). If you wish watch it operate:
 
-`./collect.sh [projectId]` You'll need to specify a projectId obtained from your google developer console. 
+`./collect.sh [projectId]` You'll need to specify the projectId obtained from your Google developer console. 
 
-[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the specified directory. It assumes that the collect.sh script has been sucessfully run. Once generated, the site should be served through a webserver. This is because the `results.json` file is loaded through Ajax. [node http-server](https://github.com/nodeapps/http-server) is easy and recommended. Example of use:
+[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the specified directory. It assumes that the `collect.sh` has completed successfully. The generated site should be served through a webserver because the `results.json` files are loaded through Ajax. [node http-server](https://github.com/nodeapps/http-server) or Python's SimpleHTTPServer are easy and recommended:
 
-- `./deploy.sh path/to/dir`
-- `http-server -c-1 path/to/dir`
+- `./deploy.sh deployed/path/`
+- `http-server deployed/path/` or `cd deployed/path && python -m SimpleHTTPServer 8080`
 - Navigate to http://localhost:8080
 
 ## Citations
@@ -58,10 +63,6 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 ## Contact
 abrhie@gmail.com
 
-## More Features
-
-Please visit the dev branch: [README.md](https://github.com/abrie/data-challenge-2014/tree/new_features) for additional features which were not completed before the submission deadline. The conclusion of this competition shared poetic cohomology with a certain video of a polar bear and a can of condensed milk (video no longer available).
-
 ## Addendum
 
 These images show the evolution from very hairball, to less hairball, to combed hairball.
@@ -69,3 +70,7 @@ These images show the evolution from very hairball, to less hairball, to combed 
 ![first](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/2.png)
 ![second](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/3.png)
 ![third](https://raw.githubusercontent.com/abrie/data-challenge-2014/master/README_assets/1.png)
+
+## More Features
+
+Please visit the dev branch: [README.md](https://github.com/abrie/data-challenge-2014/tree/new_features) for additional features developed after submission. The conclusion of this competition shares poetic cohomology with a certain video of a polar bear and a can of condensed milk (video no longer available).
