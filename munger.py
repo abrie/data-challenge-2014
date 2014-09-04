@@ -1,9 +1,7 @@
 import collections
 import numpy
-import time
 
 import mclinterface
-import common
 
 def trim_type_name(type_name):
     trimmed = type_name.replace("Event", "")
@@ -59,16 +57,16 @@ def compute_node_degrees(model, clusters):
 
 def MarkovState():
     return collections.defaultdict(
-            lambda: {"hits":0})
+        lambda: {"hits":0})
 
 def MarkovModel():
     return collections.defaultdict(
-            lambda: collections.defaultdict(
-                lambda: {"hits":0, "weight":0}))
-    
+        lambda: collections.defaultdict(
+            lambda: {"hits":0, "weight":0}))
+
 def GraphDegree():
     return collections.defaultdict(
-            lambda: {"in":set(), "out":set()})
+        lambda: {"in":set(), "out":set()})
 
 def get_cluster(event, event_cluster_map):
     return event_cluster_map[event]
@@ -113,7 +111,7 @@ def munge_state(query):
     result = convert_rows_to_markovstate(rows)
     print "population counted."
     return result
-    
+
 def model_to_matrix(model):
     events = set()
 
