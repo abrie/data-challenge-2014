@@ -57,10 +57,6 @@ def compute_node_degrees(model, clusters):
                          "outdegree": len(events["out"])}
     return result
 
-def EventTimes():
-    return collections.defaultdict(
-            lambda: {"first":0, "last":0})
-
 def MarkovState():
     return collections.defaultdict(
             lambda: {"hits":0})
