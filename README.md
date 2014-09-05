@@ -8,7 +8,7 @@
 
 ## Methodology and Source Code
 
-At the heart of this plot are the SQL (or rather, BQL) queries sent to Google Bigquery. The queries consist of two types: a [model query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-model.sql) and [state query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-state.sql). The model query collects the data necessary for building a [markov matrix](http://en.wikipedia.org/wiki/Stochastic_matrix) by [counting transitions between sequential events](https://en.wikipedia.org/wiki/Adjacency_matrix). The state query computes a census of the most recent events (i.e. events not followed by another event). These two sets of data are then ["munged"](http://en.wikipedia.org/wiki/Data_wrangling) by [`munger.py`](https://github.com/abrie/data-challenge-2014/blob/master/munger.py). A [cluster detection algorithm](http://micans.org/mcl/) is used to group events. The results are gathered into a single JSON structure (example:[results.json](https://github.com/abrie/data-challenge-2014/blob/gh-pages/data/repo/results.json)). The [front end](https://github.com/abrie/data-challenge-2014/blob/master/pages/main.js) retrieves the data structure via [AJAX](http://en.wikipedia.org/wiki/Ajax_(programming)) and generates an illustration using [D3js](http://d3js.org).
+At the heart of this plot are the SQL (or rather, BQL) queries sent to Google Bigquery. The queries consist of two types: a [model query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-model.sql) and [state query](https://github.com/abrie/data-challenge-2014/blob/master/sql/repo-state.sql). The model query collects the data necessary for building a [markov matrix](http://en.wikipedia.org/wiki/Stochastic_matrix) by [counting transitions between sequential events](https://en.wikipedia.org/wiki/Adjacency_matrix). The state query computes a census of the most recent events (i.e. events not followed by another event). These two sets of data are then ["munged"](http://en.wikipedia.org/wiki/Data_wrangling) by [`munger.py`](https://github.com/abrie/data-challenge-2014/blob/master/munger.py). A [cluster detection algorithm](http://micans.org/mcl/) is used to group events. The results are gathered into a single JSON structure (example:[results.json](https://github.com/abrie/data-challenge-2014/blob/gh-pages/data/repo/results.json)). The [front end](https://github.com/abrie/data-challenge-2014/blob/master/pages/main.js) retrieves the results via [AJAX](http://en.wikipedia.org/wiki/Ajax_(programming)) and generates the illustrations using [D3js](http://d3js.org).
 
 ## Dependencies
 
@@ -20,7 +20,7 @@ This application uses [MCL](http://micans.org/mcl/). The source is contained in 
 - `make`
 - `make install`
 
-MCL will then be installed to `external/mcl-14-137` which is where this application assumes it to be. If you install to a different path, then change the [`MCL_BIN`](https://github.com/abrie/data-challenge-2014/blob/master/mclinterface.py#L7) string found in `mclinterface.py`.
+MCL will then be installed to `external/mcl-14-137`. If you install to a different path, then change the [`MCL_BIN`](https://github.com/abrie/data-challenge-2014/blob/master/mclinterface.py#L7) string found in `mclinterface.py`.
 
 Numpy/Scipy are also required. If you're using Mavericks, use this: [ScipySuperpack](https://github.com/fonnesbeck/ScipySuperpack). 
 ## Authorization of APIs
@@ -43,7 +43,7 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 `python main.py -i identifier -q bigquery-id model:model.sql state:state.sql`
 
 - `-i [setId]` This identifies the set. The query results will be stored in a folder named data/[setId]. If no query is specified using `-q`, then the most recent queries in the [setId] folder will be (re)munged. 
-- `-q [projectId] [name:sql name2:sql2] ...` projectId is a BigQuery project number (ex: 'spark-mark-911'). The [name:sql] entries specify sql files and the id to use when storing the results. Each of the sql files will be sent to BigQuery, and the responses stored under `data/[setId]/[name]`. The munger will subsequently process them to produce `results.json`.
+- `-q [projectId] [name:sql name2:sql2] ...` projectId is a BigQuery project number (ex: 'spark-mark-911'). The [name:sql] entries specify sql files and the id to use when storing the results. Each of the sql files will be sent to BigQuery, and the responses recorded under `data/[setId]/[name]`. The munger will subsequently process the responses to produce `results.json`.
 
 ## Use the Scripts
 
@@ -51,7 +51,7 @@ This application uses Google Bigquery. You'll need to supply authenticated crede
 
 `./collect.sh [projectId]` You'll need to specify the projectId obtained from your Google developer console. 
 
-[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the specified directory. It assumes that the `collect.sh` has completed successfully. The generated site should be served through a webserver because the `results.json` files are loaded through Ajax. [node http-server](https://github.com/nodeapps/http-server) or Python's SimpleHTTPServer are easy and recommended:
+[deploy.sh](https://github.com/abrie/data-challenge-2014/blob/master/deploy.sh) generates the presentation pages and writes them to the specified directory. It assumes that `collect.sh` has completed successfully. The generated site should be served through a webserver because the `results.json` files are loaded through Ajax. If you do not have a local webserver then [node http-server](https://github.com/nodeapps/http-server) or Python's SimpleHTTPServer are easy and recommended:
 
 - `./deploy.sh deployed/path/`
 - `http-server deployed/path/` or `cd deployed/path && python -m SimpleHTTPServer 8080`
